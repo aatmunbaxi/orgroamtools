@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "orgroamtools"
+version = "0.1.0"
+description = "Analysis API for org-roam collections"
+authors = ["Aatmun Baxi <abaxi@tamu.edu>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+orgparse = "*"
+networkx = "^3.2.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
