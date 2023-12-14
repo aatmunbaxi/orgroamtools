@@ -2,17 +2,14 @@
 
 [[file:viz/COVER.svg]]
 
-=orgroamtools= is an in-progress Python library to analyze =org-roam= zettelkastens inspired heavily by [[https://github.com/mfarragher/obsidiantools][obsidiantools]].
+=orgroamtools= is a Python library to analyze =org-roam= zettelkastens inspired heavily by [[https://github.com/mfarragher/obsidiantools][obsidiantools]].
 Since the zettelkasten method creates a natural graph structure out of your personal knowledgebase, we can use graph analysis tools to learn about your digital "slipbox".
 This library is meant to aid in doing so, all you need is a healthy =org-roam= v2 database!
 You can locate this database in the =.emacs/.local/cache= directory where it is stored by default, or wherever you have placed it.
 
-Load the data into memory with
-#+begin_src python
-from orgroamtools.RoamGraph import RoamGraph
 
-slipbox = RoamGraph(PATH_TO_ROAM_DB)
-#+end_src
+*Important Note:* Though =org-roam= allows you to have different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
+This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
 * Features
 - Provides a =networkx= graph representation of =org-roam= database
@@ -20,8 +17,10 @@ slipbox = RoamGraph(PATH_TO_ROAM_DB)
 - Filtering your database by tags and extracting a subgraph from it
 - Basic graph properties
   - Check existence of orphaned =org-roam= nodes
-  - List of backlinks for all nodes =backlink_index= or a single node =node_backlinks=
+  - List of backlinks for all nodes (=backlink_index=) or a single node (=node_backlinks(NODE_IDENTIFIER)=)
 * Dependencies
 - Python 3.7+
 - =networkx=: a graph analysis library for Python
-- =orgparse=: a library to parse org-mode files
+- =orgparse=: a library to parse org-mode. Needed to get body text of nodes
+* Related
+- =obsidiantools=
