@@ -1,4 +1,5 @@
 import os
+import re
 import warnings
 import sqlite3 as sql
 import copy
@@ -21,7 +22,6 @@ class RoamGraph:
         Params
         db -- path to org-roam db (required)
         """
-
         super(RoamGraph, self).__init__()
 
         self.db_path = os.path.expanduser(db)
@@ -419,7 +419,6 @@ class RoamGraph:
         """
         tags = set(map(re.compile, tags))
 
-        scope = range(len(self.nodes))
         tfilter = [node.has_regex_tag(tags) for node in self.nodes]
         if exclude:
             tfilter = [not b for b in tfilter]
