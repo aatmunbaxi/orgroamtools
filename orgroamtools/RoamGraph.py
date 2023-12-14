@@ -11,17 +11,23 @@ from orgroamtools._RoamGraphHelpers import IdentifierType, DuplicateTitlesWarnin
 
 
 class RoamGraph:
-    """
-    Stores information of an org-roam network.
-    """
-
     def __init__(self, db : str):
-        """
-        Constructor for RoamGraph
+        """Initializes RoamGraph object
 
-        Params
-        db -- path to org-roam db (required)
+        The RoamGraph object stores information about the nodes in the
+        collection described by the database path provided. The nodes also store
+        information about how they relate to each other via backlinks.
+
+        Parameters
+        ----------
+        db : str
+            Path to org-roam database
+
+        Examples
+        --------
+        FIXME: Add docs
         """
+        
         super(RoamGraph, self).__init__()
 
         self.db_path = os.path.expanduser(db)
@@ -57,47 +63,129 @@ class RoamGraph:
 
     @property
     def graph(self) -> nx.MultiDiGraph:
+        """Return networkx graph representation of collection
+
+        The collection of org-roam nodes and their backlinks naturally form a
+        directed multigraph. That is, a graph with nodes and directed arrows,
+        where we allow mutiple arrows between any pair of nodes. The number of
+        arrows between two nodes NODE1 and NODE2 is the number of times the
+        backlink for NODE2 appears in the text of NODE1. Networkx has a special
+        type of graph object networkx.MultiDiGraph to represent such a graph,
+        which is returned here for the instantiated collection of org-roam nodes
+
+        Returns
+        -------
+        nx.MultiDiGraph
+            Multi directed graph representation of the collection
+
+        Examples
+        --------
+        FIXME: Add docs.
+        """
+
         return self._graph
 
     @graph.setter
-    def graph(self, value: nx.MultiDiGraph) -> nx.MultiDiGraph:
+    def graph(self, value: nx.MultiDiGraph) -> None:
+        """Setter for graph attribute
+
+        Parameters
+        ----------
+        value : nx.MultiDiGraph
+            new graph to set self._graph to
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+
         self._graph = value
 
     @property
     def backlink_index(self) -> dict[str, list[str]]:
+        """Return index for node backlinks of the collection
+
+        When a node in the collection has a reference to another node in the
+        collection, it is said to have a backlink to that node.
+
+        Returns
+        -------
+        dict[str, list[str]]
+            dict of (k,v) pairs where k is a node ID and v is a list of
+            backlinks of the node with ID k
+
+        Examples
+        --------
+        FIXME: Add docs.
+        """
+
         return { node.id : node.links for node in self._node_index.values() }
 
     @property
-    def file_index(self) -> dict[str, list[str]]:
+    def file_index(self) -> dict[str, str]:
+        """Return index of filenames of collection
+
+        Since multiple nodes can exist in a single file, it may be helpful to
+        retrieve the name of the file where a particular node is located.
+
+        Returns
+        -------
+        dict[str, list[str]]
+            dict of (k,v) pairs where k is a node ID and v is a string for the
+            path of the location of the node with ID k
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
         return {node.id : node.fname for node in self._node_index}
 
     @property
     def node_info(self) -> list[Node]:
-        """
-        Returns list of nodes
-        """
+        """Return index of nodes
+
+        Grabs list of RoamNode objects from collection
+
+        Returns
+        -------
+        list[Node]
+            List of RoamNode objects in collection
+        """ 
         return self._node_index
 
+
     @node_info.setter
-    def node_index(self, value : dict[str,Node]) -> dict[str,Node]:
+    def node_index(self, value : dict[str,Node]) -> None:
+        """Setter for node index
+
+        Parameters
+        ----------
+        value : dict[str,Node]
+            New node index
+        """
         self._node_index = value
 
 
-    def __filter_tags(self, tags, exclude):
-        """
-        Filters tags by exact match
+    def __filter_tags(self, tags : list[str], exclude : bool) -> None:
+        """Filter network by tags
 
-        tags -- list (str)
-             Tags to match
-        exclude -- bool
-             To exclude or no
+        
+
+        Parameters
+        ----------
+        tags : list[str]
+            List of tags to filter by
+        exclude : bool
+            Whether to exclude the tags in the new network or not
         """
         tfilter = [node.has_tag(tags) for node in self.nodes]
         if exclude:
             tfilter = [not b for b in tfilter]
         self.nodes = [node for (node, b) in zip(self.nodes, tfilter) if b]
 
-    def __init_ids(self, dbpath):
+    def __init_ids(self, dbpath : str) -> list[str]:
         """ Initializes list of IDs for each node
         Params
         dbpath -- str
@@ -115,7 +203,7 @@ class RoamGraph:
         except sql.Error as e:
             print("Connection failed: ", e)
 
-    def __init_fnames(self, dbpath : str):
+    def __init_fnames(self, dbpath : str) -> list[str]:
         """
         Initializes list of filenames for each node
 
@@ -136,7 +224,7 @@ class RoamGraph:
         except sql.Error as e:
             print("Connection failed: ", e)
 
-    def __init_titles(self, dbpath : str):
+    def __init_titles(self, dbpath : str) -> list[str]:
         """
         Initializes list of titles for each node
 
@@ -157,7 +245,7 @@ class RoamGraph:
         except sql.Error as e:
             print("Connection failed: ", e)
 
-    def __init_tags(self, dbpath : str):
+    def __init_tags(self, dbpath : str) -> list[set[str]]:
         """
         Initializes list of tags for each node
 
@@ -179,7 +267,7 @@ class RoamGraph:
         except sql.Error as e:
             print("Connection failed: ", e)
 
-    def __init_links_to(self, dbpath : str):
+    def __init_links_to(self, dbpath : str) -> list[list[str]]:
         """
         Initializes list of links
 
@@ -261,7 +349,7 @@ class RoamGraph:
         links = [a.links for a in self.nodes]
         return [(a, b) for (a, b) in zip(self.titles, links)]
 
-    def __is_orphan(self, node : Node):
+    def __is_orphan(self, node : Node) -> bool:
         """
         Checks if node is an orphan with respect to others
 
@@ -287,21 +375,63 @@ class RoamGraph:
             return IdentifierType.NOTHING
 
 
-    def node_links(self , note_name : str) -> list[str]:
-        if note_name not in self.note_index:
-            raise AttributeError("No note with provided title")
-        else:
-            return self._node_index[note_name].links()
+    def node_links(self , identifier : str) -> list[str]:
+        """Return links for a particular node
+
+        A node's links is the collection of links made in the body of the node desired.
+        By convention, a node will always refer to itself
+
+        Parameters
+        ----------
+        identifier : str
+            Identifier for node. Can be title or ID
+
+        Returns
+        -------
+        list[str]
+            List of IDs of nodes the provided node refers to
+
+        Raises
+        ------
+        AttributeError
+            Raised if identifier cannot be found in the collection
+        """
+
+        identifier_type = self._identifier_type(identifier)
+
+
+        match identifier_type:
+            case IdentifierType.ID:
+                return self._node_index[identifier].links
+            case IdentifierType.TITLE:
+                if identifier in self._duplicate_titles:
+                    warnings.warn("This title is duplicated. This might not be the desired result.",DuplicateTitlesWarning)
+                idx = self.IDs.index(identifier)
+                return self.nodes[idx].links
+            case IdentifierType.NOTHING:
+                raise AttributeError(f"No node with identifier: {identifier}")
 
 
     def node(self, identifier: str) -> Node:
-        """
-        Grabs node from collection by identifier.
-        Identifier can either be a note title or
+        """Return node object
+
+        Internally a node is of class orgroamtools.RoamNode.RoamNode, which stores
+        basic information about a node like ID, title, filename, and its backlinks
 
         Parameters
-        ---------
-        identifier -- (str) node identifier, can be node ID or title
+        ----------
+        identifier : str
+            Identifier for node. Can be title or ID
+
+        Returns
+        -------
+        Node
+            RoamNode object of node
+
+        Raises
+        ------
+        AttributeError
+            Raised if node cannot be found
         """
         identifier_type = self._identifier_type(identifier)
 
@@ -320,12 +450,26 @@ class RoamGraph:
         raise AttributeError("Uh oh spaghetti-o")
 
     def node_title(self, identifier : str) -> str:
-        """
-        Gets title of node
+        """Return title of node
+
+        The title of a node is the name given to the note file.
+        If your org-roam node is its own file, this is the #+title: property.
+        If you org-roam node is a heading, this is the heading title
 
         Parameters
-        ---------
-        identifier -- (str) node ID to get title of
+        ----------
+        identifier : str
+            ID of node
+
+        Returns
+        -------
+        str
+            Title of node
+
+        Raises
+        ------
+        AttributeError
+            Raised if ID could not be found in collection
         """
         identifier_type = self._identifier_type(identifier)
 
@@ -333,18 +477,31 @@ class RoamGraph:
             case IdentifierType.ID:
                 return self._id_title_map[identifier]
 
-
         raise AttributeError(f"No node with provided ID: {identifier}")
 
 
     def node_id(self, identifier : str) -> str:
-        """
-        Gets ID of node. Warns if title is duplicated in the collection
+        """Return ID of node
+
+        org-roam uses org-mode's internal :ID: property creation to uniquely identify nodes
+        in the collection.
 
         Parameters
-        ---------
-        identifier -- (str) node title
+        ----------
+        identifier : str
+            Title of node
+
+        Returns
+        -------
+        str
+            ID of node
+
+        Raises
+        ------
+        AttributeError
+            Raised if no node matches the provided title
         """
+        
         identifier_type = self._identifier_type(identifier)
 
         match identifier_type:
