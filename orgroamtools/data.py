@@ -190,7 +190,7 @@ class RoamGraph:
         self._id_title_map = { self._ids[i] : self._titles[i] for i in range(len(self._ids)) }
 
         self._graph = nx.MultiDiGraph({self._ids[i] : self._links_to[i] for i in range(len(self._titles)) })
-        self._node_index = {j[2] : Node(j[0],j[1],j[2],j[3],j[4]) for j in zip(self._fnames,
+        self._node_index = {j[2] : RoamNode(j[0],j[1],j[2],j[3],j[4]) for j in zip(self._fnames,
                                                                               self._titles,
                                                                               self._ids,
                                                                               self._tags,
@@ -480,7 +480,7 @@ class RoamGraph:
         """
         Returns list of node names (#+title file property)
         """
-        return [node.title for node in self.nodes]
+        return self._titles
 
     @property
     def links(self):
@@ -508,13 +508,12 @@ class RoamGraph:
         """
         Determines type of identifier
         """
-        if identifier in self.titles:
-            return IdentifierType.TITLE
-        elif identifier in self.IDs:
+        if identifier in self.IDs:
             return IdentifierType.ID
+        elif identifier in self.titles:
+            return IdentifierType.TITLE
         else:
             return IdentifierType.NOTHING
-
 
     def node_links(self , identifier : str) -> list[str]:
         """Return links for a particular node
@@ -546,7 +545,7 @@ class RoamGraph:
                 return self._node_index[identifier].links
             case IdentifierType.TITLE:
                 if identifier in self._duplicate_titles:
-                    warnings.warn("This title is duplicated. This might not be the desired result.",DuplicateTitlesWarning)
+                    warnings.warn("Title is a duplicate. This might not be the desired result.",DuplicateTitlesWarning)
                 idx = self.IDs.index(identifier)
                 return self.nodes[idx].links
             case IdentifierType.NOTHING:
@@ -610,7 +609,7 @@ class RoamGraph:
         Raises
         ------
         AttributeError
-            Raised if ID could not be found in collection
+            Raised if ID not be found in collection
         """
         identifier_type = self._identifier_type(identifier)
 
@@ -644,6 +643,7 @@ class RoamGraph:
         """
 
         identifier_type = self._identifier_type(identifier)
+        print(identifier_type)
 
         match identifier_type:
             case IdentifierType.TITLE:
