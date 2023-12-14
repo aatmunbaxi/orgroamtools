@@ -82,6 +82,21 @@ class RoamGraph:
     def node_index(self, value : dict[str,Node]) -> dict[str,Node]:
         self._node_index = value
 
+
+    def __filter_tags(self, tags, exclude):
+        """
+        Filters tags by exact match
+
+        tags -- list (str)
+             Tags to match
+        exclude -- bool
+             To exclude or no
+        """
+        tfilter = [node.has_tag(tags) for node in self.nodes]
+        if exclude:
+            tfilter = [not b for b in tfilter]
+        self.nodes = [node for (node, b) in zip(self.nodes, tfilter) if b]
+
     def __init_ids(self, dbpath):
         """ Initializes list of IDs for each node
         Params
@@ -340,3 +355,72 @@ class RoamGraph:
                 return self.IDs[index_of_id]
 
         raise AttributeError(f"No node with provided title: {identifier}")
+
+    def filter_tags(self, tags, exclude = True):
+        subgraph = copy.deepcopy(self)
+
+        new_nodes = subgraph.__filtered_nodes(tags, exclude)
+
+        subgraph._ids = [node.id for node in new_nodes]
+        subgraph._titles = [node.title for node in new_nodes]
+        subgraph._fnames = [node.fname for node in new_nodes]
+        subgraph._links_to = [node._links_to for node in new_nodes]
+        subgraph._graph = nx.MultiDiGraph({subgraph._ids[i] : subgraph._links_to[i] for i in range(len(subgraph._titles)) })
+
+        seen = set()
+        subgraph._duplicate_titles = [x for x in subgraph._titles if x in seen or seen.add(x)]
+        subgraph._contains_dup_titles = len(subgraph._duplicate_titles) > 0
+        if subgraph._contains_dup_titles:
+            warnings.warn("Collection contains duplicate titles. Matching nodes by title will be non-exhaustive.",
+                          DuplicateTitlesWarning)
+
+
+        subgraph._id_title_map = { subgraph._ids[i] : subgraph._titles[i] for i in range(len(subgraph._ids)) }
+
+        subgraph._node_index = {j[2] : Node(j[0],j[1],j[2],j[3],j[4]) for j in zip(subgraph._fnames,
+                                                                              subgraph._titles,
+                                                                              subgraph._ids,
+                                                                              subgraph._tags,
+                                                                              subgraph._links_to)}
+
+        # TODO This doesn't work. It need to remove the nodes not allowed in the subgraph in the
+        # node.links_to for each node to properly detect if a node is an orphan
+        subgraph._orphans = [node for node in subgraph._node_index.values()
+                         if not any([node.links_to(other) for other in subgraph._node_index.values()])]
+
+        subgraph._is_connected = subgraph._orphans == []
+        return subgraph
+
+    def __filtered_nodes(self, tags, exclude):
+        """
+        Filters tags by exact match
+
+        tags -- list (str)
+             Tags to match
+        exclude -- bool
+             To exclude or no
+        """
+        tfilter = [node.has_tag(tags) for node in self.nodes]
+        if exclude:
+            tfilter = [not b for b in tfilter]
+        return [node for (node, b) in zip(self.nodes, tfilter) if b]
+
+    def __filter_rx_tags(self, tags, exclude):
+        """
+        Filters tags by regex
+
+        Params
+        tags -- list regexp
+             Regexes to compiler by
+        exclue -- bool
+             To exclude tags or not
+
+        Returns filtered subgraph as copy
+        """
+        tags = set(map(re.compile, tags))
+
+        scope = range(len(self.nodes))
+        tfilter = [node.has_regex_tag(tags) for node in self.nodes]
+        if exclude:
+            tfilter = [not b for b in tfilter]
+        self.nodes = [node for (node, b) in zip(self.nodes, tfilter) if b]

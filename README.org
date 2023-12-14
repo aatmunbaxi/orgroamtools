@@ -1,3 +1,17 @@
-#+title: orgroamtools
+#+title: orgroamtools 📓🔬
 
-Working clone of =obsidiantools= for analysis of =org-roam= collections.
+=orgroamtools= is an in-progress Python library to analyze =org-roam= zettelkastens inspired heavily by [[https://github.com/mfarragher/obsidiantools][obsidiantools]].
+Since the zettelkasten method creates a natural graph structure out of you personal knowledgebase, we can use graph analysis tools to learn about your digital "slipbox".
+This library is meant to aid in doing so, all you need is a healthy =org-roam= v2 database!
+You can locate this database in the =.emacs/.local/cache= directory where it is stored by default, or wherever you have placed it.
+
+Load the data into memory with
+#+begin_src python
+from orgroamtools.RoamGraph import RoamGraph
+
+slipbox = RoamGraph(PATH_TO_ROAM_DB)
+#+end_src
+
+* Features
+- =networkx= graph of =org-roam= database
+  - What you do with this is limited only by the capabilities of =networkx=, which is very powerful for analyzing and visualizing graphs

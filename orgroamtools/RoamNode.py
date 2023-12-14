@@ -18,7 +18,7 @@ class RoamNode:
                  title : str,
                  id : str,
                  tags : set[str],
-                 links_to : set[str]):
+                 links_to : list[str]):
         """
         Params
         fname -- filename of node locatoin
@@ -80,7 +80,7 @@ class RoamNode:
         return self._id
 
     @property
-    def links(self) -> set[str]:
+    def links(self) -> list[str]:
         """
         Returns links of a node
         """
