@@ -6,11 +6,152 @@ import copy
 
 import networkx as nx
 
-from orgroamtools.RoamNode import RoamNode as Node
 from orgroamtools._RoamGraphHelpers import IdentifierType, DuplicateTitlesWarning
+
+from typing import Iterable
+
+class RoamNode:
+    """Node for org-roam zettels
+
+    Attributes
+    fname -- filename of node locatoin
+    title -- title of node
+    id    -- org-roam id
+    tags  -- set of tags of node
+    links_to -- set of ids this node links in its body
+    """
+
+    def __init__(self, fname : str,
+                 title : str,
+                 id : str,
+                 tags : set[str],
+                 links_to : list[str]):
+        """
+        Params
+        fname -- filename of node locatoin
+        title -- title of node
+        id    -- org-roam id
+        tags  -- set of tags of node
+        links_to -- set of ids this node links in its body
+        """
+        super(RoamNode, self).__init__()
+        self._fname = fname
+        self._title = title
+        self._id = id
+        self._tags = tags
+        self._links_to = links_to
+
+
+    @property
+    def fname(self) -> str:
+        return self._fname
+
+    @property
+    def tags(self):
+        """
+        Returns node tags
+        """
+        return self._tags
+
+
+    def links_to(self, n , directed : bool = False):
+        """
+        Determined if node links to another node
+
+            Params
+            n -- RoamNode
+                  other node
+            directed -- bool.
+                     check link directionally, otherwise return true
+                        if other node likes to self
+
+            Returns if node links to other node
+        """
+
+        if directed:
+            return n._id in self._links_to
+        else:
+            return n._id in self._links_to or self._id in n._links_to
+
+    @property
+    def id(self):
+        """
+        Returns node id
+        """
+        return self._id
+
+    @property
+    def links(self) -> list[str]:
+        """
+        Returns links of a node
+        """
+        return self._links_to
+
+    @property
+    def title(self) -> str:
+        """
+        Returns title of node
+        """
+        return self._title
+
+    def has_tag(self, tags_checked : Iterable[str]) -> bool:
+        """
+        Checks if node has tag
+
+        Params
+        tags_checked -- iterable (str)
+            Iterable of tags to match exactly
+
+        Returns True if node has any of the tags in tags_checked
+        """
+        return any(tag in tags_checked for tag in self.tags)
+
+    def has_regex_tag(self, rxs : Iterable[str]) -> bool:
+        """
+        Checks if node has regex tag
+
+        Params
+        rxs -- iterable
+            Iterable of regexes to match
+
+        Returns True if node tag matches any of the regexes
+        """
+        return any(rx.match(tag) for tag in self.tags for rx in rxs)
+
+    def __str__(self):
+        return f"({self._title}, {self._id})"
+
+    def __repr__(self):
+        return f"({self._title}, {self._id})"
+
+    def __lt__(self,other) -> bool:
+        if not isinstance(other, RoamNode):
+            return NotImplemented
+
+        self._id < other.id
+
+
+    def __gt__(self,other) -> bool:
+        if not isinstance(other, RoamNode):
+            return NotImplemented
+
+        self.id > other.id
+
+
+
+
+
+
+
+
+
 
 
 class RoamGraph:
+    """Object to store data associated to a collection of org-roam nodes
+
+    """
+
     def __init__(self, db : str):
         """Initializes RoamGraph object
 
@@ -27,7 +168,7 @@ class RoamGraph:
         --------
         FIXME: Add docs
         """
-        
+
         super(RoamGraph, self).__init__()
 
         self.db_path = os.path.expanduser(db)
@@ -143,7 +284,7 @@ class RoamGraph:
         return {node.id : node.fname for node in self._node_index}
 
     @property
-    def node_info(self) -> list[Node]:
+    def node_info(self) -> list[RoamNode]:
         """Return index of nodes
 
         Grabs list of RoamNode objects from collection
@@ -152,17 +293,17 @@ class RoamGraph:
         -------
         list[Node]
             List of RoamNode objects in collection
-        """ 
+        """
         return self._node_index
 
 
     @node_info.setter
-    def node_index(self, value : dict[str,Node]) -> None:
+    def node_index(self, value : dict[str,RoamNode]) -> None:
         """Setter for node index
 
         Parameters
         ----------
-        value : dict[str,Node]
+        value : dict[str,RoamNode]
             New node index
         """
         self._node_index = value
@@ -171,7 +312,7 @@ class RoamGraph:
     def __filter_tags(self, tags : list[str], exclude : bool) -> None:
         """Filter network by tags
 
-        
+
 
         Parameters
         ----------
@@ -321,7 +462,7 @@ class RoamGraph:
         return [node._fname for node in self.nodes]
 
     @property
-    def nodes(self) -> list[Node]:
+    def nodes(self) -> list[RoamNode]:
         """
         Returns list of nodes
         """
@@ -349,7 +490,7 @@ class RoamGraph:
         links = [a.links for a in self.nodes]
         return [(a, b) for (a, b) in zip(self.titles, links)]
 
-    def __is_orphan(self, node : Node) -> bool:
+    def __is_orphan(self, node : RoamNode) -> bool:
         """
         Checks if node is an orphan with respect to others
 
@@ -412,10 +553,10 @@ class RoamGraph:
                 raise AttributeError(f"No node with identifier: {identifier}")
 
 
-    def node(self, identifier: str) -> Node:
+    def node(self, identifier: str) -> RoamNode:
         """Return node object
 
-        Internally a node is of class orgroamtools.RoamNode.RoamNode, which stores
+        Internally a node is of class orgroamtools.data.RoamNode, which stores
         basic information about a node like ID, title, filename, and its backlinks
 
         Parameters
@@ -425,7 +566,7 @@ class RoamGraph:
 
         Returns
         -------
-        Node
+        RoamNode
             RoamNode object of node
 
         Raises
@@ -501,7 +642,7 @@ class RoamGraph:
         AttributeError
             Raised if no node matches the provided title
         """
-        
+
         identifier_type = self._identifier_type(identifier)
 
         match identifier_type:
@@ -534,7 +675,7 @@ class RoamGraph:
 
         subgraph._id_title_map = { subgraph._ids[i] : subgraph._titles[i] for i in range(len(subgraph._ids)) }
 
-        subgraph._node_index = {j[2] : Node(j[0],j[1],j[2],j[3],j[4]) for j in zip(subgraph._fnames,
+        subgraph._node_index = {j[2] : RoamNode(j[0],j[1],j[2],j[3],j[4]) for j in zip(subgraph._fnames,
                                                                               subgraph._titles,
                                                                               subgraph._ids,
                                                                               subgraph._tags,
@@ -548,35 +689,49 @@ class RoamGraph:
         subgraph._is_connected = subgraph._orphans == []
         return subgraph
 
-    def __filtered_nodes(self, tags, exclude):
-        """
-        Filters tags by exact match
+    def __filtered_nodes(self, tags : Iterable[str], exclude : bool) -> list[RoamNode]:
+        """Filter network by exact matches on tags
 
-        tags -- list (str)
-             Tags to match
-        exclude -- bool
-             To exclude or no
+        Parameters
+        ----------
+        tags : Iterable[str]
+            Iterable of tags
+        exclude : bool
+            Whether to exclude in new network or not
+
+        Returns
+        -------
+        list[RoamNode]
+            List of filtered nodes
+
+        Examples
+        --------
+        FIXME: Add docs.
+
         """
+
         tfilter = [node.has_tag(tags) for node in self.nodes]
         if exclude:
             tfilter = [not b for b in tfilter]
         return [node for (node, b) in zip(self.nodes, tfilter) if b]
 
-    def __filter_rx_tags(self, tags, exclude):
-        """
-        Filters tags by regex
+    def __filter_rx_tags(self, tags : Iterable[str], exclude : bool) -> list[RoamNode]:
+        """Filter network by regex searches on tags
 
-        Params
-        tags -- list regexp
-             Regexes to compiler by
-        exclue -- bool
-             To exclude tags or not
+        Parameters
+        ----------
+        tags : Iterable[str]
+            Iterable of regex strings
+        exclude : bool
+            To exclude the matched tags or not
 
-        Returns filtered subgraph as copy
+        Examples
+        --------
+        FIXME: Add docs.
         """
         tags = set(map(re.compile, tags))
 
         tfilter = [node.has_regex_tag(tags) for node in self.nodes]
         if exclude:
             tfilter = [not b for b in tfilter]
-        self.nodes = [node for (node, b) in zip(self.nodes, tfilter) if b]
+        return [node for (node, b) in zip(self.nodes, tfilter) if b]
