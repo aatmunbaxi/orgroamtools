@@ -7,9 +7,9 @@ class IdentifierType(Enum):
     by their title. This enum helps disambiguate the the type of an identifier
     for functions that take a generic identifier in as an input. e.g. RoamGraph.node
     """
-    TITLE = None
-    ID = None
-    NOTHING = None
+    TITLE = 1
+    ID = 2
+    NOTHING = 0
 
 
 class DuplicateTitlesWarning(Warning):
