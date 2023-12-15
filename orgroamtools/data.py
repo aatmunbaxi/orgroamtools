@@ -6,9 +6,14 @@ import copy
 from typing import Iterable
 from dataclasses import dataclass
 
+from pprint import pp
 import networkx as nx
 
 from orgroamtools._RoamGraphHelpers import IdentifierType, DuplicateTitlesWarning
+
+ORG_ID = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
 
 
 @dataclass
@@ -206,7 +211,7 @@ class RoamGraph:
         tfilter = [node.has_tag(tags) for node in self.nodes]
         if exclude:
             tfilter = [not b for b in tfilter]
-        self.nodes = [node for (node, b) in zip(self.nodes, tfilter) if b]
+        return [node for (node, b) in zip(self.nodes, tfilter) if b]
 
     def __init_ids(self, dbpath: str) -> list[str]:
         """Initializes list of IDs for each node
@@ -309,11 +314,15 @@ class RoamGraph:
                 clean = lambda s: s.replace('"', "")
                 links = query.fetchall()
 
-                return [
-                    ([clean(i[0])] + list(map(clean, i[1].split(","))))
-                    if i[1]
-                    else [clean(i[0])]
+                # Separated links by comma might still have links we dont want (e.g. files, etc)
+                self_and_links = [
+                    [i[0]] + list(map(clean, i[1].split(","))) if i[1] else [i[0]]
                     for i in links
+                ]
+
+                return [
+                    [link for link in node_links if re.match(ORG_ID, link)]
+                    for node_links in self_and_links
                 ]
 
         except sql.Error as e:
@@ -552,12 +561,17 @@ class RoamGraph:
     def filter_tags(self, tags, exclude=True):
         subgraph = copy.deepcopy(self)
 
-        new_nodes = subgraph.__filtered_nodes(tags, exclude)
+        (new_nodes, excluded_ids) = subgraph.__partitioned_nodes(tags, exclude)
 
         subgraph._ids = [node.id for node in new_nodes]
         subgraph._titles = [node.title for node in new_nodes]
         subgraph._fnames = [node.fname for node in new_nodes]
-        subgraph._links_to = [node.links for node in new_nodes]
+
+        # A node now cannot link to an excluded node, so excise them
+        subgraph._links_to = [
+            [link for link in node.links if link not in excluded_ids]
+            for node in new_nodes
+        ]
         subgraph._graph = nx.MultiDiGraph(
             {
                 subgraph._ids[i]: subgraph._links_to[i]
@@ -613,7 +627,13 @@ class RoamGraph:
         else:
             return node2.id in node1.links or node1.id in node2.links
 
-    def __filtered_nodes(self, tags: Iterable[str], exclude: bool) -> list[RoamNode]:
+    def _all_tags(self) -> set[str]:
+        """Get all tags present in the collection"""
+        return set(tag for node in self._node_index.values() for tag in node.tags)
+
+    def __partitioned_nodes(
+        self, tags: Iterable[str], exclude: bool = True
+    ) -> (list[RoamNode], list[str]):
         """Filter network by exact matches on tags
 
         Parameters
@@ -633,14 +653,27 @@ class RoamGraph:
         FIXME: Add docs.
 
         """
-
         tfilter = [
             any([tag in node.tags for tag in tags])
             for node in self._node_index.values()
         ]
         if exclude:
             tfilter = [not b for b in tfilter]
-        return [node for (node, b) in zip(self.nodes, tfilter) if b]
+            excluded_tags = tags
+            excluded_ids = [
+                node.id
+                for node in self._node_index.values()
+                if any(tag in node.tags for tag in excluded_tags)
+            ]
+        elif not exclude:
+            excluded_tags = self._all_tags - set(tags)
+            excluded_ids = [
+                node.id
+                for node in self._node_index
+                if not any(tag in node.tags for tag in excluded_tags)
+            ]
+
+        return ([node for (node, b) in zip(self.nodes, tfilter) if b], excluded_ids)
 
     def _node_has_tag(self, node: RoamNode, tag: str) -> bool:
         return tag in node.tags
