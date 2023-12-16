@@ -12,6 +12,8 @@ from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
     ORG_ID_FORMAT,
+    MiscLink,
+    parse_orglink
 )
 
 
@@ -31,13 +33,18 @@ class RoamNode:
         Collection of tags of org-roam node
     links : list[str]
         List of backlinks in org-roam node
+    misc_links : list[MiscLink]
+        List of miscellaneous links that are not links to other nodes
     """
 
     fname: str
     title: str
     id: str
     tags: set[str]
-    links: list[str]
+    backlinks: list[str]
+    misc_links : list[MiscLink]
+
+
 
 
 class RoamGraph:
@@ -111,6 +118,8 @@ class RoamGraph:
         self._links_to = [
             [ID for ID in link_list if ID in self._ids] for link_list in links
         ]
+        self._misc_links = self.__init_misc_links(self.db_path)
+        self._misc_link_index = {self._ids[i] : self._misc_links[i] for i in range(len(self._ids))}
 
         self._tags = self.__init_tags(self.db_path)
 
@@ -122,9 +131,9 @@ class RoamGraph:
             {self._ids[i]: self._links_to[i] for i in range(len(self._titles))}
         )
         self._node_index = {
-            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4])
+            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
             for j in zip(
-                self._fnames, self._titles, self._ids, self._tags, self._links_to
+                    self._fnames, self._titles, self._ids, self._tags, self._links_to, self._misc_links
             )
         }
 
@@ -198,7 +207,7 @@ class RoamGraph:
         FIXME: Add docs.
         """
 
-        return {node.id: node.links for node in self._node_index.values()}
+        return {node.id: node.backlinks for node in self._node_index.values()}
 
     @property
     def file_index(self) -> dict[str, str]:
@@ -358,6 +367,37 @@ class RoamGraph:
             print("Connection failed: ", e)
         return []
 
+    def __init_misc_links(self, dbpath: str) -> list[MiscLink]:
+        links_to_query = "SELECT n.id ,GROUP_CONCAT(l.dest), l.type FROM nodes n LEFT JOIN links l ON n.id = l.source GROUP BY n.id ORDER BY n.id ;"
+        # If only sqlite supported regexp..
+        # links_to_query = "SELECT n.id, GROUP_CONCAT(l.dest ) FROM nodes n LEFT JOIN links l\nON n.id = l.source AND l.dest REGEXP \'^\"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\"$\'\nGROUP BY n.id\nORDER BY n.id;"
+        try:
+            with sql.connect(dbpath, uri=True) as con:
+                csr = con.cursor()
+                query = csr.execute(links_to_query)
+                clean = lambda s: s.replace('"', "")
+                links = query.fetchall()
+
+                # Separated links by comma might still have links we dont want (e.g. files, etc)
+                self_and_links = [
+                    [clean(i[0])] + list(map(clean, i[1].split(",")))
+                    if i[1]
+                    else [clean(i[0])]
+                    for i in links
+                ]
+
+                # By default links to files and other things are included in the database
+                # so just get rid of them
+                return [
+                    [link for link in node_links if not re.match(ORG_ID_FORMAT, link)]
+                    for node_links in self_and_links
+                ]
+
+        except sql.Error as e:
+            print("Connection failed: ", e)
+        return []
+
+
     def __init_links_to(self, dbpath: str) -> list[list[str]]:
         """Initialize list of links
 
@@ -372,6 +412,8 @@ class RoamGraph:
         List of backlinks in node (as a list)
         """
         links_to_query = "SELECT n.id, GROUP_CONCAT(l.dest) FROM nodes n LEFT JOIN links l ON n.id = l.source GROUP BY n.id ORDER BY n.id ;"
+        # If only sqlite supported regexp..
+        # links_to_query = "SELECT n.id, GROUP_CONCAT(l.dest ) FROM nodes n LEFT JOIN links l\nON n.id = l.source AND l.dest REGEXP \'^\"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\"$\'\nGROUP BY n.id\nORDER BY n.id;"
         try:
             with sql.connect(dbpath, uri=True) as con:
                 csr = con.cursor()
@@ -477,7 +519,7 @@ class RoamGraph:
         """
         Returns tuples of (title, links) for each node
         """
-        links = [a.links for a in self.nodes]
+        links = [a.backlinks for a in self.nodes]
         return [(a, b) for (a, b) in zip(self.titles, links)]
 
     def __is_orphan(self, node: RoamNode) -> bool:
@@ -489,8 +531,8 @@ class RoamGraph:
 
         Returns True if node is orphan of self
         """
-        pointed_to = True if any(node.id in n.links for n in self.nodes) else False
-        points_to = node.links != []
+        pointed_to = True if any(node.id in n.backlinks for n in self.nodes) else False
+        points_to = node.backlinks != []
         return not points_to and not pointed_to
 
     def _identifier_type(self, identifier: str) -> IdentifierType:
@@ -530,7 +572,7 @@ class RoamGraph:
 
         match identifier_type:
             case IdentifierType.ID:
-                return self._node_index[identifier].links
+                return self._node_index[identifier].backlinks
 
             case IdentifierType.TITLE:
                 if identifier in self._duplicate_titles:
@@ -539,7 +581,7 @@ class RoamGraph:
                         DuplicateTitlesWarning,
                     )
                 idx = self.IDs.index(identifier)
-                return self.nodes[idx].links
+                return self.nodes[idx].backlinks
 
             case IdentifierType.NOTHING:
                 raise AttributeError(f"No node with identifier: {identifier}")
@@ -716,9 +758,9 @@ class RoamGraph:
 
     def _nodes_linked(self, node1: RoamNode, node2: RoamNode, directed: bool = True):
         if directed:
-            return node2.id in node1.links
+            return node2.id in node1.backlinks
         else:
-            return node2.id in node1.links or node1.id in node2.links
+            return node2.id in node1.backlinks or node1.id in node2.backlinks
 
     def _all_tags(self) -> set[str]:
         """Get all tags present in the collection"""
