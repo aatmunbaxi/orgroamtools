@@ -113,6 +113,7 @@ class RoamGraph:
                 [
                     self._nodes_linked(node, other, directed=False)
                     for other in self._node_index.values()
+                    if other != node
                 ]
             )
         ]
@@ -349,7 +350,9 @@ class RoamGraph:
 
                 # Separated links by comma might still have links we dont want (e.g. files, etc)
                 self_and_links = [
-                    [i[0]] + list(map(clean, i[1].split(","))) if i[1] else [i[0]]
+                    [clean(i[0])] + list(map(clean, i[1].split(",")))
+                    if i[1]
+                    else [clean(i[0])]
                     for i in links
                 ]
 
@@ -372,38 +375,21 @@ class RoamGraph:
             i for i in range(len(self._ids)) if self.nodes[i] in self._orphans
         ]
 
-        new_ids = [
-            ID for idx, ID in enumerate(self._ids) if idx not in indices_of_orphans
-        ]
-        new_fnames = [
-            fname
-            for idx, fname in enumerate(self._fnames)
-            if idx not in indices_of_orphans
-        ]
-        new_tags = [
-            tagset
-            for idx, tagset in enumerate(self._tags)
-            if idx not in indices_of_orphans
-        ]
-        new_links_to = [
-            links_list
-            for idx, links_list in enumerate(self._links_to)
+        new_node_data = [
+            data
+            for idx, data in enumerate(
+                zip(self._fnames, self._titles, self._ids, self._tags, self._links_to)
+            )
             if idx not in indices_of_orphans
         ]
         new_node_index = {
-            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4])
-            for j in zip(
-                self._fnames,
-                self._titles,
-                self._ids,
-                self._tags,
-                self._links_to,
-            )
+            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4]) for j in new_node_data
         }
-        self._ids = new_ids
-        self._fnames = new_fnames
-        self._tags = new_tags
-        self._links_to = new_links_to
+        self._fnames = [j[0] for j in new_node_data]
+        self._titles = [j[1] for j in new_node_data]
+        self._ids = [j[2] for j in new_node_data]
+        self._tags = [j[3] for j in new_node_data]
+        self._links_to = [j[4] for j in new_node_data]
         self._node_index = new_node_index
         # Should be true by definition...
         self._orphans = []
