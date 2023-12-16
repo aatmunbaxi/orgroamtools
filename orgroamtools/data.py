@@ -17,6 +17,22 @@ from orgroamtools._utils import (
 
 @dataclass
 class RoamNode:
+    """Store relevant org-roam node information
+
+    Parameters
+    ----------
+    fname : str
+        Filename of org-roam node
+    title : str
+        Title of org-roam node
+    id : str
+        Unique org ID of org-roam node
+    tags : set[str]
+        Collection of tags of org-roam node
+    links : list[str]
+        List of backlinks in org-roam node
+    """
+
     fname: str
     title: str
     id: str
