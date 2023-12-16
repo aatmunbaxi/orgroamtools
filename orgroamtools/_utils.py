@@ -1,5 +1,10 @@
-import warnings
+import re
 from enum import Enum
+
+ORG_ID_FORMAT = re.compile(
+    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+)
+
 
 class IdentifierType(Enum):
     """
@@ -7,6 +12,7 @@ class IdentifierType(Enum):
     by their title. This enum helps disambiguate the the type of an identifier
     for functions that take a generic identifier in as an input. e.g. RoamGraph.node
     """
+
     TITLE = 1
     ID = 2
     NOTHING = 0
