@@ -8,7 +8,7 @@ from dataclasses import dataclass
 
 import networkx as nx
 
-from orgroamtools._RoamGraphHelpers import (
+from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
     ORG_ID_FORMAT,
