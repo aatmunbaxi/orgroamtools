@@ -3,7 +3,7 @@ import re
 import warnings
 import sqlite3 as sql
 import copy
-from typing import Iterable
+from typing import Iterable, Tuple
 from dataclasses import dataclass
 
 import networkx as nx
@@ -45,12 +45,18 @@ class RoamGraph:
 
     @classmethod
     def init_empty(self):
-        self.db_path = ""
+        """Initialize empty RoamNode object
+
+        Returns
+        -------
+        RoamNode object with default fields initialized
+        """
+        self.db_path = None
         self._fnames = []
         self._titles = []
 
         self._duplicate_titles = []
-        self._contains_dup_titles = False
+        self._contains_dup_titles = None
         self._ids = []
         self._links_to = []
 
@@ -61,7 +67,7 @@ class RoamGraph:
         self._node_index = dict()
 
         self._orphans = []
-        self._is_connected = True
+        self._is_connected = None
         return self
 
     def __init__(self, db: str):
@@ -78,7 +84,7 @@ class RoamGraph:
 
         Examples
         --------
-        FIXME: Add docs
+        >>> collection = RoamGraph(PATH_TO_ORGROAM_DB)
         """
 
         super(RoamGraph, self).__init__()
@@ -177,7 +183,9 @@ class RoamGraph:
         """Return index for node backlinks of the collection
 
         When a node in the collection has a reference to another node in the
-        collection, it is said to have a backlink to that node.
+        collection, it is said to have a backlink to that node. These backlinks
+        provide the main nonhierarchical structure of the collection, and compactly
+        express relations of different nodes to each other.
 
         Returns
         -------
@@ -196,35 +204,38 @@ class RoamGraph:
     def file_index(self) -> dict[str, str]:
         """Return index of filenames of collection
 
-        Since multiple nodes can exist in a single file, it may be helpful to
-        retrieve the name of the file where a particular node is located.
-
         Returns
         -------
         dict[str, str]
-            dict with keys the IDs of nodes and values the filename of the nodes
+            dict with keys the IDs of nodes and values the filename of the file
+            containing that node
 
         Examples
         --------
         FIXME: Add docs.
 
         """
-        return {node.id: node.fname for node in self._node_index}
+        return {ID: node.fname for ID, node in self._node_index.items()}
 
     @property
-    def node_index(self) -> list[RoamNode]:
+    def node_index(self) -> dict[str, RoamNode]:
         """Return index of nodes
+
+        The node_index is hashed by node ID, since this is the only
+        value guaranteed to be unique to each org-roam node across
+        various configurations.
 
         Returns
         -------
-        list[RoamNode]
-            List of RoamNode objects in collection
+        dict[str, RoamNode]
+            dict with keys the IDs of nodes and values the RoamNode object
+            of the node with that ID
         """
         return self._node_index
 
     @node_index.setter
     def node_index(self, value: dict[str, RoamNode]) -> None:
-        """Setter for node index
+        """Set for node index
 
         Parameters
         ----------
@@ -233,7 +244,7 @@ class RoamGraph:
         """
         self._node_index = value
 
-    def __filter_tags(self, tags: list[str], exclude: bool) -> None:
+    def __filter_tags(self, tags: list[str], exclude: bool) -> list[RoamNode]:
         """Filter network by tags
 
 
@@ -244,7 +255,7 @@ class RoamGraph:
         exclude : bool
             Whether to exclude the tags in the new network or not
         """
-        tfilter = [node.has_tag(tags) for node in self.nodes]
+        tfilter = [self._node_has_tag(node, tag) for node in self.nodes for tag in tags]
         if exclude:
             tfilter = [not b for b in tfilter]
         return [node for (node, b) in zip(self.nodes, tfilter) if b]
@@ -270,6 +281,7 @@ class RoamGraph:
 
         except sql.Error as e:
             print("Connection failed: ", e)
+        return []
 
     def __init_fnames(self, dbpath: str) -> list[str]:
         """
@@ -293,6 +305,7 @@ class RoamGraph:
 
         except sql.Error as e:
             print("Connection failed: ", e)
+        return []
 
     def __init_titles(self, dbpath: str) -> list[str]:
         """
@@ -317,6 +330,7 @@ class RoamGraph:
 
         except sql.Error as e:
             print("Connection failed: ", e)
+        return []
 
     def __init_tags(self, dbpath: str) -> list[set[str]]:
         """
@@ -342,6 +356,7 @@ class RoamGraph:
 
         except sql.Error as e:
             print("Connection failed: ", e)
+        return []
 
     def __init_links_to(self, dbpath: str) -> list[list[str]]:
         """Initialize list of links
@@ -381,6 +396,7 @@ class RoamGraph:
 
         except sql.Error as e:
             print("Connection failed: ", e)
+        return []
 
     def remove_orphans(self):
         """Remove orphan nodes
@@ -431,9 +447,9 @@ class RoamGraph:
         Returns list of filenames
         """
         if base:
-            return [os.path.basename(node.fname) for node in self.node_info.values()]
+            return [os.path.basename(node.fname) for node in self.node_index.values()]
 
-        return [node._fname for node in self.nodes]
+        return [node.fname for node in self.nodes]
 
     @property
     def nodes(self) -> list[RoamNode]:
@@ -447,7 +463,7 @@ class RoamGraph:
         """
         Returns list of node IDs
         """
-        return [node.id for node in self.node_info.values()]
+        return [node.id for node in self.node_index.values()]
 
     @property
     def titles(self):
@@ -562,7 +578,7 @@ class RoamGraph:
                 return self.nodes[idx]
 
             case IdentifierType.ID:
-                idx = self.Ids.index(identifier)
+                idx = self._ids.index(identifier)
                 return self.nodes[idx]
 
             case IdentifierType.NOTHING:
@@ -684,8 +700,6 @@ class RoamGraph:
             )
         }
 
-        # TODO This doesn't work. It need to remove the nodes not allowed in the subgraph in the
-        # node.links_to for each node to properly detect if a node is an orphan
         subgraph._orphans = [
             node
             for node in subgraph._node_index.values()
@@ -712,7 +726,7 @@ class RoamGraph:
 
     def __partitioned_nodes(
         self, tags: Iterable[str], exclude: bool = True
-    ) -> (list[RoamNode], list[str]):
+    ) -> Tuple[list[RoamNode], list[str]]:
         """Filter network by exact matches on tags
 
         Parameters
@@ -745,10 +759,10 @@ class RoamGraph:
                 if any(tag in node.tags for tag in excluded_tags)
             ]
         elif not exclude:
-            excluded_tags = self._all_tags - set(tags)
+            excluded_tags = self._all_tags() - set(tags)
             excluded_ids = [
                 node.id
-                for node in self._node_index
+                for node in self._node_index.values()
                 if not any(tag in node.tags for tag in excluded_tags)
             ]
 
@@ -757,6 +771,7 @@ class RoamGraph:
     def _node_has_tag(self, node: RoamNode, tag: str) -> bool:
         return tag in node.tags
 
+    # FIXME
     def __filter_rx_tags(self, tags: Iterable[str], exclude: bool) -> list[RoamNode]:
         """Filter network by regex searches on tags
 
@@ -771,20 +786,20 @@ class RoamGraph:
         --------
         FIXME: Add docs.
         """
-        tags = set(map(re.compile, tags))
+        # tags = set(map(re.compile, tags))
 
-        # tfilter = [node.has_regex_tag(tags) for node in self.nodes]
-        tfilter = [
-            any([rx.match(tag) for tag in node.tags])
-            for node in self._node_index.values()
-            for rx in tags
-        ]
-        if exclude:
-            tfilter = [not b for b in tfilter]
-        return [node for (node, b) in zip(self.nodes, tfilter) if b]
+        # # tfilter = [node.has_regex_tag(tags) for node in self.nodes]
+        # tfilter = [
+        #     any([rx.match(tag) for tag in node.tags])
+        #     for node in self._node_index.values()
+        #     for rx in tags
+        # ]
+        # if exclude:
+        #     tfilter = [not b for b in tfilter]
+        # return [node for (node, b) in zip(self.nodes, tfilter) if b]
 
     @property
-    def size(self) -> (int, int):
+    def size(self) -> Tuple[int, int]:
         """Return size of collection
 
         Returns
