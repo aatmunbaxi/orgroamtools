@@ -7,9 +7,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-orgparse = "*"
 networkx = "^3.2.1"
-matplotlib = "^3.8.2"
 
 
 [build-system]
