@@ -994,51 +994,6 @@ class RoamGraph:
         """Get all tags present in the collection"""
         return set(tag for node in self._node_index.values() for tag in node.tags)
 
-    def __partitioned_nodes_rx(
-            self,
-            tags: Iterable[str],
-            exclude: bool = True) -> Tuple[list[RoamNode], list[str]]:
-        """Filter network by exact matches on tags
-
-        Parameters
-        ----------
-        tags : Iterable[str]
-            Iterable of tag regexes
-        exclude : bool
-            Whether to exclude in new network or not
-
-        Returns
-        -------
-        list[RoamNode]
-            List of filtered nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        tfilter = [
-            any([re.compile(rx).match(tag) for tag in tags for rx in tags])
-            for node in self._node_index.values()
-        ]
-        if exclude:
-            tfilter = [not b for b in tfilter]
-            excluded_tags = tags
-            excluded_ids = [
-                node.id
-                for node in self._node_index.values()
-                if any(tag in node.tags for tag in excluded_tags)
-            ]
-        elif not exclude:
-            excluded_tags = self._all_tags() - set(tags)
-            excluded_ids = [
-                node.id
-                for node in self._node_index.values()
-                if not any(tag in node.tags for tag in excluded_tags)
-            ]
-
-        return ([node for (node, b) in zip(self.nodes, tfilter) if b], excluded_ids)
-
     def __partitioned_nodes(
             self,
             tags: Iterable[str],
