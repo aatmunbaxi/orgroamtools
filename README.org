@@ -2,25 +2,28 @@
 
 [[file:viz/COVER.svg]]
 
-=orgroamtools= is an in-progress clone of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam=.
+=orgroamtools= is an in-progress clone of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam= collections.
 Since the zettelkasten method creates a natural graph structure out of your personal knowledgebase, we can use graph analysis tools to learn about your digital "slipbox".
 This library is meant to aid in doing so, all you need is a healthy =org-roam= v2 database!
 You can locate this database in the =.emacs/.local/cache= directory where it is stored by default, or wherever you have placed it.
 
 
-*Important Note:* Though =org-roam= allows you to have different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
+*Important Note:* Though =org-roam= allows different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
+For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
-* Features
-- Provides a =networkx= graph representation of =org-roam= database
-  - What you do with this is limited only by the capabilities of =networkx=, which is very powerful for analyzing and visualizing graphs
-- Filtering your database by tags and extracting a subgraph from it
-- Basic graph properties
-  - Check existence of orphaned =org-roam= nodes
-  - List of backlinks for all nodes (=backlink_index=) or a single node (=node_backlinks(NODE_IDENTIFIER)=)
+* Current Features
+- =networkx= graph representation of =org-roam= database
+- Filtering your database by tags
+- Basic graph properties such as:
+  - Existence of orphaned =org-roam= nodes
+  - Index of backlinks for all nodes (=backlink_index=) or a single node (=node_backlinks(NODE_IDENTIFIER)=)
+  - Indices of node properties, such as title, filename, and miscellaneous org links
 * Dependencies
-- Python 3.7+
+- Python 3.9+
 - =networkx=: a graph analysis library for Python
 - =orgparse=: a library to parse org-mode. Needed to get body text of nodes
+* Planned
+- Parsing of nodes and analytics of the text itself
 * Related
 - =obsidiantools=
