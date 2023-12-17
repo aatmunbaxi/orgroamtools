@@ -3,10 +3,6 @@ from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
 
-ORG_ID_FORMAT = re.compile(
-    r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-)
-
 
 # TODO Maybe consolidate all links to this class for richer representation of links?
 @dataclass
