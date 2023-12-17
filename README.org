@@ -22,8 +22,8 @@ This library will not stop you from persisting with duplicated titles, but you w
 * Dependencies
 - Python 3.9+
 - =networkx=: a graph analysis library for Python
-- =orgparse=: a library to parse org-mode. Needed to get body text of nodes
 * Planned
 - Parsing of nodes and analytics of the text itself
+  - Future dependency: =orgparse=
 * Related
 - =obsidiantools=
