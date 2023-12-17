@@ -428,129 +428,6 @@ class RoamGraph:
         }
         return self
 
-    @property
-    def fnames(self, base: bool = True) -> list[str]:
-        """Return list of filenames in network
-
-        Parameters
-        ----------
-        base : bool
-            get just basename of file
-
-        Returns
-        -------
-        list[str]
-            list of filenames in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        if base:
-            return [os.path.basename(node.fname) for node in self.node_index.values()]
-
-        return [node.fname for node in self.nodes]
-
-    @property
-    def nodes(self) -> list[RoamNode]:
-        """Return list of nodes in network
-
-        Returns
-        -------
-        list[RoamNode]
-            list of nodes in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return list(self.node_index.values())
-
-    @property
-    def IDs(self) -> list[str]:
-        """Return list of IDs present in network
-
-        Returns
-        -------
-        list[str]
-            list of IDs in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return [node.id for node in self.node_index.values()]
-
-    @property
-    def titles(self) -> list[str]:
-        """Return list of titles present in network
-
-
-        Returns
-        -------
-        list[str]
-            list of titles of nodes in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return [node.title for node in self._node_index.values()]
-
-    @property
-    def links(self) -> dict[str, list[str]]:
-        """Return dict of node IDs and their backlinks
-
-        Returns
-        -------
-        dict[str, list[str]]
-            dict with keys IDs of nodes and values the list of backlinks in that
-            node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return {ID: node.backlinks for ID, node in self._node_index.items()}
-
-    @property
-    def misc_links(self) -> dict[str,list[OrgLink]]:
-        """Return list of lists of miscellaneous links
-
-        Returns
-        -------
-        dict[str, list[str]]
-            dict with keys node IDs and values the list of miscellaneous IDs for
-            corresponding node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return {key: node.misc_links for key, node in self._node_index.items()}
-
-    @property
-    def id_title_map(self) -> dict[str, str]:
-        """Return dictionary of how the network maps IDs to titles
-
-        Returns
-        -------
-        dic[str, str]
-            dict with keys node IDs and values the corresponding title of the
-            node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return self._id_title_map
 
     def __is_orphan(self, node: RoamNode) -> bool:
         """Check if node is an orphan
@@ -1052,3 +929,127 @@ class RoamGraph:
             New node index
         """
         self._node_index = value
+
+    @property
+    def fnames(self, base: bool = True) -> list[str]:
+        """Return list of filenames in network
+
+        Parameters
+        ----------
+        base : bool
+            get just basename of file
+
+        Returns
+        -------
+        list[str]
+            list of filenames in network
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        if base:
+            return [os.path.basename(node.fname) for node in self.node_index.values()]
+
+        return [node.fname for node in self.nodes]
+
+    @property
+    def nodes(self) -> list[RoamNode]:
+        """Return list of nodes in network
+
+        Returns
+        -------
+        list[RoamNode]
+            list of nodes in network
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return list(self.node_index.values())
+
+    @property
+    def IDs(self) -> list[str]:
+        """Return list of IDs present in network
+
+        Returns
+        -------
+        list[str]
+            list of IDs in network
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return [node.id for node in self.node_index.values()]
+
+    @property
+    def titles(self) -> list[str]:
+        """Return list of titles present in network
+
+
+        Returns
+        -------
+        list[str]
+            list of titles of nodes in network
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return [node.title for node in self._node_index.values()]
+
+    @property
+    def links(self) -> dict[str, list[str]]:
+        """Return dict of node IDs and their backlinks
+
+        Returns
+        -------
+        dict[str, list[str]]
+            dict with keys IDs of nodes and values the list of backlinks in that
+            node
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return {ID: node.backlinks for ID, node in self._node_index.items()}
+
+    @property
+    def misc_links(self) -> dict[str,list[OrgLink]]:
+        """Return list of lists of miscellaneous links
+
+        Returns
+        -------
+        dict[str, list[str]]
+            dict with keys node IDs and values the list of miscellaneous IDs for
+            corresponding node
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return {key: node.misc_links for key, node in self._node_index.items()}
+
+    @property
+    def id_title_map(self) -> dict[str, str]:
+        """Return dictionary of how the network maps IDs to titles
+
+        Returns
+        -------
+        dic[str, str]
+            dict with keys node IDs and values the corresponding title of the
+            node
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return self._id_title_map
