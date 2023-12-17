@@ -10,7 +10,7 @@ ORG_ID_FORMAT = re.compile(
 
 # TODO Maybe consolidate all links to this class for richer representation of links?
 @dataclass
-class MiscLink:
+class OrgLink:
     """
     Miscellaneous link type for other org-mode type links
 
@@ -50,7 +50,3 @@ class DuplicateTitlesWarning(Warning):
 
     def __str__(self):
         return repr(self.message)
-
-
-def parse_orglink(link_body : str) -> MiscLink:
-    pass
