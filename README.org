@@ -2,7 +2,7 @@
 
 [[file:viz/COVER.svg]]
 
-=orgroamtools= is a Python library to analyze =org-roam= zettelkastens inspired heavily by [[https://github.com/mfarragher/obsidiantools][obsidiantools]].
+=orgroamtools= is an in-progress clone of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam=.
 Since the zettelkasten method creates a natural graph structure out of your personal knowledgebase, we can use graph analysis tools to learn about your digital "slipbox".
 This library is meant to aid in doing so, all you need is a healthy =org-roam= v2 database!
 You can locate this database in the =.emacs/.local/cache= directory where it is stored by default, or wherever you have placed it.
