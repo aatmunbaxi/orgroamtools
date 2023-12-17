@@ -178,141 +178,6 @@ class RoamGraph:
         self._is_connected = self._orphans == []
 
 
-    @property
-    def _tags(self) -> list[set[str]]:
-        """Return list of tag collections of nodes
-
-        Returns
-        -------
-        list[set[str]]
-            List of sets containing tags of nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return [node.tags for node in self._node_index.values()]
-
-    @property
-    def _links_to(self) -> list[list[str]]:
-        """Return list lists of node backlinks
-
-        Returns
-        -------
-        list[set[str]]
-            List of backlinks for nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return [node.backlinks for node in self._node_index.values()]
-
-
-    @property
-    def graph(self) -> nx.MultiDiGraph:
-        """Return networkx graph representation of collection
-
-        An org-roam collection naturally forms the structure of a
-        multi directed graph: a graph with direction-sensitive edges
-        allowing multiple edges between any two nodes.
-
-        Returns
-        -------
-        nx.MultiDiGraph
-            Multi directed graph representation of the collection
-
-        Examples
-        --------
-        FIXME: Add docs.
-        """
-
-        return self._graph
-
-    @graph.setter
-    def graph(self, value: nx.MultiDiGraph) -> None:
-        """Setter for graph attribute
-
-        Parameters
-        ----------
-        value : nx.MultiDiGraph
-            new graph to set self._graph to
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-
-        self._graph = value
-
-    @property
-    def backlink_index(self) -> dict[str, list[str]]:
-        """Return index for node backlinks of the collection
-
-        When a node in the collection has a reference to another node in the
-        collection, it is said to have a backlink to that node. These backlinks
-        provide the main nonhierarchical structure of the collection, and compactly
-        express relations of different nodes to each other.
-
-        Returns
-        -------
-        dict[str, list[str]]
-            dict with keys the IDs of nodes and values the list of backlinks
-            in the node
-
-        Examples
-        --------
-        FIXME: Add docs.
-        """
-
-        return {node.id: node.backlinks for node in self._node_index.values()}
-
-    @property
-    def file_index(self) -> dict[str, str]:
-        """Return index of filenames of collection
-
-        Returns
-        -------
-        dict[str, str]
-            dict with keys the IDs of nodes and values the filename of the file
-            containing that node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return {ID: node.fname for ID, node in self._node_index.items()}
-
-    @property
-    def node_index(self) -> dict[str, RoamNode]:
-        """Return index of nodes
-
-        The node_index is hashed by node ID, since this is the only
-        value guaranteed to be unique to each org-roam node across
-        various configurations.
-
-        Returns
-        -------
-        dict[str, RoamNode]
-            dict with keys the IDs of nodes and values the RoamNode object
-            of the node with that ID
-        """
-        return self._node_index
-
-    @node_index.setter
-    def node_index(self, value: dict[str, RoamNode]) -> None:
-        """Set for node index
-
-        Parameters
-        ----------
-        value : dict[str,RoamNode]
-            New node index
-        """
-        self._node_index = value
 
     def __filter_tags(self, tags: list[str], exclude: bool) -> list[RoamNode]:
         """Filter network by tags
@@ -1051,3 +916,139 @@ class RoamGraph:
         Tuple (num nodes , num links)
         """
         return (len(self._node_index), nx.number_of_edges(self._graph))
+
+    @property
+    def _tags(self) -> list[set[str]]:
+        """Return list of tag collections of nodes
+
+        Returns
+        -------
+        list[set[str]]
+            List of sets containing tags of nodes
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return [node.tags for node in self._node_index.values()]
+
+    @property
+    def _links_to(self) -> list[list[str]]:
+        """Return list lists of node backlinks
+
+        Returns
+        -------
+        list[set[str]]
+            List of backlinks for nodes
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return [node.backlinks for node in self._node_index.values()]
+
+
+    @property
+    def graph(self) -> nx.MultiDiGraph:
+        """Return networkx graph representation of collection
+
+        An org-roam collection naturally forms the structure of a
+        multi directed graph: a graph with direction-sensitive edges
+        allowing multiple edges between any two nodes.
+
+        Returns
+        -------
+        nx.MultiDiGraph
+            Multi directed graph representation of the collection
+
+        Examples
+        --------
+        FIXME: Add docs.
+        """
+
+        return self._graph
+
+    @graph.setter
+    def graph(self, value: nx.MultiDiGraph) -> None:
+        """Setter for graph attribute
+
+        Parameters
+        ----------
+        value : nx.MultiDiGraph
+            new graph to set self._graph to
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+
+        self._graph = value
+
+    @property
+    def backlink_index(self) -> dict[str, list[str]]:
+        """Return index for node backlinks of the collection
+
+        When a node in the collection has a reference to another node in the
+        collection, it is said to have a backlink to that node. These backlinks
+        provide the main nonhierarchical structure of the collection, and compactly
+        express relations of different nodes to each other.
+
+        Returns
+        -------
+        dict[str, list[str]]
+            dict with keys the IDs of nodes and values the list of backlinks
+            in the node
+
+        Examples
+        --------
+        FIXME: Add docs.
+        """
+
+        return {node.id: node.backlinks for node in self._node_index.values()}
+
+    @property
+    def file_index(self) -> dict[str, str]:
+        """Return index of filenames of collection
+
+        Returns
+        -------
+        dict[str, str]
+            dict with keys the IDs of nodes and values the filename of the file
+            containing that node
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return {ID: node.fname for ID, node in self._node_index.items()}
+
+    @property
+    def node_index(self) -> dict[str, RoamNode]:
+        """Return index of nodes
+
+        The node_index is hashed by node ID, since this is the only
+        value guaranteed to be unique to each org-roam node across
+        various configurations.
+
+        Returns
+        -------
+        dict[str, RoamNode]
+            dict with keys the IDs of nodes and values the RoamNode object
+            of the node with that ID
+        """
+        return self._node_index
+
+    @node_index.setter
+    def node_index(self, value: dict[str, RoamNode]) -> None:
+        """Set for node index
+
+        Parameters
+        ----------
+        value : dict[str,RoamNode]
+            New node index
+        """
+        self._node_index = value
