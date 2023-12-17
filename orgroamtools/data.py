@@ -12,7 +12,7 @@ from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
     ORG_ID_FORMAT,
-    MiscLink,
+    OrgLink,
     parse_orglink
 )
 
@@ -33,7 +33,7 @@ class RoamNode:
         Collection of tags of org-roam node
     links : list[str]
         List of backlinks in org-roam node
-    misc_links : list[MiscLink]
+    misc_links : list[OrgLink]
         List of miscellaneous links that are not links to other nodes
     """
 
@@ -42,7 +42,7 @@ class RoamNode:
     id: str
     tags: set[str]
     backlinks: list[str]
-    misc_links : list[MiscLink]
+    misc_links : list[OrgLink]
 
 
 
@@ -367,31 +367,47 @@ class RoamGraph:
             print("Connection failed: ", e)
         return []
 
-    def __init_misc_links(self, dbpath: str) -> list[MiscLink]:
-        links_to_query = "SELECT n.id ,GROUP_CONCAT(l.dest), l.type FROM nodes n LEFT JOIN links l ON n.id = l.source GROUP BY n.id ORDER BY n.id ;"
-        # If only sqlite supported regexp..
-        # links_to_query = "SELECT n.id, GROUP_CONCAT(l.dest ) FROM nodes n LEFT JOIN links l\nON n.id = l.source AND l.dest REGEXP \'^\"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\"$\'\nGROUP BY n.id\nORDER BY n.id;"
+    def __init_misc_links(self, dbpath: str) -> list[OrgLink]:
+        """Initialize list of miscellaneous org-mode links
+
+        Parameters
+        ----------
+        dbpath : str
+            path to org-roam database
+
+        Returns
+        -------
+        list[OrgLink]
+            List of OrgRoam links that are not other nodes (files, images,
+            internet links, etc)
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        q =  '''SELECT n.id, GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.dest END),
+                GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.type END)
+                FROM
+                    nodes n
+                LEFT JOIN
+                    links l ON n.id = l.source
+                GROUP BY
+                    n.id
+                ORDER BY
+                    n.id;'''
         try:
             with sql.connect(dbpath, uri=True) as con:
                 csr = con.cursor()
-                query = csr.execute(links_to_query)
                 clean = lambda s: s.replace('"', "")
-                links = query.fetchall()
+                quer = csr.execute(q)
+                output = quer.fetchall()
+                links_and_types = [list(zip(
+                    tuple(clean(row[1]).split(",")),
+                    tuple(clean(row[2]).split(",")))) if row[1] else [] for row in output]
+                return [[OrgLink(prop[1],prop[0],None)
+                         if prop else [] for prop in lst] for lst in links_and_types]
 
-                # Separated links by comma might still have links we dont want (e.g. files, etc)
-                self_and_links = [
-                    [clean(i[0])] + list(map(clean, i[1].split(",")))
-                    if i[1]
-                    else [clean(i[0])]
-                    for i in links
-                ]
-
-                # By default links to files and other things are included in the database
-                # so just get rid of them
-                return [
-                    [link for link in node_links if not re.match(ORG_ID_FORMAT, link)]
-                    for node_links in self_and_links
-                ]
 
         except sql.Error as e:
             print("Connection failed: ", e)
@@ -681,7 +697,6 @@ class RoamGraph:
         """
 
         identifier_type = self._identifier_type(identifier)
-        print(identifier_type)
 
         match identifier_type:
             case IdentifierType.TITLE:
