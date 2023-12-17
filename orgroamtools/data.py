@@ -463,8 +463,6 @@ class RoamGraph:
                     for i in links
                 ]
 
-                # By default links to files and other things are included in the database
-                # so just get rid of them
                 return self_and_links
 
         except sql.Error as e:

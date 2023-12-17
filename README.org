@@ -14,7 +14,7 @@ This library will not stop you from persisting with duplicated titles, but you w
 
 * Current Features
 - =networkx= graph representation of =org-roam= database
-- Filtering your database by tags
+- Filtering your collection by tags
 - Basic graph properties such as:
   - Existence of orphaned =org-roam= nodes
   - Index of backlinks for all nodes (=backlink_index=) or a single node (=node_backlinks(NODE_IDENTIFIER)=)
