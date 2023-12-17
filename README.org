@@ -22,6 +22,13 @@ This library will not stop you from persisting with duplicated titles, but you w
 * Dependencies
 - Python 3.9+
 - =networkx=: a graph analysis library for Python
+* Getting Started
+Import the library and pass in your database path:
+#+begin_src python
+from orgroamtools.data import RoamGraph
+collection = RoamGraph(PATH_TO_ORG_ROAM_DB)
+#+end_src
+
 * Planned
 - Parsing of nodes and analytics of the text itself
   - Future dependency: =orgparse=
