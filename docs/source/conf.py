@@ -21,7 +21,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.doctest',
               'sphinx.ext.autosummary',
               'sphinx.ext.githubpages']
-
+napoleon_numpy_docstring = True
 templates_path = ['_templates']
 exclude_patterns = []
 

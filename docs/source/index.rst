@@ -13,7 +13,7 @@ To get started, ensure your ``org-roam`` database file is up to date by running 
 
   from orgroamtools.data import RoamGraph
 
-  collection = RoamGraph(PATH_TO_org-roam.db")
+  collection = RoamGraph(PATH_TO_org-roam.db)
 
 .. toctree::
    :maxdepth: 1
