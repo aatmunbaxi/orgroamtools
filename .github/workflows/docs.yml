@@ -3,7 +3,7 @@ name: Build and Deploy orgroamtools Docs
 on:
   push:
     branches:
-      - main  # Adjust as needed
+      - master  # Adjust as needed
 
 jobs:
   build:
