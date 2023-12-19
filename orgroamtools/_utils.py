@@ -1,4 +1,3 @@
-import re
 from enum import Enum
 from dataclasses import dataclass
 from typing import Optional
@@ -8,12 +7,12 @@ from typing import Optional
 @dataclass
 class OrgLink:
     """
-    Miscellaneous link type for other org-mode type links
+    Store information about org links
 
     Attributes
     ----------
     type : str
-        the type of linke (e.g. https, fil)
+        the type of link (e.g. https, file)
     content : str
         content of the link
     desc : Optional[str]
@@ -29,7 +28,7 @@ class OrgLink:
 class IdentifierType(Enum):
     """
     Nodes in an org-roam graph can identified uniquely by their ID, and non-uniquely
-    by their title. This enum helps disambiguate the the type of an identifier
+    by their title. This enum disambiguates the the type of an identifier
     for functions that take a generic identifier in as an input. e.g. RoamGraph.node
     """
 
