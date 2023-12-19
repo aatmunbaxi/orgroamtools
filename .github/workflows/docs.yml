@@ -26,6 +26,7 @@ jobs:
       - name: Build Docs
         run: |
           cd docs
+          sphinx-apidoc -o source/ ../orgroamtools/
           make html
 
       - name: Deploy to GitHub Pages
