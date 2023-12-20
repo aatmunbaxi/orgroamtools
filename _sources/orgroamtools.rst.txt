@@ -12,14 +12,6 @@ orgroamtools.data module
    :undoc-members:
    :show-inheritance:
 
-orgroamtools._utils module
-------------------------
-
-.. automodule:: orgroamtools._utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
