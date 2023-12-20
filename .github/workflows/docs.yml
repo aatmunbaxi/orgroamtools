@@ -17,11 +17,12 @@ jobs:
           python3 -m pip install -r docs/requirements.txt
       - name: Sphinx build
         run: |
-          sphinx-apidoc -o source/ ../orgroamtools/
+          cd docs
+          sphinx-apidoc -P -o source/ ../orgroamtools/
           make html
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
+        # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
