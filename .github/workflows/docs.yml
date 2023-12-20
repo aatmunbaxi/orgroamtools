@@ -11,6 +11,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-python@v3
+      - name: Debugging Output
+        run: |
+          cd docs
+          echo "Current directory: $(pwd)"
+          echo "sys.path: $PYTHONPATH"
+
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
