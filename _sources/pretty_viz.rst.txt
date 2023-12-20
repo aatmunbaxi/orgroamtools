@@ -1,8 +1,0 @@
-pretty\_viz module
-==================
-
-.. automodule:: pretty_viz
-   :members:
-   :undoc-members:
-   :show-inheritance:
-   :private-members:
