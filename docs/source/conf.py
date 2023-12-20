@@ -16,6 +16,7 @@ release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
+autodoc_mock_imports= ['networkx', 'orgroamtools']
 
 extensions = ['sphinx.ext.napoleon',
               'sphinx.ext.autodoc']
