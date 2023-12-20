@@ -7,6 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 import os, sys
+sys.path.insert(0, os.path.abspath("../../orgroamtools"))
 sys.path.insert(0, os.path.abspath("../.."))
 sys.path.insert(0, os.path.abspath("../"))
 sys.path.insert(0, os.path.abspath("."))
@@ -23,8 +24,8 @@ from unittest.mock import MagicMock
 mock_modules = ['networkx', 'enum', 'dataclasses',
                 'typing','__future__', 'os', 're', 'warnings',
                 'sqlite3', 'copy']
-for mod_name in mock_modules:
-    sys.modules[mod_name] = MagicMock()
+# for name in mock_modules:
+#     sys.modules[name] = MagicMock()
 
 extensions = ['sphinx.ext.napoleon',
               'sphinx.ext.autodoc']
