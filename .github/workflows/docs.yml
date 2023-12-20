@@ -17,9 +17,8 @@ jobs:
           python3 -m pip install -r docs/requirements.txt
       - name: Sphinx build
         run: |
-          cd docs
-          sphinx-apidoc -P -o . ../orgroamtools/
-          make html
+          sphinx-apidoc -P -o docs ../orgroamtools/
+          cd docs && make html
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         # if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
