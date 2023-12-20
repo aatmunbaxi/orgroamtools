@@ -18,10 +18,9 @@ jobs:
 
       - name: Sphinx build
         run: |
-          sphinx-apidoc -P -o docs ../orgroamtools/
-          sphinx-build docs/source docs/build
-          # sphinx-apidoc -P -o docs ../orgroamtools/
-          # cd docs && make clean && make html
+          cd docs
+          sphinx-apidoc -P -o . ../orgroamtools/
+          make clean && make html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
