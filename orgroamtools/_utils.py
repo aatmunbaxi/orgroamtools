@@ -29,7 +29,17 @@ class IdentifierType(Enum):
     """
     Nodes in an org-roam graph can identified uniquely by their ID, and non-uniquely
     by their title. This enum disambiguates the the type of an identifier
-    for functions that take a generic identifier in as an input. e.g. RoamGraph.node
+    for functions that take a generic identifier in as an input.
+    e.g. ``RoamGraph.node(identifier)``
+
+    Attributes
+    ----------
+    TITLE : 1
+        Indicates identifier is a title
+    ID : 2
+        Indicates identifier is an ID
+    NOTHING : 0
+        Indicates identifier is neither a title nor an ID
     """
 
     TITLE = 1
@@ -40,6 +50,18 @@ class IdentifierType(Enum):
 
 
 class DuplicateTitlesWarning(Warning):
+    """
+    Warns there are multiple nodes with the same title in the graph.
+
+    In the case there are multiple nodes with the same title, identifying
+    nodes by their title will not be a unique way of picking them out.
+    The resulting behavior may not be what the user wants.
+
+    Attributes
+    ----------
+    message : str
+        Human readable string describing warning
+    """
     def __init__(self, message):
         self.message = message
 

@@ -51,32 +51,33 @@ class RoamNode:
 
 
 class RoamGraph:
-    """Object to store information of org-roam graph.
-
+    """Store information of ``org-roam`` graph.
 
     By default, the nodes in the _node_index are ordered ascending on
-    the node IDs.
+    the node IDs. In the documentation, the words "collection", "network",
+    "graph", all mean the same thing: the graph with nodes the ``org-roam`` nodes
+    and edges determined by backlinks in the ``org-roam`` collection.
 
     Attributes
     ----------
     db_path : str
         Path to org-roam database connected to graph
 
-    _fnames : list[str]
-    _titles : list[str]
-    _duplicate_titles : list[str]
-    _contains_dup_titles : list[str]
-    _ids : list[list[str]]
-    _links_to : list[list[str]]
-    _tags : list[list[str]]
-    _ids : list[str]
-
     _id_title_map : dict[str,str]
+        Map with keys the id of nodes and values the titles of the corresponding nodes
     _graph : nx.MultiDiGraph
+        ``networkx`` graph representation of the collection
     _node_index : dict[str, RoamNode]
+        Map with keys the ID of nodes and values the ``RoamNode`` object that corresponds
     _orphans : list[RoamNode]
+        List of orphans in network. An orphan node is one with no links connecting it to any
+        other node
     _is_connected : bool
-
+        Tracks if network is connected (i.e. has no orphans)
+    _duplicate_titles : list[str]
+        List of duplicated titles in network, used for warning user
+    _contains_dup_titles : bool
+        Whether the collection has duplicated titles
     """
 
     @classmethod
@@ -630,7 +631,7 @@ class RoamGraph:
         Parameters
         ----------
         tags : Iterable[str]
-            Iterable of tags to filter by
+            Tags to filter by
         exclude : bool
             To exclude or not
 
@@ -733,7 +734,18 @@ class RoamGraph:
             return node2.id in node1.backlinks or node1.id in node2.backlinks
 
     def _all_tags(self) -> set[str]:
-        """Get all tags present in the collection"""
+        """Return collection of all tags present in network
+
+        Returns
+        -------
+        set[str]
+            Set of tags present in network
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
         return set(tag for node in self._node_index.values() for tag in node.tags)
 
     def __partitioned_nodes(
@@ -745,7 +757,7 @@ class RoamGraph:
         Parameters
         ----------
         tags : Iterable[str]
-            Iterable of tags
+            Tags
         exclude : bool
             Whether to exclude in new network or not
 
