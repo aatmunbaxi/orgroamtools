@@ -13,7 +13,9 @@ jobs:
       - uses: actions/setup-python@v3
       - name: Debugging Output
         run: |
-          ls
+          ls .
+          ls docs
+          ls orgroamtools
           echo "Current directory: $(pwd)"
           echo "sys.path: $PYTHONPATH"
 
