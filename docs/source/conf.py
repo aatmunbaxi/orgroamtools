@@ -17,6 +17,11 @@ release = '0.0.1'
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 autodoc_mock_imports= ['networkx', 'orgroamtools']
+import mock
+mock_modules = ['networkx', 'enum', 'dataclasses', 'typing','__future__', 'os', 're', 'warnings',
+                'sqlite3', 'copy']
+for mod in mock_modules:
+    sys.modules[mod] = mock.Mock()
 
 extensions = ['sphinx.ext.napoleon',
               'sphinx.ext.autodoc']
