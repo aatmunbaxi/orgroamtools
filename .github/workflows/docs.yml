@@ -25,7 +25,7 @@ jobs:
       - name: Sphinx build
         run: |
           cd docs
-          sphinx-apidoc -P -o . ../orgroamtools/
+          sphinx-apidoc -P -o . ../../orgroamtools/
           make clean && make html
 
       - name: Deploy to GitHub Pages
@@ -34,5 +34,5 @@ jobs:
         with:
           publish_branch: gh-pages
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: docs/build/html
+          publish_dir: build/html
           force_orphan: true
