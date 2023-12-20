@@ -13,7 +13,7 @@ jobs:
       - uses: actions/setup-python@v3
       - name: Install dependencies
         run: |
-          python3 -m pip install --upgrade pip sphinx sphinx-extensions
+          python3 -m pip install --upgrade pip
           python3 -m pip install -r docs/requirements.txt
 
       - name: Sphinx build
