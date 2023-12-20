@@ -20,6 +20,7 @@ To get started, ensure your ``org-roam`` database file is up to date by running 
    :caption: Contents:
 
    orgroamtools
+   modules
 
 
 Indices and tables
