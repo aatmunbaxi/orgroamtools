@@ -26,7 +26,7 @@ jobs:
 
       - name: Sphinx build
         run: |
-          sphinx-apidoc -P --ext-githubpages -o docs/source ./
+          sphinx-apidoc -P -f --ext-githubpages -o docs/build orgroamtools/
           cd docs && make clean && make html
 
       - name: Deploy to GitHub Pages
