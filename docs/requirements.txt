@@ -1,3 +1,5 @@
 sphinx
+sphinx-extensions
 sphinx_rtd_theme
 sphinx-autodoc-typehints
+orgroamtools
