@@ -8,6 +8,8 @@
 
 import os, sys
 sys.path.insert(0, os.path.abspath("../.."))
+sys.path.insert(0, os.path.abspath("../"))
+sys.path.insert(0, os.path.abspath("."))
 
 project = 'orgroamtools'
 copyright = '2023, abaxi'
@@ -16,12 +18,13 @@ release = '0.0.1'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-autodoc_mock_imports= ['networkx', 'orgroamtools']
-import mock
-mock_modules = ['networkx', 'enum', 'dataclasses', 'typing','__future__', 'os', 're', 'warnings',
+# autodoc_mock_imports= ['networkx', 'orgroamtools']
+from unittest.mock import MagicMock
+mock_modules = ['networkx', 'enum', 'dataclasses',
+                'typing','__future__', 'os', 're', 'warnings',
                 'sqlite3', 'copy']
-for mod in mock_modules:
-    sys.modules[mod] = mock.Mock()
+for mod_name in mock_modules:
+    sys.modules[mod_name] = MagicMock()
 
 extensions = ['sphinx.ext.napoleon',
               'sphinx.ext.autodoc']
