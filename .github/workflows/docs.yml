@@ -17,7 +17,6 @@ jobs:
           python3 -m pip install -r docs/requirements.txt
       - name: Sphinx build
         run: |
-          cd docs
           sphinx-apidoc -o source/ ../orgroamtools/
           make html
       - name: Deploy to GitHub Pages
