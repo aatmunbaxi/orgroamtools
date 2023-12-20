@@ -18,7 +18,7 @@ jobs:
 
       - name: Sphinx build
         run: |
-          sphinx-apidoc -P -o . ../orgroamtools/
+          sphinx-apidoc -P -o docs ../orgroamtools/
           sphinx-build docs/source docs/build
           # sphinx-apidoc -P -o docs ../orgroamtools/
           # cd docs && make clean && make html
