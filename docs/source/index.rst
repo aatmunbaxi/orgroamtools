@@ -19,7 +19,7 @@ To get started, ensure your ``org-roam`` database file is up to date by running 
    :maxdepth: 1
    :caption: Contents:
 
-   modules
+   orgroamtools
 
 
 Indices and tables
