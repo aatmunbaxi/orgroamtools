@@ -10,6 +10,8 @@ Welcome to orgroamtools's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   modules
+   orgroamtools
 
 
 Indices and tables
