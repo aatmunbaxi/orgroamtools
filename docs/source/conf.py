@@ -45,8 +45,8 @@ mock_modules = [
     "sqlite3",
     "copy",
 ]
-for name in mock_modules:
-    sys.modules[name] = MagicMock()
+# for name in mock_modules:
+#     sys.modules[name] = MagicMock()
 
 extensions = ["sphinx.ext.napoleon", "sphinx.ext.autodoc"]
 
