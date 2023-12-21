@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="orgroamtools" href="modules.html" /> 
+    <link rel="next" title="orgroamtools package" href="orgroamtools.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -45,7 +45,7 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">orgroamtools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orgroamtools.html">orgroamtools package</a></li>
 </ul>
 
         </div>
@@ -74,21 +74,45 @@
              
   <section id="welcome-to-orgroamtools-s-documentation">
 <h1>Welcome to orgroamtools’s documentation!<a class="headerlink" href="#welcome-to-orgroamtools-s-documentation" title="Link to this heading"></a></h1>
+<p><code class="docutils literal notranslate"><span class="pre">orgroamtools</span></code> is a work-in-progress clone of <code class="docutils literal notranslate"><span class="pre">obsidiantools</span></code>–a Python library to assist in analysis of Obsidian collection–but for <code class="docutils literal notranslate"><span class="pre">org-roam</span></code>.
+The main tool to go about this is the <code class="docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph</span></code> object, which stores all the information necessary to produce the natural multidirected graph structure of your digital zettelkasten.</p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<p>Ensure your <code class="docutils literal notranslate"><span class="pre">org-roam</span> <span class="pre">v2</span></code> database is up-to-date by running <code class="docutils literal notranslate"><span class="pre">(org-roam-db-sync)</span></code> inside Emacs. Locate your database by checking the value of <code class="docutils literal notranslate"><span class="pre">(org-roam-db-location)</span></code>.
+Once you’ve imported the <code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code> object, you can load your collection:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">orgroamtools.data</span> <span class="kn">import</span> <span class="n">RoamGraph</span>
+
+<span class="n">collection</span> <span class="o">=</span> <span class="n">RoamGraph</span><span class="p">(</span><span class="n">PATH_TO_DB</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="general-notes">
+<h3>General Notes<a class="headerlink" href="#general-notes" title="Link to this heading"></a></h3>
+<p>Because <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
+For user ergonomics, you are permitted to identify nodes by their title.
+For example, in the <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node" title="orgroamtools.data.RoamGraph.node"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node()</span></code></a> function, the <code class="docutils literal notranslate"><span class="pre">identifier</span></code> argument can be either a node title or node ID.
+If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">orgroamtools</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html">orgroamtools package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="orgroamtools.html">orgroamtools package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#module-orgroamtools.data">orgroamtools.data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph"><code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamNode"><code class="docutils literal notranslate"><span class="pre">RoamNode</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#module-orgroamtools">Module contents</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </section>
+</section>
+</section>
 <section id="indices-and-tables">
 <h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading"></a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </section>
@@ -97,7 +121,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="modules.html" class="btn btn-neutral float-right" title="orgroamtools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="orgroamtools.html" class="btn btn-neutral float-right" title="orgroamtools package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
