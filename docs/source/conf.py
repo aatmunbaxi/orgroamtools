@@ -12,6 +12,7 @@ sys.path.insert(0, os.path.abspath("../../orgroamtools"))
 sys.path.insert(0, os.path.abspath("../.."))
 sys.path.insert(0, os.path.abspath("../"))
 sys.path.insert(0, os.path.abspath("."))
+print(sys.path)
 
 project = "orgroamtools"
 copyright = "2023, abaxi"
@@ -25,7 +26,7 @@ autodoc_mock_imports = [
     "networkx",
     "re",
     "os",
-    "orgroamtools",
+    # "orgroamtools",
     "sqlite3",
     "copy",
     "typing",
