@@ -6,12 +6,15 @@
 Welcome to orgroamtools's documentation!
 ========================================
 
+.. automodule::orgroamtools.data
+   :members:
+
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    modules
-   orgroamtools
 
 
 Indices and tables
