@@ -12,13 +12,13 @@ You can locate this database in the =.emacs/.local/cache= directory where it is 
 For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
-* Current Features
+* Features
 - =networkx= graph representation of =org-roam= database
-- Filtering your collection by tags
+- Filtering collection by tags
 - Basic graph properties such as:
-  - Existence of orphaned =org-roam= nodes
+  - Existence and removal of orphan =org-roam= nodes
   - Index of backlinks for all nodes (=backlink_index=) or a single node (=node_backlinks(NODE_IDENTIFIER)=)
-  - Indices of node properties, such as title, filename, and miscellaneous org links
+  - Succinct representations of node properties, such as title, filename, and miscellaneous org links
 * Dependencies
 - Python 3.9+
 - =networkx=: a graph analysis library for Python
@@ -29,8 +29,6 @@ from orgroamtools.data import RoamGraph
 collection = RoamGraph(PATH_TO_ORG_ROAM_DB)
 #+end_src
 
-* Planned
-- Parsing of nodes and analytics of the text itself
-  - Future dependency: =orgparse=
+The documentation for the library can be read [[https://aatmunbaxi.github.io/orgroamtools][here]].
 * Related
 - =obsidiantools=
