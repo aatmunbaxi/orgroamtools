@@ -8,10 +8,10 @@
 
 import os, sys
 
-sys.path.insert(0, os.path.abspath("../../orgroamtools"))
-sys.path.insert(0, os.path.abspath("../.."))
-sys.path.insert(0, os.path.abspath("../"))
-sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, os.path.abspath("../../"))
+# sys.path.insert(0, os.path.abspath("../.."))
+# sys.path.insert(0, os.path.abspath("../"))
+# sys.path.insert(0, os.path.abspath("."))
 print(sys.path)
 
 project = "orgroamtools"
@@ -21,7 +21,6 @@ release = "0.0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-# autodoc_mock_imports= ['networkx', 'orgroamtools']
 autodoc_mock_imports = [
     "networkx",
     "re",
@@ -46,8 +45,8 @@ mock_modules = [
     "sqlite3",
     "copy",
 ]
-# for name in mock_modules:
-#     sys.modules[name] = MagicMock()
+for name in mock_modules:
+    sys.modules[name] = MagicMock()
 
 extensions = ["sphinx.ext.napoleon", "sphinx.ext.autodoc"]
 
