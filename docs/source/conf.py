@@ -33,7 +33,7 @@ autodoc_mock_imports = [
     "typing",
     "dataclasses",
 ]
-autodoc_default_options = {"private-members": True, "members": True}
+autodoc_default_options = {"private-members": False, "members": True}
 
 mock_modules = [
     "networkx",
