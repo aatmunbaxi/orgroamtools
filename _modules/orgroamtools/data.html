@@ -539,8 +539,6 @@
         <span class="n">points_to</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span> <span class="o">!=</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">points_to</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pointed_to</span>
 
-<div class="viewcode-block" id="RoamGraph._identifier_type">
-<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph._identifier_type">[docs]</a>
     <span class="k">def</span> <span class="nf">_identifier_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IdentifierType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine type of identifier for node</span>
 
@@ -569,8 +567,7 @@
                 <span class="p">)</span>
             <span class="k">return</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span></div>
-
+            <span class="k">return</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span>
 
 <div class="viewcode-block" id="RoamGraph.node_links">
 <a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.node_links">[docs]</a>
@@ -796,8 +793,6 @@
         <span class="k">return</span> <span class="n">subgraph</span></div>
 
 
-<div class="viewcode-block" id="RoamGraph._nodes_linked">
-<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph._nodes_linked">[docs]</a>
     <span class="k">def</span> <span class="nf">_nodes_linked</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">node1</span><span class="p">:</span> <span class="n">RoamNode</span><span class="p">,</span> <span class="n">node2</span><span class="p">:</span> <span class="n">RoamNode</span><span class="p">,</span> <span class="n">directed</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -823,8 +818,7 @@
         <span class="k">if</span> <span class="n">directed</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">node2</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">backlinks</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">node2</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">backlinks</span> <span class="ow">or</span> <span class="n">node1</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">node2</span><span class="o">.</span><span class="n">backlinks</span></div>
-
+            <span class="k">return</span> <span class="n">node2</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">node1</span><span class="o">.</span><span class="n">backlinks</span> <span class="ow">or</span> <span class="n">node1</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">node2</span><span class="o">.</span><span class="n">backlinks</span>
 
 <div class="viewcode-block" id="RoamGraph.all_tags">
 <a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.all_tags">[docs]</a>
@@ -889,8 +883,6 @@
 
         <span class="k">return</span> <span class="p">([</span><span class="n">node</span> <span class="k">for</span> <span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">,</span> <span class="n">tfilter</span><span class="p">)</span> <span class="k">if</span> <span class="n">b</span><span class="p">],</span> <span class="n">excluded_ids</span><span class="p">)</span>
 
-<div class="viewcode-block" id="RoamGraph._node_has_tag">
-<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph._node_has_tag">[docs]</a>
     <span class="k">def</span> <span class="nf">_node_has_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">:</span> <span class="n">RoamNode</span><span class="p">,</span> <span class="n">tag</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return if node has provided tag</span>
@@ -907,8 +899,7 @@
 <span class="sd">        bool</span>
 <span class="sd">            True if ``node`` has ``tag``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">tags</span></div>
-
+        <span class="k">return</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">tags</span>
 
 <div class="viewcode-block" id="RoamGraph.refresh">
 <a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.refresh">[docs]</a>
@@ -1318,9 +1309,9 @@
             <span class="p">)</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">extract_math_snippets</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
 
-<div class="viewcode-block" id="RoamGraph.math_snippets">
-<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.math_snippets">[docs]</a>
-    <span class="k">def</span> <span class="nf">math_snippets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<div class="viewcode-block" id="RoamGraph.get_latex_snippets">
+<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.get_latex_snippets">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_latex_snippets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return latex snippets of node</span>
 
 <span class="sd">        Parameters</span>
