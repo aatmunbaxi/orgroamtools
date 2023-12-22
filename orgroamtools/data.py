@@ -1056,3 +1056,22 @@ class RoamGraph:
 
         """
         return self._id_title_map
+
+    @property
+    def title_index(self) -> dict[str, str]:
+        """Return dictionary of how the network maps IDs to titles
+
+        Synonym for ``id_title_map``.
+
+        Returns
+        -------
+        dic[str, str]
+            dict with keys node IDs and values the corresponding title of the
+            node
+
+        Examples
+        --------
+        FIXME: Add docs.
+
+        """
+        return self._id_title_map
