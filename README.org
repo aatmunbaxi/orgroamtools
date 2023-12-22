@@ -2,23 +2,24 @@
 
 [[file:viz/COVER.svg]]
 
-=orgroamtools= is an in-progress clone of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam= collections.
+=orgroamtools= is an in-progress reproduction of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam= collections.
 Since the zettelkasten method creates a natural graph structure out of your personal knowledgebase, we can use graph analysis tools to learn about your digital "slipbox".
 This library is meant to aid in doing so, all you need is a healthy =org-roam= v2 database!
-You can locate this database in the =.emacs/.local/cache= directory where it is stored by default, or wherever you have placed it.
+You can locate this database by checking the value of =(org-roam-db-location)= in Emacs.
 
 
-*Important Note:* Though =org-roam= allows different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
+*Note:* Though =org-roam= allows different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
 For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
 * Features
 - =networkx= graph representation of =org-roam= database
-- Filtering collection by tags
-- Basic graph properties such as:
-  - Existence and removal of orphan =org-roam= nodes
-  - Index of backlinks for all nodes (=backlink_index=) or a single node (=node_backlinks(NODE_IDENTIFIER)=)
+- Graph properties:
+  - Index of backlinks for all nodes or a single node
   - Succinct representations of node properties, such as title, filename, and miscellaneous org links
+- Collection manipulations:
+  - Filter by node tags
+  - Removal of orphan nodes
 * Dependencies
 - Python 3.9+
 - =networkx=: a graph analysis library for Python
