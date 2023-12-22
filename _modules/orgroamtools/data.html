@@ -85,6 +85,8 @@
     <span class="n">IdentifierType</span><span class="p">,</span>
     <span class="n">DuplicateTitlesWarning</span><span class="p">,</span>
     <span class="n">get_file_body_text</span><span class="p">,</span>
+    <span class="n">extract_math_snippets</span><span class="p">,</span>
+    <span class="n">extract_src_blocks</span><span class="p">,</span>
 <span class="p">)</span>
 
 
@@ -560,6 +562,11 @@
         <span class="k">if</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span>
         <span class="k">elif</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duplicate_titles</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="s2">&quot;This title is duplicated. This may not be the result you want&quot;</span><span class="p">,</span>
+                    <span class="n">DuplicateTitlesWarning</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="k">return</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span></div>
@@ -596,12 +603,7 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">backlinks</span>
 
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duplicate_titles</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="s2">&quot;Title is a duplicate. This might not be the desired result.&quot;</span><span class="p">,</span>
-                        <span class="n">DuplicateTitlesWarning</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">backlinks</span>
 
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span><span class="p">:</span>
@@ -635,16 +637,11 @@
 
         <span class="k">match</span> <span class="n">identifier_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duplicate_titles</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="s2">&quot;This title is duplicated. This may not be the node you want&quot;</span><span class="p">,</span>
-                        <span class="n">DuplicateTitlesWarning</span><span class="p">,</span>
-                    <span class="p">)</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
-                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
 
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span><span class="p">:</span>
@@ -714,11 +711,6 @@
 
         <span class="k">match</span> <span class="n">identifier_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">identifier_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duplicate_titles</span><span class="p">:</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                        <span class="s2">&quot;This title is duplicated. This may not be the ID you want.&quot;</span><span class="p">,</span>
-                        <span class="n">DuplicateTitlesWarning</span><span class="p">,</span>
-                    <span class="p">)</span>
                 <span class="n">index_of_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">[</span><span class="n">index_of_id</span><span class="p">]</span>
 
@@ -1245,8 +1237,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">body_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return index of body text for each node. Note: only implemented</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of body text for each node. Note: only implemented</span>
 <span class="sd">        for collections with one node per file.</span>
 
 <span class="sd">        Returns</span>
@@ -1256,7 +1247,7 @@
 
 <span class="sd">        Raises</span>
 <span class="sd">        ------</span>
-<span class="sd">        NotImplementedError</span>
+<span class="sd">        ``NotImplementedError``</span>
 <span class="sd">            Raised when collection has multiple nodes per file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_node_per_file</span><span class="p">:</span>
@@ -1269,7 +1260,154 @@
                 <span class="k">for</span> <span class="p">(</span><span class="n">ID</span><span class="p">,</span> <span class="n">node</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
                 <span class="p">)</span>
-            <span class="p">}</span></div>
+            <span class="p">}</span>
+
+<div class="viewcode-block" id="RoamGraph.get_body">
+<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.get_body">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return body of node</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        identifier : ``str``</span>
+<span class="sd">            Node identifier. Can be ID or title</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``str``</span>
+<span class="sd">            Body text of node</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ``NotImplementedError``</span>
+<span class="sd">            If multiple nodes per file exist in collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_node_per_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;This collection has multiple nodes in a file. This feature is not yet implemented.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">match</span> <span class="n">id_type</span><span class="p">:</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">get_file_body_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">get_file_body_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No node with provided identifier: </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">math_snippet_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return latex snippet index</span>
+
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``dict[str, list[str]]``</span>
+<span class="sd">            Index of LaTeX snippets</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ``NotImplementedError``</span>
+<span class="sd">            If multiple nodes per file exist in collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_node_per_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;This collection has multiple nodes in a file. This feature is not yet implemented.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">extract_math_snippets</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
+
+<div class="viewcode-block" id="RoamGraph.math_snippets">
+<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.math_snippets">[docs]</a>
+    <span class="k">def</span> <span class="nf">math_snippets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return latex snippets of node</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        identifier : ``str``</span>
+<span class="sd">            Node identifier. Can be ID or title.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``list[str]``</span>
+<span class="sd">            List of LaTeX snippets in node</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ``NotImplementedError``</span>
+<span class="sd">            If multiple nodes per file exist in collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_node_per_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;This collection has multiple nodes in a file. This feature is not yet implemented.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">match</span> <span class="n">id_type</span><span class="p">:</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">extract_math_snippets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">extract_math_snippets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No node with identifier: </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">src_block_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return source blocks of node</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``dict[str, list[Tuple[str,str]]]``</span>
+<span class="sd">            Index of source blocks. Source blocks are identified by ``Tuple[LANGUAGE, BLOCK_BODY]``</span>
+
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ``NotImplementedError``</span>
+<span class="sd">            If multiple nodes per file exist in collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_node_per_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;This collection has multiple nodes in a file. This feature is not yet implemented.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">extract_src_blocks</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
+
+<div class="viewcode-block" id="RoamGraph.get_src_blocks">
+<a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.get_src_blocks">[docs]</a>
+    <span class="k">def</span> <span class="nf">get_src_blocks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return source blocks of node</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        identifier : ``str``</span>
+<span class="sd">            Node identifier. Can be ID or title.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``list[Tuple[str,str]]``</span>
+<span class="sd">            List of source blocks in format (LANGUAGE, BLOCK_BODY)</span>
+
+<span class="sd">        Raises</span>
+<span class="sd">        ------</span>
+<span class="sd">        ``NotImplementedError``</span>
+<span class="sd">            If multiple nodes per file exist in collection</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_one_node_per_file</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s2">&quot;This collection has multiple nodes in a file. This feature is not yet implemented.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="k">match</span> <span class="n">id_type</span><span class="p">:</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">extract_src_blocks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">extract_src_blocks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
+            <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">NOTHING</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;No node with identifier: </span><span class="si">{</span><span class="n">identifier</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span></div>
+</div>
 
 
 
