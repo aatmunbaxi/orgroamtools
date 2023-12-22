@@ -725,7 +725,7 @@ class RoamGraph:
         else:
             return node2.id in node1.backlinks or node1.id in node2.backlinks
 
-    def _all_tags(self) -> set[str]:
+    def all_tags(self) -> set[str]:
         """Return collection of all tags present in network
 
         Returns
@@ -787,6 +787,38 @@ class RoamGraph:
     def _node_has_tag(self, node: RoamNode, tag: str) -> bool:
         return tag in node.tags
 
+    def refresh(self) -> None:
+        """Refresh ``_node_index``-dependent data in collection after
+        manual change to ``self._node_index``.
+        """
+        seen = set()
+        self._duplicate_titles = [x for x in self.titles if x in seen or seen.add(x)]
+        self._contains_dup_titles = len(self._duplicate_titles) > 0
+        if self._contains_dup_titles:
+            warnings.warn(
+                "Collection contains duplicate titles. Matching nodes by title will be non-exhaustive.",
+                DuplicateTitlesWarning,
+            )
+
+        self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
+
+        self._graph = nx.MultiDiGraph(
+            {self.IDs[i]: self.backlink_index[i] for i in range(len(self.IDs))}
+        )
+
+        self._orphans = [
+            node
+            for node in self._node_index.values()
+            if not any(
+                [
+                    self._nodes_linked(node, other, directed=False)
+                    for other in self._node_index.values()
+                    if other != node
+                ]
+            )
+        ]
+        self._is_connected = self._orphans == []
+
     @property
     def size(self) -> Tuple[int, int]:
         """Return size of collection
@@ -819,7 +851,7 @@ class RoamGraph:
 
         Returns
         -------
-        list[set[str]]
+        list[list[str]]
             List of backlinks for nodes
 
         Examples
