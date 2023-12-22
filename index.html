@@ -93,7 +93,7 @@ The <code class="docutils literal notranslate"><span class="pre">RoamGraph</span
 <section id="manipulation-of-the-collection">
 <h3>Manipulation of the Collection<a class="headerlink" href="#manipulation-of-the-collection" title="Link to this heading"></a></h3>
 <p>In addition to this information, primitive manipulations of the collection are provided, such as filtering the collection by tag, and removal of orphans from the collection.</p>
-<p>For more complex manipulations, it is recommended to use the setter <code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index()</span></code> to manually set the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> attribute after any manipulation on the nodes has been completed, then call <code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.refresh()</span></code> on the network to update the remaining attributes.</p>
+<p>For more complex manipulations, it is recommended to use the setter <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node_index" title="orgroamtools.data.RoamGraph.node_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index()</span></code></a> to manually set the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> attribute after any manipulation on the nodes has been completed, then call <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.refresh" title="orgroamtools.data.RoamGraph.refresh"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.refresh()</span></code></a> on the network to update the remaining attributes.</p>
 <p>For example, let’s say you want to remove a single node with ID <code class="docutils literal notranslate"><span class="pre">foo</span></code> from a collection <code class="docutils literal notranslate"><span class="pre">bar</span></code>.
 To do this, you’d have to remove the key <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the <code class="docutils literal notranslate"><span class="pre">node_index</span></code> of <code class="docutils literal notranslate"><span class="pre">foo</span></code>, then delete all backlinks to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> from all nodes in the index.
 You could accomplish that like this:</p>
@@ -114,14 +114,19 @@ You could accomplish that like this:</p>
 <h3>General Notes<a class="headerlink" href="#general-notes" title="Link to this heading"></a></h3>
 <p>Because <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
 For user ergonomics, you are permitted to identify nodes by their title.
-For example, in the <code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node()</span></code> function, the <code class="docutils literal notranslate"><span class="pre">identifier</span></code> argument can be either a node title or node ID.
+For example, in the <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node" title="orgroamtools.data.RoamGraph.node"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node()</span></code></a> function, the <code class="docutils literal notranslate"><span class="pre">identifier</span></code> argument can be either a node title or node ID.
 If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="orgroamtools.html">orgroamtools package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#orgroamtools-data-module">orgroamtools.data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#module-orgroamtools.data">orgroamtools.data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.OrgLink"><code class="docutils literal notranslate"><span class="pre">OrgLink</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph"><code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamNode"><code class="docutils literal notranslate"><span class="pre">RoamNode</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#module-orgroamtools">Module contents</a></li>
 </ul>
 </li>
