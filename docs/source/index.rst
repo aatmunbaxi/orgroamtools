@@ -35,7 +35,7 @@ You could accomplish that like this::
   del index["foo"]
 
   for node in index.values():
-      if "foo"in node.backlinks:
+      if "foo" in node.backlinks:
           node.backlinks.remove("foo")
 
   bar.nodex_index(index)
