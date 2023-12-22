@@ -1201,7 +1201,7 @@ class RoamGraph:
             )
         return {node.id: extract_math_snippets(node.fname) for node in self.nodes}
 
-    def math_snippets(self, identifier: str) -> list[str]:
+    def get_latex_snippets(self, identifier: str) -> list[str]:
         """Return latex snippets of node
 
         Parameters
