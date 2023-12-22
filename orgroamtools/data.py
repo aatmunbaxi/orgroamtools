@@ -12,7 +12,6 @@ import networkx as nx
 from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
-    OrgLink,
 )
 
 
