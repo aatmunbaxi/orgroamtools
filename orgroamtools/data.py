@@ -754,8 +754,9 @@ class RoamGraph:
 
         Returns
         -------
-        ``list[RoamNode]``
-            List of filtered nodes
+        ``Tuple[list[RoamNode], list[str]]``
+            Tuple containing list of nodes that survive filtering and list of IDs
+            that were purged
 
         Examples
         --------
