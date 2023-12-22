@@ -12,6 +12,7 @@ from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
     get_file_body_text,
+    extract_math_snippets,
 )
 
 
@@ -474,6 +475,11 @@ class RoamGraph:
         if identifier in self.IDs:
             return IdentifierType.ID
         elif identifier in self.titles:
+            if identifier in self._duplicate_titles:
+                warnings.warn(
+                    "This title is duplicated. This may not be the result you want",
+                    DuplicateTitlesWarning,
+                )
             return IdentifierType.TITLE
         else:
             return IdentifierType.NOTHING
@@ -507,12 +513,7 @@ class RoamGraph:
                 return self._node_index[identifier].backlinks
 
             case IdentifierType.TITLE:
-                if identifier in self._duplicate_titles:
-                    warnings.warn(
-                        "Title is a duplicate. This might not be the desired result.",
-                        DuplicateTitlesWarning,
-                    )
-                idx = self.IDs.index(identifier)
+                idx = self.titles.index(identifier)
                 return self.nodes[idx].backlinks
 
             case IdentifierType.NOTHING:
@@ -543,16 +544,11 @@ class RoamGraph:
 
         match identifier_type:
             case IdentifierType.TITLE:
-                if identifier in self._duplicate_titles:
-                    warnings.warn(
-                        "This title is duplicated. This may not be the node you want",
-                        DuplicateTitlesWarning,
-                    )
                 idx = self.titles.index(identifier)
                 return self.nodes[idx]
 
             case IdentifierType.ID:
-                idx = self.IDs.index(identifier)
+                idx = self.titles.index(identifier)
                 return self.nodes[idx]
 
             case IdentifierType.NOTHING:
@@ -616,11 +612,6 @@ class RoamGraph:
 
         match identifier_type:
             case IdentifierType.TITLE:
-                if identifier_type in self._duplicate_titles:
-                    warnings.warn(
-                        "This title is duplicated. This may not be the ID you want.",
-                        DuplicateTitlesWarning,
-                    )
                 index_of_id = self.titles.index(identifier)
                 return self.IDs[index_of_id]
 
@@ -1131,8 +1122,7 @@ class RoamGraph:
 
     @property
     def body_index(self) -> dict[str, str]:
-        """
-        Return index of body text for each node. Note: only implemented
+        """Return index of body text for each node. Note: only implemented
         for collections with one node per file.
 
         Returns
@@ -1142,7 +1132,7 @@ class RoamGraph:
 
         Raises
         ------
-        NotImplementedError
+        ``NotImplementedError``
             Raised when collection has multiple nodes per file
         """
         if not self._one_node_per_file:
@@ -1156,6 +1146,91 @@ class RoamGraph:
                     self._node_index.keys(), self._node_index.values()
                 )
             }
+
+    def get_body(self, identifier: str) -> str:
+        """Return body of node
+
+        Parameters
+        ----------
+        identifier : ``str``
+            Node identifier. Can be ID or title
+
+        Returns
+        -------
+        ``str``
+            Body text of node
+
+        Raises
+        ------
+        ``NotImplementedError``
+            If multiple nodes per file exist in collection
+        """
+        if not self._one_node_per_file:
+            raise NotImplementedError(
+                "This collection has multiple nodes in a file. This feature is not yet implemented."
+            )
+        id_type = self._identifier_type(identifier)
+        match id_type:
+            case IdentifierType.TITLE:
+                idx = self.titles.index(identifier)
+                return get_file_body_text(self.nodes[idx].fname)
+            case IdentifierType.ID:
+                return get_file_body_text(self._node_index[identifier].fname)
+            case IdentifierType.NOTHING:
+                raise AttributeError(f"No node with provided identifier: {identifier}")
+
+    @property
+    def math_snippet_index(self) -> dict[str, list[str]]:
+        """Return latex snippet index
+
+
+        Returns
+        -------
+        ``dict[str, list[str]]``
+            Index of LaTeX snippets
+
+        Raises
+        ------
+        ``NotImplementedError``
+            If multiple nodes per file exist in collection
+        """
+        if not self._one_node_per_file:
+            raise NotImplementedError(
+                "This collection has multiple nodes in a file. This feature is not yet implemented."
+            )
+        return {node.id: extract_math_snippets(node.fname) for node in self.nodes}
+
+    def math_snippets(self, identifier: str) -> list[str]:
+        """Return latex snippets of node
+
+        Parameters
+        ----------
+        identifier : ``str``
+            Node identifier. Can be ID or title.
+
+        Returns
+        -------
+        ``list[str]``
+            List of LaTeX snippets in node
+
+        Raises
+        ------
+        ``NotImplementedError``
+            If multiple nodes per file exist in collection
+        """
+        if not self._one_node_per_file:
+            raise NotImplementedError(
+                "This collection has multiple nodes in a file. This feature is not yet implemented."
+            )
+        id_type = self._identifier_type(identifier)
+        match id_type:
+            case IdentifierType.ID:
+                return extract_math_snippets(self._node_index[identifier].fname)
+            case IdentifierType.TITLE:
+                idx = self.titles.index(identifier)
+                return extract_math_snippets(self.nodes[idx].fname)
+            case IdentifierType.NOTHING:
+                raise AttributeError(f"No node with identifier: {identifier}")
 
 
 @dataclass
