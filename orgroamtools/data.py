@@ -1,6 +1,5 @@
 from __future__ import annotations
 import os
-import re
 import warnings
 import sqlite3 as sql
 import copy
@@ -12,6 +11,7 @@ import networkx as nx
 from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
+    get_file_body_text,
 )
 
 
@@ -75,6 +75,8 @@ class RoamGraph:
         List of duplicated titles in network, used for warning user
     _contains_dup_titles : ``bool``
         Whether the collection has duplicated titles
+    _one_node_per_file : ``bool``
+        Indicates if collection uses one note per file
     """
 
     @classmethod
@@ -97,6 +99,7 @@ class RoamGraph:
         self._misc_link_index = dict()
         self._orphans = []
         self._is_connected = None
+        self._one_node_per_file = None
         return self
 
     def __init__(self, db: str):
@@ -163,6 +166,7 @@ class RoamGraph:
             )
         ]
         self._is_connected = self._orphans == []
+        self._one_node_per_file = len(set(self.fnames)) == len(self.node_index)
 
     def __filter_tags(self, tags: list[str], exclude: bool) -> list[RoamNode]:
         """Filter network by tags
@@ -834,6 +838,7 @@ class RoamGraph:
             )
         ]
         self._is_connected = self._orphans == []
+        self._one_node_per_file = len(set(self.fnames)) == len(self._node_index)
 
     @property
     def size(self) -> Tuple[int, int]:
@@ -1123,6 +1128,34 @@ class RoamGraph:
 
         """
         return self._id_title_map
+
+    @property
+    def body_index(self) -> dict[str, str]:
+        """
+        Return index of body text for each node. *Note:* only implemented
+        for collections with one node per file.
+
+        Returns
+        -------
+        ``dict[str, str]``
+            Index with value the body text of nodes
+
+        Raises
+        ------
+        NotImplementedError
+            Raised when collection has multiple nodes per file
+        """
+        if not self._one_node_per_file:
+            raise NotImplementedError(
+                "This collection has multiple nodes in a file. This feature is not yet implemented."
+            )
+        else:
+            return {
+                ID: get_file_body_text(node.fname)
+                for (ID, node) in zip(
+                    self._node_index.keys(), self._node_index.values()
+                )
+            }
 
 
 @dataclass

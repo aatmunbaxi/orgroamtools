@@ -1,4 +1,5 @@
 from enum import Enum
+import orgparse as op
 
 
 class IdentifierType(Enum):
@@ -42,3 +43,19 @@ class DuplicateTitlesWarning(Warning):
 
     def __str__(self):
         return repr(self.message)
+
+
+def get_file_body_text(fname: str) -> str:
+    """Return full body text of file
+
+    Parameters
+    ----------
+    fname : ``str``
+        Filename
+
+    Returns
+    -------
+    ``str``
+        Body text of file
+    """
+    op.load(fname).get_body()
