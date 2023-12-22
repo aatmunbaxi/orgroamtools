@@ -1,28 +1,4 @@
 from enum import Enum
-from dataclasses import dataclass
-from typing import Optional
-
-
-# TODO Maybe consolidate all links to this class for richer representation of links?
-@dataclass
-class OrgLink:
-    """
-    Store information about org links
-
-    Attributes
-    ----------
-    type : str
-        the type of link (e.g. https, file)
-    content : str
-        content of the link
-    desc : Optional[str]
-        description of the link
-    """
-    type : str
-    content : str
-    desc : Optional[str]
-
-
 
 
 class IdentifierType(Enum):
@@ -47,8 +23,6 @@ class IdentifierType(Enum):
     NOTHING = 0
 
 
-
-
 class DuplicateTitlesWarning(Warning):
     """
     Warns there are multiple nodes with the same title in the graph.
@@ -62,6 +36,7 @@ class DuplicateTitlesWarning(Warning):
     message : str
         Human readable string describing warning
     """
+
     def __init__(self, message):
         self.message = message
 

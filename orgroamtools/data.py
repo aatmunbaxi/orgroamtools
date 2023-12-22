@@ -4,7 +4,7 @@ import re
 import warnings
 import sqlite3 as sql
 import copy
-from typing import Iterable, Tuple
+from typing import Iterable, Tuple, Optional
 from dataclasses import dataclass
 
 import networkx as nx
@@ -1024,8 +1024,8 @@ class RoamGraph:
         return {ID: node.backlinks for ID, node in self._node_index.items()}
 
     @property
-    def misc_links(self) -> dict[str, list[OrgLink]]:
-        """Return list of lists of miscellaneous links
+    def misc_link_index(self) -> dict[str, list[OrgLink]]:
+        """Return index of miscellaneous links
 
         Returns
         -------
@@ -1075,3 +1075,23 @@ class RoamGraph:
 
         """
         return self._id_title_map
+
+
+@dataclass
+class OrgLink:
+    """
+    Store information about org links
+
+    Attributes
+    ----------
+    type : str
+        the type of link (e.g. https, file)
+    content : str
+        content of the link
+    desc : Optional[str]
+        description of the link
+    """
+
+    type: str
+    content: str
+    desc: Optional[str]
