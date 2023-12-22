@@ -20,6 +20,10 @@ This library will not stop you from persisting with duplicated titles, but you w
 - Collection manipulations:
   - Filter by node tags
   - Removal of orphan nodes
+- Node parsing (only supported for one-node-per-file collections):
+  - Extraction of body text
+  - Extraction of LaTeX snipets
+  - Extraction of org src blocks
 * Dependencies
 - Python 3.9+
 - =networkx=: a graph analysis library for Python

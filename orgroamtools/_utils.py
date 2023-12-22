@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Tuple
 import re
 import orgparse as op
 
@@ -8,6 +9,11 @@ ORG_LATEX_RX = (
     r"\\begin{\b(?:equation|align|equation\*|align\*|muliline\*|muliline)\b}\n(.*?)\\end{\b(?:equation|align|equation\*|align|muliline\*|muliline\*)\b}|"  # equation environment
     r"#\+begin_equation\n(.*?)#\+end_equation|"  # Org-mode equation block
     r"#\+begin_latex\n(.*?)#\+end_latex"  # Org-mode latex block
+)
+
+SRC_BLOCK_RE = re.compile(
+    r"^\s*#\+BEGIN_SRC\s+([a-zA-Z0-9_-]+)(?:.*?)\n(.*?)#\+END_SRC\s*",
+    re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
 
@@ -80,4 +86,18 @@ def extract_math_snippets(fname: str) -> list[str]:
         for tup in re.findall(ORG_LATEX_RX, get_file_body_text(fname), re.DOTALL)
         for s in tup
         if s
+    ]
+
+
+def extract_src_blocks(fname: str) -> list[Tuple[str, str]]:
+    """Return org source blocks
+
+    Returns
+    -------
+    ``list[Tule[str,str]]``
+        List of source block environments in the form (LANGUAGE, SRC_BLOCK_BODY)
+    """
+    return [
+        (match[0], match[1].strip())
+        for match in SRC_BLOCK_RE.findall(get_file_body_text(fname))
     ]

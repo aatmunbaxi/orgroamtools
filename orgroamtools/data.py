@@ -13,6 +13,7 @@ from orgroamtools._utils import (
     DuplicateTitlesWarning,
     get_file_body_text,
     extract_math_snippets,
+    extract_src_blocks,
 )
 
 
@@ -1229,6 +1230,59 @@ class RoamGraph:
             case IdentifierType.TITLE:
                 idx = self.titles.index(identifier)
                 return extract_math_snippets(self.nodes[idx].fname)
+            case IdentifierType.NOTHING:
+                raise AttributeError(f"No node with identifier: {identifier}")
+
+    @property
+    def src_block_index(self) -> dict[str, list[str]]:
+        """Return source blocks of node
+
+        Returns
+        -------
+        ``dict[str, list[Tuple[str,str]]]``
+            Index of source blocks. Source blocks are identified by ``Tuple[LANGUAGE, BLOCK_BODY]``
+
+
+        Raises
+        ------
+        ``NotImplementedError``
+            If multiple nodes per file exist in collection
+        """
+        if not self._one_node_per_file:
+            raise NotImplementedError(
+                "This collection has multiple nodes in a file. This feature is not yet implemented."
+            )
+        return {node.id: extract_src_blocks(node.fname) for node in self.nodes}
+
+    def get_src_blocks(self, identifier: str) -> list[Tuple[str, str]]:
+        """Return source blocks of node
+
+        Parameters
+        ----------
+        identifier : ``str``
+            Node identifier. Can be ID or title.
+
+        Returns
+        -------
+        ``list[Tuple[str,str]]``
+            List of source blocks in format (LANGUAGE, BLOCK_BODY)
+
+        Raises
+        ------
+        ``NotImplementedError``
+            If multiple nodes per file exist in collection
+        """
+        if not self._one_node_per_file:
+            raise NotImplementedError(
+                "This collection has multiple nodes in a file. This feature is not yet implemented."
+            )
+        id_type = self._identifier_type(identifier)
+        match id_type:
+            case IdentifierType.ID:
+                return extract_src_blocks(self._node_index[identifier].fname)
+            case IdentifierType.TITLE:
+                idx = self.titles.index(identifier)
+                return extract_src_blocks(self.nodes[idx].fname)
             case IdentifierType.NOTHING:
                 raise AttributeError(f"No node with identifier: {identifier}")
 
