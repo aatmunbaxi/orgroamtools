@@ -25,17 +25,17 @@ class RoamNode:
 
     Attributes
     ----------
-    fname : str
+    fname : ``str``
         Filename of org-roam node
-    title : str
+    title : ``str``
         Title of org-roam node
-    id : str
+    id : ``str``
         Unique org ID of org-roam node
-    tags : set[str]
+    tags : ``set[str]``
         Collection of tags of org-roam node
-    links : list[str]
+    links : ``list[str]``
         List of backlinks in org-roam node
-    misc_links : list[OrgLink]
+    misc_links : ``list[OrgLink]``
         List of miscellaneous links that are not links to other nodes
     """
 
@@ -57,23 +57,23 @@ class RoamGraph:
 
     Attributes
     ----------
-    db_path : str
+    db_path : ``str``
         Path to org-roam database connected to graph
 
-    _id_title_map : dict[str,str]
+    _id_title_map : ``dict[str,str]``
         Map with keys the id of nodes and values the titles of the corresponding nodes
-    _graph : nx.MultiDiGraph
+    _graph : ``nx.MultiDiGraph``
         ``networkx`` graph representation of the collection
-    _node_index : dict[str, RoamNode]
+    _node_index : ``dict[str, RoamNode]``
         Map with keys the ID of nodes and values the ``RoamNode`` object that corresponds
-    _orphans : list[RoamNode]
+    _orphans : ``list[RoamNode]``
         List of orphans in network. An orphan node is one with no links connecting it to any
         other node
-    _is_connected : bool
+    _is_connected : ``bool``
         Tracks if network is connected (i.e. has no orphans)
-    _duplicate_titles : list[str]
+    _duplicate_titles : ``list[str]``
         List of duplicated titles in network, used for warning user
-    _contains_dup_titles : bool
+    _contains_dup_titles : ``bool``
         Whether the collection has duplicated titles
     """
 
@@ -108,7 +108,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        db : str
+        db : ``str``
             Path to org-roam database
 
         Examples
@@ -170,9 +170,9 @@ class RoamGraph:
 
         Parameters
         ----------
-        tags : list[str]
+        tags : ``list[str]``
             List of tags to filter by
-        exclude : bool
+        exclude : ``bool``
             Whether to exclude the tags in the new network or not
         """
         tfilter = [self._node_has_tag(node, tag) for node in self.nodes for tag in tags]
@@ -185,7 +185,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        dbpath : str
+        dbpath : ``str``
             Path of org-roam database
 
         Returns
@@ -209,7 +209,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        dbpath : str
+        dbpath : ``str``
             Path to org-roam database
 
         Returns
@@ -233,7 +233,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        dbpath : str
+        dbpath : ``str``
                Path to org-roam database
 
 
@@ -258,7 +258,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        dbpath : str
+        dbpath : ``str``
                 Path to org-roam database
 
         Returns
@@ -283,7 +283,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        dbpath : str
+        dbpath : ``str``
                Path to org-roam database
 
 
@@ -325,12 +325,12 @@ class RoamGraph:
 
         Parameters
         ----------
-        dbpath : str
+        dbpath : ``str``
             path to org-roam database
 
         Returns
         -------
-        list[OrgLink]
+        ``list[OrgLink]``
             List of OrgRoam links that are not other nodes (files, images,
             internet links, etc)
 
@@ -432,12 +432,12 @@ class RoamGraph:
 
         Parameters
         ----------
-        node : RoamNode
+        node : ``RoamNode``
             Node to check
 
         Returns
         -------
-        bool
+        ``bool``
             True if node is an orphan
 
         Examples
@@ -454,12 +454,12 @@ class RoamGraph:
 
         Parameters
         ----------
-        identifier : str
+        identifier : ``str``
             identifier; node ID or title
 
         Returns
         -------
-        IdentifierType
+        ``IdentifierType``
             Type of identifier
 
         Examples
@@ -482,17 +482,17 @@ class RoamGraph:
 
         Parameters
         ----------
-        identifier : str
+        identifier : ``str``
             Identifier for node. Can be title or ID
 
         Returns
         -------
-        list[str]
+        ``list[str]``
             List of IDs of nodes the provided node refers to
 
         Raises
         ------
-        AttributeError
+        ``AttributeError``
             Raised if identifier cannot be found in the collection
         """
 
@@ -527,12 +527,12 @@ class RoamGraph:
 
         Returns
         -------
-        RoamNode
+        ``RoamNode``
             RoamNode object of node
 
         Raises
         ------
-        AttributeError
+        ``AttributeError``
             Raised if node cannot be found
         """
         identifier_type = self._identifier_type(identifier)
@@ -565,17 +565,17 @@ class RoamGraph:
 
         Parameters
         ----------
-        identifier : str
+        identifier : ``str``
             ID of node
 
         Returns
         -------
-        str
+        ``str``
             Title of node
 
         Raises
         ------
-        AttributeError
+        ``AttributeError``
             Raised if ID not be found in collection
         """
         identifier_type = self._identifier_type(identifier)
@@ -594,17 +594,17 @@ class RoamGraph:
 
         Parameters
         ----------
-        identifier : str
+        identifier : ``str``
             Title of node
 
         Returns
         -------
-        str
+        ``str``
             ID of node
 
         Raises
         ------
-        AttributeError
+        ``AttributeError``
             Raised if no node matches the provided title
         """
 
@@ -627,14 +627,14 @@ class RoamGraph:
 
         Parameters
         ----------
-        tags : Iterable[str]
+        tags : ``Iterable[str]``
             Tags to filter by
-        exclude : bool
+        exclude : ``bool``
             To exclude or not
 
         Returns
         -------
-        RoamGraph
+        ``RoamGraph``
             Filtered collection (as a copy)
 
         Examples
@@ -705,11 +705,11 @@ class RoamGraph:
 
         Parameters
         ----------
-        node1 : RoamNode
+        node1 : ``RoamNode``
             Origin node
-        node2 : RoamNode
+        node2 : ``RoamNode``
             Destination node
-        directed : bool
+        directed : ``bool``
             Do comparison directed
 
         Returns
@@ -730,7 +730,7 @@ class RoamGraph:
 
         Returns
         -------
-        set[str]
+        ``set[str]``
             Set of tags present in network
 
         Examples
@@ -747,14 +747,14 @@ class RoamGraph:
 
         Parameters
         ----------
-        tags : Iterable[str]
+        tags : ``Iterable[str]``
             Tags
-        exclude : bool
+        exclude : ``bool``
             Whether to exclude in new network or not
 
         Returns
         -------
-        list[RoamNode]
+        ``list[RoamNode]``
             List of filtered nodes
 
         Examples
@@ -785,6 +785,21 @@ class RoamGraph:
         return ([node for (node, b) in zip(self.nodes, tfilter) if b], excluded_ids)
 
     def _node_has_tag(self, node: RoamNode, tag: str) -> bool:
+        """
+        Return if node has provided tag
+
+        Parameters
+        ----------
+        node : ``RoamNode``
+            Node to check
+        tag : ``str``
+            Tag to check
+
+        Returns
+        -------
+        bool
+            True if ``node`` has ``tag``
+        """
         return tag in node.tags
 
     def refresh(self) -> None:
@@ -825,7 +840,8 @@ class RoamGraph:
 
         Returns
         -------
-        Tuple (num nodes , num links)
+        ``Tuple[int, int]``
+            Tuple (num nodes , num links)
         """
         return (len(self._node_index), nx.number_of_edges(self._graph))
 
@@ -835,7 +851,7 @@ class RoamGraph:
 
         Returns
         -------
-        list[set[str]]
+        ``list[set[str]]``
             List of sets containing tags of nodes
 
         Examples
@@ -851,7 +867,7 @@ class RoamGraph:
 
         Returns
         -------
-        list[list[str]]
+        ``list[list[str]]``
             List of backlinks for nodes
 
         Examples
@@ -871,7 +887,7 @@ class RoamGraph:
 
         Returns
         -------
-        nx.MultiDiGraph
+        ``nx.MultiDiGraph``
             Multi directed graph representation of the collection
 
         Examples
@@ -887,7 +903,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        value : nx.MultiDiGraph
+        value : ``nx.MultiDiGraph``
             new graph to set self._graph to
 
         Examples
@@ -909,7 +925,7 @@ class RoamGraph:
 
         Returns
         -------
-        dict[str, list[str]]
+        ``dict[str, list[str]]``
             dict with keys the IDs of nodes and values the list of backlinks
             in the node
 
@@ -926,7 +942,7 @@ class RoamGraph:
 
         Returns
         -------
-        dict[str, str]
+        ``dict[str, str]``
             dict with keys the IDs of nodes and values the filename of the file
             containing that node
 
@@ -947,7 +963,7 @@ class RoamGraph:
 
         Returns
         -------
-        dict[str, RoamNode]
+        ``dict[str, RoamNode]``
             dict with keys the IDs of nodes and values the RoamNode object
             of the node with that ID
         """
@@ -959,7 +975,7 @@ class RoamGraph:
 
         Parameters
         ----------
-        value : dict[str,RoamNode]
+        value : ``dict[str,RoamNode]``
             New node index
         """
         self._node_index = value
@@ -970,12 +986,12 @@ class RoamGraph:
 
         Parameters
         ----------
-        base : bool
+        base : ``bool``
             get just basename of file
 
         Returns
         -------
-        list[str]
+        ``list[str]``
             list of filenames in network
 
         Examples
@@ -994,7 +1010,7 @@ class RoamGraph:
 
         Returns
         -------
-        list[RoamNode]
+        ``list[RoamNode]``
             list of nodes in network
 
         Examples
@@ -1010,7 +1026,7 @@ class RoamGraph:
 
         Returns
         -------
-        list[str]
+        ``list[str]``
             list of IDs in network
 
         Examples
@@ -1027,7 +1043,7 @@ class RoamGraph:
 
         Returns
         -------
-        list[str]
+        ``list[str]``
             list of titles of nodes in network
 
         Examples
@@ -1043,7 +1059,7 @@ class RoamGraph:
 
         Returns
         -------
-        dict[str, list[str]]
+        ``dict[str, list[str]]``
             dict with keys IDs of nodes and values the list of backlinks in that
             node
 
@@ -1060,7 +1076,7 @@ class RoamGraph:
 
         Returns
         -------
-        dict[str, list[str]]
+        ``dict[str, list[str]]``
             dict with keys node IDs and values the list of miscellaneous IDs for
             corresponding node
 
@@ -1077,7 +1093,7 @@ class RoamGraph:
 
         Returns
         -------
-        dic[str, str]
+        ``dic[str, str]``
             dict with keys node IDs and values the corresponding title of the
             node
 
@@ -1096,7 +1112,7 @@ class RoamGraph:
 
         Returns
         -------
-        dic[str, str]
+        ``dic[str, str]``
             dict with keys node IDs and values the corresponding title of the
             node
 
@@ -1115,11 +1131,11 @@ class OrgLink:
 
     Attributes
     ----------
-    type : str
+    type : ``str``
         the type of link (e.g. https, file)
-    content : str
+    content : ``str``
         content of the link
-    desc : Optional[str]
+    desc : ``Optional[str]``
         description of the link
     """
 
