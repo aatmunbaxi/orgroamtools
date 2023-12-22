@@ -1132,7 +1132,7 @@ class RoamGraph:
     @property
     def body_index(self) -> dict[str, str]:
         """
-        Return index of body text for each node. *Note:* only implemented
+        Return index of body text for each node. Note: only implemented
         for collections with one node per file.
 
         Returns

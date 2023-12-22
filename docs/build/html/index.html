@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to orgroamtools’s documentation! &mdash; orgroamtools 0.0.1 documentation</title>
+  <title>orgroamtools documentation &mdash; orgroamtools 0.0.1 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
@@ -62,7 +62,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Welcome to orgroamtools’s documentation!</li>
+      <li class="breadcrumb-item active">orgroamtools documentation</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -72,8 +72,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="welcome-to-orgroamtools-s-documentation">
-<h1>Welcome to orgroamtools’s documentation!<a class="headerlink" href="#welcome-to-orgroamtools-s-documentation" title="Link to this heading"></a></h1>
+  <section id="orgroamtools-documentation">
+<h1>orgroamtools documentation<a class="headerlink" href="#orgroamtools-documentation" title="Link to this heading"></a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">orgroamtools</span></code> is a work-in-progress clone of <code class="docutils literal notranslate"><span class="pre">obsidiantools</span></code>–a Python library to assist in analysis of Obsidian collection–but for <code class="docutils literal notranslate"><span class="pre">org-roam</span></code>.
 It provides an object <code class="docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph</span></code> which stores enough information to determine the natural directed multigraph structure of the <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> zettelkasten.</p>
 <section id="getting-started">
@@ -95,13 +95,14 @@ The <code class="docutils literal notranslate"><span class="pre">RoamGraph</span
 <p>In addition to this information, primitive manipulations of the collection are provided, such as filtering the collection by tag, and removal of orphans from the collection.</p>
 <p>For more complex manipulations, it is recommended to use the setter <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node_index" title="orgroamtools.data.RoamGraph.node_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index()</span></code></a> to manually set the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> attribute after any manipulation on the nodes has been completed, then call <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.refresh" title="orgroamtools.data.RoamGraph.refresh"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.refresh()</span></code></a> on the network to update the remaining attributes.</p>
 <p>For example, let’s say you want to remove a single node with ID <code class="docutils literal notranslate"><span class="pre">foo</span></code> from a collection <code class="docutils literal notranslate"><span class="pre">bar</span></code>.
-To do this, you’d have to remove the key <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the <code class="docutils literal notranslate"><span class="pre">node_index</span></code> of <code class="docutils literal notranslate"><span class="pre">foo</span></code>, then delete all links to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> from all backlinks in that index.
-You might accomplish this like this:</p>
+To do this, you’d have to remove the key <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the <code class="docutils literal notranslate"><span class="pre">node_index</span></code> of <code class="docutils literal notranslate"><span class="pre">foo</span></code>, then delete all backlinks to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> from all nodes in the index.
+You could accomplish that like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">bar</span><span class="o">.</span><span class="n">node_index</span><span class="p">()</span>
 <span class="k">del</span> <span class="n">index</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span>
 
 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-    <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s2">&quot;foo&quot;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="p">:</span>
+        <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
 
 <span class="n">bar</span><span class="o">.</span><span class="n">nodex_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 <span class="n">bar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
@@ -111,7 +112,7 @@ You might accomplish this like this:</p>
 </section>
 <section id="general-notes">
 <h3>General Notes<a class="headerlink" href="#general-notes" title="Link to this heading"></a></h3>
-<p>Because <code class="docutils literal notranslate"><span class="pre">`org-roam</span></code> allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
+<p>Because <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
 For user ergonomics, you are permitted to identify nodes by their title.
 For example, in the <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node" title="orgroamtools.data.RoamGraph.node"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node()</span></code></a> function, the <code class="docutils literal notranslate"><span class="pre">identifier</span></code> argument can be either a node title or node ID.
 If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.</p>

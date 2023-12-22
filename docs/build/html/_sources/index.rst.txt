@@ -1,4 +1,4 @@
-Welcome to orgroamtools's documentation!
+orgroamtools documentation
 ========================================
 
 ``orgroamtools`` is a work-in-progress clone of ``obsidiantools``--a Python library to assist in analysis of Obsidian collection--but for ``org-roam``.
@@ -29,13 +29,14 @@ In addition to this information, primitive manipulations of the collection are p
 For more complex manipulations, it is recommended to use the setter :func:`orgroamtools.data.RoamGraph.node_index` to manually set the ``_node_index`` attribute after any manipulation on the nodes has been completed, then call :func:`orgroamtools.data.RoamGraph.refresh` on the network to update the remaining attributes.
 
 For example, let's say you want to remove a single node with ID ``foo`` from a collection ``bar``.
-To do this, you'd have to remove the key ``foo`` from the ``node_index`` of ``foo``, then delete all links to the node ``foo`` from all backlinks in that index.
-You might accomplish this like this::
+To do this, you'd have to remove the key ``foo`` from the ``node_index`` of ``foo``, then delete all backlinks to the node ``foo`` from all nodes in the index.
+You could accomplish that like this::
   index = bar.node_index()
   del index["foo"]
 
   for node in index.values():
-      node.backlinks.remove("foo")
+      if "foo" in node.backlinks:
+          node.backlinks.remove("foo")
 
   bar.nodex_index(index)
   bar.refresh()
@@ -45,7 +46,7 @@ The collection ``bar`` will now have the node ``foo`` deleted, along with any ba
 -------------
 General Notes
 -------------
-Because ```org-roam`` allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
+Because ``org-roam`` allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
 For user ergonomics, you are permitted to identify nodes by their title.
 For example, in the :func:`orgroamtools.data.RoamGraph.node` function, the ``identifier`` argument can be either a node title or node ID.
 If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.
