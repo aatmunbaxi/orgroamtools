@@ -1,8 +1,8 @@
-Welcome to orgroamtools's documentation!
+orgroamtools documentation
 ========================================
 
 ``orgroamtools`` is a work-in-progress clone of ``obsidiantools``--a Python library to assist in analysis of Obsidian collection--but for ``org-roam``.
-The main tool to go about this is the ``orgroamtools.data.RoamGraph`` object, which stores all the information necessary to produce the natural multidirected graph structure of your digital zettelkasten.
+It provides an object ``orgroamtools.data.RoamGraph`` which stores enough information to determine the natural directed multigraph structure of the ``org-roam`` zettelkasten.
 
 ===============
 Getting Started
@@ -13,6 +13,35 @@ Once you've imported the ``RoamGraph`` object, you can load your collection::
   from orgroamtools.data import RoamGraph
 
   collection = RoamGraph(PATH_TO_DB)
+
+
+-----------------------
+Querying the Collection
+-----------------------
+An *index* refers to an object of type ``dict[str, T]`` where the keys are the IDs the nodes in the collection and ``T`` is a type containing information pertaining to the node with the associated ID key.
+The ``RoamGraph`` object provides several indices, including indices for the ``RoamNode`` objects themselves, titles of nodes, filenames associated to each node, the backlinks in the nodes, and the other non-backlink ``OrgLinks``.
+
+------------------------------
+Manipulation of the Collection
+------------------------------
+In addition to this information, primitive manipulations of the collection are provided, such as filtering the collection by tag, and removal of orphans from the collection.
+
+For more complex manipulations, it is recommended to use the setter :func:`orgroamtools.data.RoamGraph.node_index` to manually set the ``_node_index`` attribute after any manipulation on the nodes has been completed, then call :func:`orgroamtools.data.RoamGraph.refresh` on the network to update the remaining attributes.
+
+For example, let's say you want to remove a single node with ID ``foo`` from a collection ``bar``.
+To do this, you'd have to remove the key ``foo`` from the ``node_index`` of ``foo``, then delete all backlinks to the node ``foo`` from all nodes in the index.
+You could accomplish that like this::
+  index = bar.node_index()
+  del index["foo"]
+
+  for node in index.values():
+      if "foo"in node.backlinks:
+          node.backlinks.remove("foo")
+
+  bar.nodex_index(index)
+  bar.refresh()
+
+The collection ``bar`` will now have the node ``foo`` deleted, along with any backlinks to the node ``foo``.
 
 -------------
 General Notes
@@ -35,6 +64,7 @@ If the network detects multiple nodes with the same title and you attempt to ide
    :caption: Contents:
 
    orgroamtools
+
 
 
 Indices and tables

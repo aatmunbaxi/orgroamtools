@@ -21,7 +21,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Welcome to orgroamtools’s documentation!" href="index.html" /> 
+    <link rel="prev" title="orgroamtools documentation" href="index.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -48,6 +48,15 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">orgroamtools package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-orgroamtools.data">orgroamtools.data module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#orgroamtools.data.OrgLink"><code class="docutils literal notranslate"><span class="pre">OrgLink</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.OrgLink.type"><code class="docutils literal notranslate"><span class="pre">OrgLink.type</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.OrgLink.content"><code class="docutils literal notranslate"><span class="pre">OrgLink.content</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.OrgLink.desc"><code class="docutils literal notranslate"><span class="pre">OrgLink.desc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">OrgLink.content</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">OrgLink.desc</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">OrgLink.type</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l3"><a class="reference internal" href="#orgroamtools.data.RoamGraph"><code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code></a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.db_path"><code class="docutils literal notranslate"><span class="pre">RoamGraph.db_path</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._id_title_map"><code class="docutils literal notranslate"><span class="pre">RoamGraph._id_title_map</span></code></a></li>
@@ -67,12 +76,12 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.__init_titles"><code class="docutils literal notranslate"><span class="pre">RoamGraph.__init_titles()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.__is_orphan"><code class="docutils literal notranslate"><span class="pre">RoamGraph.__is_orphan()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.__partitioned_nodes"><code class="docutils literal notranslate"><span class="pre">RoamGraph.__partitioned_nodes()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._all_tags"><code class="docutils literal notranslate"><span class="pre">RoamGraph._all_tags()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._identifier_type"><code class="docutils literal notranslate"><span class="pre">RoamGraph._identifier_type()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._links_to"><code class="docutils literal notranslate"><span class="pre">RoamGraph._links_to</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._node_has_tag"><code class="docutils literal notranslate"><span class="pre">RoamGraph._node_has_tag()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._nodes_linked"><code class="docutils literal notranslate"><span class="pre">RoamGraph._nodes_linked()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._tags"><code class="docutils literal notranslate"><span class="pre">RoamGraph._tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.all_tags"><code class="docutils literal notranslate"><span class="pre">RoamGraph.all_tags()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.backlink_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.backlink_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.file_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.file_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.filter_tags"><code class="docutils literal notranslate"><span class="pre">RoamGraph.filter_tags()</span></code></a></li>
@@ -81,15 +90,17 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.id_title_map"><code class="docutils literal notranslate"><span class="pre">RoamGraph.id_title_map</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.init_empty"><code class="docutils literal notranslate"><span class="pre">RoamGraph.init_empty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.links"><code class="docutils literal notranslate"><span class="pre">RoamGraph.links</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.misc_links"><code class="docutils literal notranslate"><span class="pre">RoamGraph.misc_links</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.misc_link_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.misc_link_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node_id"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node_id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node_links"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node_links()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node_title"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node_title()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.nodes"><code class="docutils literal notranslate"><span class="pre">RoamGraph.nodes</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.refresh"><code class="docutils literal notranslate"><span class="pre">RoamGraph.refresh()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.remove_orphans"><code class="docutils literal notranslate"><span class="pre">RoamGraph.remove_orphans()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.size"><code class="docutils literal notranslate"><span class="pre">RoamGraph.size</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.title_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.title_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.titles"><code class="docutils literal notranslate"><span class="pre">RoamGraph.titles</span></code></a></li>
 </ul>
 </li>
@@ -101,11 +112,11 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamNode.links"><code class="docutils literal notranslate"><span class="pre">RoamNode.links</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamNode.misc_links"><code class="docutils literal notranslate"><span class="pre">RoamNode.misc_links</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamNode.backlinks"><code class="docutils literal notranslate"><span class="pre">RoamNode.backlinks</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">RoamNode.fname</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">RoamNode.id</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">RoamNode.misc_links</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">RoamNode.tags</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">RoamNode.title</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">RoamNode.fname</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">RoamNode.id</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">RoamNode.misc_links</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">RoamNode.tags</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">RoamNode.title</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -147,8 +158,63 @@
 <section id="module-orgroamtools.data">
 <span id="orgroamtools-data-module"></span><h2>orgroamtools.data module<a class="headerlink" href="#module-orgroamtools.data" title="Link to this heading"></a></h2>
 <dl class="py class">
+<dt class="sig sig-object py" id="orgroamtools.data.OrgLink">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orgroamtools.data.</span></span><span class="sig-name descname"><span class="pre">OrgLink</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">content</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">desc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/orgroamtools/data.html#OrgLink"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.OrgLink" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Store information about org links</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="orgroamtools.data.OrgLink.type">
+<span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#orgroamtools.data.OrgLink.type" title="Link to this definition"></a></dt>
+<dd><p>the type of link (e.g. https, file)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="orgroamtools.data.OrgLink.content">
+<span class="sig-name descname"><span class="pre">content</span></span><a class="headerlink" href="#orgroamtools.data.OrgLink.content" title="Link to this definition"></a></dt>
+<dd><p>content of the link</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="orgroamtools.data.OrgLink.desc">
+<span class="sig-name descname"><span class="pre">desc</span></span><a class="headerlink" href="#orgroamtools.data.OrgLink.desc" title="Link to this definition"></a></dt>
+<dd><p>description of the link</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">Optional[str]</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">content</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">desc</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orgroamtools.data.</span></span><span class="sig-name descname"><span class="pre">RoamGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orgroamtools.data.RoamGraph" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orgroamtools.data.</span></span><span class="sig-name descname"><span class="pre">RoamGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">db</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Store information of <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> graph.</p>
 <p>By default, the nodes in the _node_index are ordered ascending on
@@ -161,7 +227,7 @@ and edges determined by backlinks in the <code class="docutils literal notransla
 <dd><p>Path to org-roam database connected to graph</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -172,7 +238,7 @@ and edges determined by backlinks in the <code class="docutils literal notransla
 <dd><p>Map with keys the id of nodes and values the titles of the corresponding nodes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str,str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">dict[str,str]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -183,7 +249,7 @@ and edges determined by backlinks in the <code class="docutils literal notransla
 <dd><p><code class="docutils literal notranslate"><span class="pre">networkx</span></code> graph representation of the collection</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>nx.MultiDiGraph</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">nx.MultiDiGraph</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -194,7 +260,7 @@ and edges determined by backlinks in the <code class="docutils literal notransla
 <dd><p>Map with keys the ID of nodes and values the <code class="docutils literal notranslate"><span class="pre">RoamNode</span></code> object that corresponds</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, <a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode">RoamNode</a>]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">RoamNode]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -206,7 +272,7 @@ and edges determined by backlinks in the <code class="docutils literal notransla
 other node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode">RoamNode</a>]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[RoamNode]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -217,7 +283,7 @@ other node</p>
 <dd><p>Tracks if network is connected (i.e. has no orphans)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -228,7 +294,7 @@ other node</p>
 <dd><p>List of duplicated titles in network, used for warning user</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -239,7 +305,7 @@ other node</p>
 <dd><p>Whether the collection has duplicated titles</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -253,7 +319,7 @@ other node</p>
 <dd class="field-odd"><p>list of IDs in network</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[str]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -267,8 +333,8 @@ other node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tags</strong> (<em>list</em><em>[</em><em>str</em><em>]</em>) – List of tags to filter by</p></li>
-<li><p><strong>exclude</strong> (<em>bool</em>) – Whether to exclude the tags in the new network or not</p></li>
+<li><p><strong>tags</strong> (<code class="docutils literal notranslate"><span class="pre">list[str]</span></code>) – List of tags to filter by</p></li>
+<li><p><strong>exclude</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to exclude the tags in the new network or not</p></li>
 </ul>
 </dd>
 </dl>
@@ -280,7 +346,7 @@ other node</p>
 <dd><p>Initializes list of filenames for each node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dbpath</strong> (<em>str</em>) – Path to org-roam database</p>
+<dd class="field-odd"><p><strong>dbpath</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Path to org-roam database</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of node filepaths</p>
@@ -294,7 +360,7 @@ other node</p>
 <dd><p>Initialize list of IDs for each node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dbpath</strong> (<em>str</em>) – Path of org-roam database</p>
+<dd class="field-odd"><p><strong>dbpath</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Path of org-roam database</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of node IDs</p>
@@ -308,7 +374,7 @@ other node</p>
 <dd><p>Initialize list of links</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dbpath</strong> (<em>str</em>) – Path to org-roam database</p>
+<dd class="field-odd"><p><strong>dbpath</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Path to org-roam database</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of backlinks in node (as a list)</p>
@@ -318,18 +384,18 @@ other node</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.__init_misc_links">
-<span class="sig-name descname"><span class="pre">__init_misc_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbpath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">OrgLink</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.__init_misc_links" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">__init_misc_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dbpath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#orgroamtools.data.OrgLink" title="orgroamtools.data.OrgLink"><span class="pre">OrgLink</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.__init_misc_links" title="Link to this definition"></a></dt>
 <dd><p>Initialize list of miscellaneous org-mode links</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dbpath</strong> (<em>str</em>) – path to org-roam database</p>
+<dd class="field-odd"><p><strong>dbpath</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – path to org-roam database</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of OrgRoam links that are not other nodes (files, images,
 internet links, etc)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[OrgLink]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[OrgLink]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -342,7 +408,7 @@ internet links, etc)</p>
 <dd><p>Initialize list of tags for each node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dbpath</strong> (<em>str</em>) – Path to org-roam database</p>
+<dd class="field-odd"><p><strong>dbpath</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Path to org-roam database</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of node tags (as sets)</p>
@@ -356,7 +422,7 @@ internet links, etc)</p>
 <dd><p>Initialize list of titles for each node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>dbpath</strong> (<em>str</em>) – Path to org-roam database</p>
+<dd class="field-odd"><p><strong>dbpath</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Path to org-roam database</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of node titles</p>
@@ -370,13 +436,13 @@ internet links, etc)</p>
 <dd><p>Check if node is an orphan</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>node</strong> (<a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><em>RoamNode</em></a>) – Node to check</p>
+<dd class="field-odd"><p><strong>node</strong> (<code class="docutils literal notranslate"><span class="pre">RoamNode</span></code>) – Node to check</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if node is an orphan</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">bool</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -390,31 +456,15 @@ internet links, etc)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tags</strong> (<em>Iterable</em><em>[</em><em>str</em><em>]</em>) – Tags</p></li>
-<li><p><strong>exclude</strong> (<em>bool</em>) – Whether to exclude in new network or not</p></li>
+<li><p><strong>tags</strong> (<code class="docutils literal notranslate"><span class="pre">Iterable[str]</span></code>) – Tags</p></li>
+<li><p><strong>exclude</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Whether to exclude in new network or not</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of filtered nodes</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[<a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode">RoamNode</a>]</p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph._all_tags">
-<span class="sig-name descname"><span class="pre">_all_tags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph._all_tags" title="Link to this definition"></a></dt>
-<dd><p>Return collection of all tags present in network</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Set of tags present in network</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>set[str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[RoamNode]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -423,17 +473,17 @@ internet links, etc)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph._identifier_type">
-<span class="sig-name descname"><span class="pre">_identifier_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">IdentifierType</span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph._identifier_type" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_identifier_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">IdentifierType</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph._identifier_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph._identifier_type" title="Link to this definition"></a></dt>
 <dd><p>Determine type of identifier for node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>identifier</strong> (<em>str</em>) – identifier; node ID or title</p>
+<dd class="field-odd"><p><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – identifier; node ID or title</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Type of identifier</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>IdentifierType</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">IdentifierType</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -449,7 +499,7 @@ internet links, etc)</p>
 <dd class="field-odd"><p>List of backlinks for nodes</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[set[str]]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[list[str]]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -458,19 +508,34 @@ internet links, etc)</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph._node_has_tag">
-<span class="sig-name descname"><span class="pre">_node_has_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph._node_has_tag" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<span class="sig-name descname"><span class="pre">_node_has_tag</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph._node_has_tag"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph._node_has_tag" title="Link to this definition"></a></dt>
+<dd><p>Return if node has provided tag</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node</strong> (<code class="docutils literal notranslate"><span class="pre">RoamNode</span></code>) – Node to check</p></li>
+<li><p><strong>tag</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Tag to check</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>True if <code class="docutils literal notranslate"><span class="pre">node</span></code> has <code class="docutils literal notranslate"><span class="pre">tag</span></code></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph._nodes_linked">
-<span class="sig-name descname"><span class="pre">_nodes_linked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph._nodes_linked" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_nodes_linked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">node1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">directed</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph._nodes_linked"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph._nodes_linked" title="Link to this definition"></a></dt>
 <dd><p>Determine if two nodes are linked</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>node1</strong> (<a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><em>RoamNode</em></a>) – Origin node</p></li>
-<li><p><strong>node2</strong> (<a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><em>RoamNode</em></a>) – Destination node</p></li>
-<li><p><strong>directed</strong> (<em>bool</em>) – Do comparison directed</p></li>
+<li><p><strong>node1</strong> (<code class="docutils literal notranslate"><span class="pre">RoamNode</span></code>) – Origin node</p></li>
+<li><p><strong>node2</strong> (<code class="docutils literal notranslate"><span class="pre">RoamNode</span></code>) – Destination node</p></li>
+<li><p><strong>directed</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – Do comparison directed</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
@@ -490,7 +555,23 @@ internet links, etc)</p>
 <dd class="field-odd"><p>List of sets containing tags of nodes</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[set[str]]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[set[str]]</span></code></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>FIXME: Add docs.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.all_tags">
+<span class="sig-name descname"><span class="pre">all_tags</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.all_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.all_tags" title="Link to this definition"></a></dt>
+<dd><p>Return collection of all tags present in network</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Set of tags present in network</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">set[str]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -511,7 +592,7 @@ express relations of different nodes to each other.</p>
 in the node</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict[str, list[str]]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">list[str]]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -528,7 +609,7 @@ in the node</p>
 containing that node</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict[str, str]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">str]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -537,20 +618,20 @@ containing that node</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.filter_tags">
-<span class="sig-name descname"><span class="pre">filter_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamGraph" title="orgroamtools.data.RoamGraph"><span class="pre">RoamGraph</span></a></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.filter_tags" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">filter_tags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Iterable</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamGraph" title="orgroamtools.data.RoamGraph"><span class="pre">RoamGraph</span></a></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.filter_tags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.filter_tags" title="Link to this definition"></a></dt>
 <dd><p>Filter network by collection of tags</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>tags</strong> (<em>Iterable</em><em>[</em><em>str</em><em>]</em>) – Tags to filter by</p></li>
-<li><p><strong>exclude</strong> (<em>bool</em>) – To exclude or not</p></li>
+<li><p><strong>tags</strong> (<code class="docutils literal notranslate"><span class="pre">Iterable[str]</span></code>) – Tags to filter by</p></li>
+<li><p><strong>exclude</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – To exclude or not</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Filtered collection (as a copy)</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#orgroamtools.data.RoamGraph" title="orgroamtools.data.RoamGraph">RoamGraph</a></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -563,13 +644,13 @@ containing that node</p>
 <dd><p>Return list of filenames in network</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>base</strong> (<em>bool</em>) – get just basename of file</p>
+<dd class="field-odd"><p><strong>base</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – get just basename of file</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>list of filenames in network</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -588,7 +669,7 @@ allowing multiple edges between any two nodes.</p>
 <dd class="field-odd"><p>Multi directed graph representation of the collection</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>nx.MultiDiGraph</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">nx.MultiDiGraph</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -605,7 +686,7 @@ allowing multiple edges between any two nodes.</p>
 node</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dic[str, str]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dic[str,</span> <span class="pre">str]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -614,7 +695,7 @@ node</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.init_empty">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#orgroamtools.data.RoamGraph.init_empty" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">init_empty</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.init_empty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.init_empty" title="Link to this definition"></a></dt>
 <dd><p>Initialize empty RoamNode object</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
@@ -633,7 +714,7 @@ node</p>
 node</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict[str, list[str]]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">list[str]]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -641,16 +722,16 @@ node</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.misc_links">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">misc_links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">OrgLink</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.misc_links" title="Link to this definition"></a></dt>
-<dd><p>Return list of lists of miscellaneous links</p>
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.misc_link_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">misc_link_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#orgroamtools.data.OrgLink" title="orgroamtools.data.OrgLink"><span class="pre">OrgLink</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.misc_link_index" title="Link to this definition"></a></dt>
+<dd><p>Return index of miscellaneous links</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict with keys node IDs and values the list of miscellaneous IDs for
 corresponding node</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict[str, list[str]]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">list[str]]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -659,7 +740,7 @@ corresponding node</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node">
-<span class="sig-name descname"><span class="pre">node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.node" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.node" title="Link to this definition"></a></dt>
 <dd><p>Return node object</p>
 <p>Internally a node is of class orgroamtools.data.RoamNode, which stores
 basic information about a node like ID, title, filename, and its backlinks</p>
@@ -671,7 +752,7 @@ basic information about a node like ID, title, filename, and its backlinks</p>
 <dd class="field-even"><p>RoamNode object of node</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode">RoamNode</a></p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">RoamNode</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>AttributeError</strong> – Raised if node cannot be found</p>
@@ -681,19 +762,19 @@ basic information about a node like ID, title, filename, and its backlinks</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node_id">
-<span class="sig-name descname"><span class="pre">node_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_id" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">node_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.node_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_id" title="Link to this definition"></a></dt>
 <dd><p>Return ID of node</p>
 <p>org-roam uses org-mode’s internal :ID: property creation to uniquely identify nodes
 in the collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>identifier</strong> (<em>str</em>) – Title of node</p>
+<dd class="field-odd"><p><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Title of node</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>ID of node</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>AttributeError</strong> – Raised if no node matches the provided title</p>
@@ -714,26 +795,26 @@ various configurations.</p>
 of the node with that ID</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>dict[str, <a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode">RoamNode</a>]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">RoamNode]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node_links">
-<span class="sig-name descname"><span class="pre">node_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_links" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">node_links</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.node_links"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_links" title="Link to this definition"></a></dt>
 <dd><p>Return links for a particular node</p>
 <p>A node’s links is the collection of links made in the body of the node desired.
 By convention, a node will always refer to itself</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>identifier</strong> (<em>str</em>) – Identifier for node. Can be title or ID</p>
+<dd class="field-odd"><p><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – Identifier for node. Can be title or ID</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>List of IDs of nodes the provided node refers to</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>AttributeError</strong> – Raised if identifier cannot be found in the collection</p>
@@ -743,20 +824,20 @@ By convention, a node will always refer to itself</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node_title">
-<span class="sig-name descname"><span class="pre">node_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_title" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">node_title</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.node_title"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_title" title="Link to this definition"></a></dt>
 <dd><p>Return title of node</p>
 <p>The title of a node is the name given to the note file.
 If your org-roam node is its own file, this is the #+title: property.
 If you org-roam node is a heading, this is the heading title</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>identifier</strong> (<em>str</em>) – ID of node</p>
+<dd class="field-odd"><p><strong>identifier</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – ID of node</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Title of node</p>
 </dd>
 <dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 <dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>AttributeError</strong> – Raised if ID not be found in collection</p>
@@ -773,7 +854,7 @@ If you org-roam node is a heading, this is the heading title</p>
 <dd class="field-odd"><p>list of nodes in network</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[<a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode">RoamNode</a>]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[RoamNode]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -781,8 +862,15 @@ If you org-roam node is a heading, this is the heading title</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.refresh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.refresh" title="Link to this definition"></a></dt>
+<dd><p>Refresh <code class="docutils literal notranslate"><span class="pre">_node_index</span></code>-dependent data in collection after
+manual change to <code class="docutils literal notranslate"><span class="pre">self._node_index</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.remove_orphans">
-<span class="sig-name descname"><span class="pre">remove_orphans</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamGraph" title="orgroamtools.data.RoamGraph"><span class="pre">RoamGraph</span></a></span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.remove_orphans" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">remove_orphans</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamGraph" title="orgroamtools.data.RoamGraph"><span class="pre">RoamGraph</span></a></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.remove_orphans"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.remove_orphans" title="Link to this definition"></a></dt>
 <dd><p>Remove orphans from network</p>
 <p>This method returns a new network that has orphans removed.</p>
 <dl class="field-list simple">
@@ -802,10 +890,31 @@ If you org-roam node is a heading, this is the heading title</p>
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.size" title="Link to this definition"></a></dt>
 <dd><p>Return size of collection</p>
 <dl class="field-list simple">
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Tuple (num nodes , num links)</p>
 </dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">Tuple[int,</span> <span class="pre">int]</span></code></p>
+</dd>
 </dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.title_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">title_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.title_index" title="Link to this definition"></a></dt>
+<dd><p>Return dictionary of how the network maps IDs to titles</p>
+<p>Synonym for <code class="docutils literal notranslate"><span class="pre">id_title_map</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict with keys node IDs and values the corresponding title of the
+node</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dic[str,</span> <span class="pre">str]</span></code></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -817,7 +926,7 @@ If you org-roam node is a heading, this is the heading title</p>
 <dd class="field-odd"><p>list of titles of nodes in network</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p>list[str]</p>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
@@ -828,7 +937,7 @@ If you org-roam node is a heading, this is the heading title</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamNode">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orgroamtools.data.</span></span><span class="sig-name descname"><span class="pre">RoamNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backlinks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">misc_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">OrgLink</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#orgroamtools.data.RoamNode" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">orgroamtools.data.</span></span><span class="sig-name descname"><span class="pre">RoamNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tags</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">backlinks</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">misc_links</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#orgroamtools.data.OrgLink" title="orgroamtools.data.OrgLink"><span class="pre">OrgLink</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamNode" title="Link to this definition"></a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Store relevant org-roam node information</p>
 <p>A node is an atomic note known to the org-roam database.
@@ -840,7 +949,7 @@ has other identifiers and information that a user might want to know about.</p>
 <dd><p>Filename of org-roam node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -851,7 +960,7 @@ has other identifiers and information that a user might want to know about.</p>
 <dd><p>Title of org-roam node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -862,7 +971,7 @@ has other identifiers and information that a user might want to know about.</p>
 <dd><p>Unique org ID of org-roam node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -873,7 +982,7 @@ has other identifiers and information that a user might want to know about.</p>
 <dd><p>Collection of tags of org-roam node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>set[str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">set[str]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -884,7 +993,7 @@ has other identifiers and information that a user might want to know about.</p>
 <dd><p>List of backlinks in org-roam node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[str]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -895,7 +1004,7 @@ has other identifiers and information that a user might want to know about.</p>
 <dd><p>List of miscellaneous links that are not links to other nodes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>list[OrgLink]</p>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[OrgLink]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -906,28 +1015,28 @@ has other identifiers and information that a user might want to know about.</p>
 <dd></dd></dl>
 
 <dl class="py attribute">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">fname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">misc_links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">OrgLink</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
 <dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">fname</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">misc_links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#orgroamtools.data.OrgLink" title="orgroamtools.data.OrgLink"><span class="pre">OrgLink</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">tags</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">title</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -942,7 +1051,7 @@ has other identifiers and information that a user might want to know about.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to orgroamtools’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="orgroamtools documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
