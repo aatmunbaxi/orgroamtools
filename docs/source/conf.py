@@ -27,7 +27,6 @@ autodoc_mock_imports = [
     "orgparse",
     "re",
     "os",
-    # "orgroamtools",
     "sqlite3",
     "copy",
     "typing",
@@ -46,6 +45,7 @@ mock_modules = [
     "warnings",
     "sqlite3",
     "copy",
+    "orgparse",
 ]
 # for name in mock_modules:
 #     sys.modules[name] = MagicMock()
