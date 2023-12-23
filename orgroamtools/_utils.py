@@ -61,11 +61,33 @@ class DuplicateTitlesWarning(Warning):
 
 
 def extract_math_snippets(text: str) -> list[str]:
-    return [s for tup in re.findall(ORG_LATEX_RX, text, re.DOTALL) for s in tup if s]
+    """Return math snippets in text
+
+    Parameters
+    ----------
+    text : ``str``
+        Text to extract math snippets from
+
+    Returns
+    -------
+    ``list[str]``
+        List of math snippets
+    """
+    return [
+        group
+        for match in re.findall(ORG_LATEX_RX, text, re.DOTALL)
+        for group in match
+        if group
+    ]
 
 
 def extract_src_blocks(text: str) -> list[Tuple[str, str]]:
     """Return org source blocks
+
+    Parameters
+    ----------
+    text : ``str``
+        Text to extract source blocks from
 
     Returns
     -------
