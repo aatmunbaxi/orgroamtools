@@ -126,6 +126,13 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">body</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return body of node</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``str``</span>
+<span class="sd">            Body text of node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
         <span class="n">node_heading</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
@@ -146,6 +153,11 @@
 <span class="sd">    the node IDs. In the documentation, the words &quot;collection&quot;, &quot;network&quot;,</span>
 <span class="sd">    &quot;graph&quot;, all mean the same thing: the graph with nodes the ``org-roam`` nodes</span>
 <span class="sd">    and edges determined by backlinks in the ``org-roam`` collection.</span>
+
+<span class="sd">    The location of the ``org-roam`` database is the value of ``(org-roam-db-location)``::</span>
+
+<span class="sd">      from orgroamtools.data import RoamGraph</span>
+<span class="sd">      collection = RoamGraph(LOCATION_OF_DB)</span>
 
 <span class="sd">    Attributes</span>
 <span class="sd">    ----------</span>
@@ -693,7 +705,7 @@
     <span class="k">def</span> <span class="nf">node_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ID of node</span>
 
-<span class="sd">        org-roam uses org-mode&#39;s internal :ID: property creation to uniquely identify nodes</span>
+<span class="sd">        org-roam uses org-mode&#39;s internal ``:ID:`` property creation to uniquely identify nodes</span>
 <span class="sd">        in the collection.</span>
 
 <span class="sd">        Parameters</span>

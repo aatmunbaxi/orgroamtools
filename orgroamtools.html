@@ -215,6 +215,11 @@
 the node IDs. In the documentation, the words “collection”, “network”,
 “graph”, all mean the same thing: the graph with nodes the <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> nodes
 and edges determined by backlinks in the <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> collection.</p>
+<p>The location of the <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> database is the value of <code class="docutils literal notranslate"><span class="pre">(org-roam-db-location)</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">orgroamtools.data</span> <span class="kn">import</span> <span class="n">RoamGraph</span>
+<span class="n">collection</span> <span class="o">=</span> <span class="n">RoamGraph</span><span class="p">(</span><span class="n">LOCATION_OF_DB</span><span class="p">)</span>
+</pre></div>
+</div>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.db_path">
 <span class="sig-name descname"><span class="pre">db_path</span></span><a class="headerlink" href="#orgroamtools.data.RoamGraph.db_path" title="Link to this definition"></a></dt>
@@ -614,7 +619,7 @@ basic information about a node like ID, title, filename, and its backlinks</p>
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node_id">
 <span class="sig-name descname"><span class="pre">node_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.node_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_id" title="Link to this definition"></a></dt>
 <dd><p>Return ID of node</p>
-<p>org-roam uses org-mode’s internal :ID: property creation to uniquely identify nodes
+<p>org-roam uses org-mode’s internal <code class="docutils literal notranslate"><span class="pre">:ID:</span></code> property creation to uniquely identify nodes
 in the collection.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -896,7 +901,16 @@ has other identifiers and information that a user might want to know about.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamNode.body">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">body</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#orgroamtools.data.RoamNode.body" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dd><p>Return body of node</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Body text of node</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">str</span></code></p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="id4">
