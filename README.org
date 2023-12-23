@@ -17,6 +17,10 @@ This library will not stop you from persisting with duplicated titles, but you w
 - =networkx=: a graph analysis library for Python
 - =orgparse=: a Python library for parsing =org-mode= files
 * Getting Started
+Install the library in a virtual environment if desired:
+#+begin_src sh
+python3 -m pip install orgroamtools
+#+end_src
 Import the library and pass in your database path:
 #+begin_src python
 from orgroamtools.data import RoamGraph

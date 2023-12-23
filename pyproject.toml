@@ -1,15 +1,20 @@
 [tool.poetry]
 name = "orgroamtools"
 version = "0.1.0"
-description = "Analysis API for org-roam collections"
+description = "Library to aid in analysis of org-roam collections"
 authors = ["Aatmun Baxi <abaxi@tamu.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.10"
 networkx = "^3.2.1"
+orgparse = "^0.4.20231004"
 
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[project.urls]
+Homepage = "https://aatmunbaxi.github.io/orgroamtools"
+Issues = "https://github.com/aatmunbaxi/orgroamtools/issues"
