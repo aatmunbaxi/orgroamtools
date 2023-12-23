@@ -6,6 +6,8 @@ orgroamtools documentation
 ===============
 Getting Started
 ===============
+Install with ``pip install orgroamtools``.
+
 Ensure your ``org-roam v2`` database is up-to-date by running ``(org-roam-db-sync)`` inside Emacs. Locate your database by checking the value of ``(org-roam-db-location)``.
 Once you've imported the ``RoamGraph`` object, you can load your collection::
 
