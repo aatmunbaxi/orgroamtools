@@ -13,8 +13,9 @@ For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= 
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
 * Dependencies
-- Python 3.9+
+- Python 3.10+
 - =networkx=: a graph analysis library for Python
+- =orgparse=: a Python library for parsing =org-mode= files
 * Getting Started
 Import the library and pass in your database path:
 #+begin_src python
