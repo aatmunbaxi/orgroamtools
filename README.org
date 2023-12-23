@@ -2,24 +2,18 @@
 
 [[file:viz/COVER.svg]]
 
-=orgroamtools= is an in-progress reproduction of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam= collections.
-
-This library is meant to aid in data analysis of =org-roam= collections, all you need is a healthy =org-roam= v2 database.
-Locate this database by checking the value of =(org-roam-db-location)= in Emacs.
-
+=orgroamtools= is a Python library to assist in data analysis of =org-roam= collection.
+To use it, all you need is a healthy =org-roam v2= database!
+Before getting started, take a minute to locate the database by checking the value of =(org-roam-db-location)= (Do this with =C-h v org-roam-db-location=), then make sure it is up to date by running =(org-roam-db-sync)=.
 
 *Note:* Though =org-roam= allows different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
 For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
-* Dependencies
-- Python 3.10+
-- =networkx=: a graph analysis library for Python
-- =orgparse=: a Python library for parsing =org-mode= files
 * Getting Started
 Install the library in a virtual environment if desired:
 #+begin_src sh
-python3 -m pip install orgroamtools
+python -m pip install orgroamtools
 #+end_src
 Import the library and pass in your database path:
 #+begin_src python
@@ -28,5 +22,9 @@ collection = RoamGraph(PATH_TO_ORG_ROAM_DB)
 #+end_src
 
 Documentation and features for the library can be read [[https://aatmunbaxi.github.io/orgroamtools][here]].
+* Dependencies
+- Python 3.10+
+- =networkx=: a graph analysis library for Python
+- =orgparse=: a Python library for parsing =org-mode= files
 * Related
 - =obsidiantools=
