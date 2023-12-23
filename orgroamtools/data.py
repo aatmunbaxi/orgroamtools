@@ -51,6 +51,13 @@ class RoamNode:
 
     @property
     def body(self) -> str:
+        """Return body of node
+
+        Returns
+        -------
+        ``str``
+            Body text of node
+        """
         root = op.load(self.fname)
         node_heading = None
         for node in root:
@@ -68,6 +75,11 @@ class RoamGraph:
     the node IDs. In the documentation, the words "collection", "network",
     "graph", all mean the same thing: the graph with nodes the ``org-roam`` nodes
     and edges determined by backlinks in the ``org-roam`` collection.
+
+    The location of the ``org-roam`` database is the value of ``(org-roam-db-location)``::
+
+      from orgroamtools.data import RoamGraph
+      collection = RoamGraph(LOCATION_OF_DB)
 
     Attributes
     ----------
@@ -598,7 +610,7 @@ class RoamGraph:
     def node_id(self, identifier: str) -> str:
         """Return ID of node
 
-        org-roam uses org-mode's internal :ID: property creation to uniquely identify nodes
+        org-roam uses org-mode's internal ``:ID:`` property creation to uniquely identify nodes
         in the collection.
 
         Parameters
