@@ -60,36 +60,11 @@ class DuplicateTitlesWarning(Warning):
         return repr(self.message)
 
 
-def get_file_body_text(fname: str) -> str:
-    """Return full body text of file
-
-    Parameters
-    ----------
-    fname : ``str``
-        Filename
-
-    Returns
-    -------
-    ``str``
-        Body text of file
-    """
-    body = ""
-    root = op.load(fname)
-    for node in root:
-        body += node.get_body()
-    return body
+def extract_math_snippets(text: str) -> list[str]:
+    return [s for tup in re.findall(ORG_LATEX_RX, text, re.DOTALL) for s in tup if s]
 
 
-def extract_math_snippets(fname: str) -> list[str]:
-    return [
-        s
-        for tup in re.findall(ORG_LATEX_RX, get_file_body_text(fname), re.DOTALL)
-        for s in tup
-        if s
-    ]
-
-
-def extract_src_blocks(fname: str) -> list[Tuple[str, str]]:
+def extract_src_blocks(text: str) -> list[Tuple[str, str]]:
     """Return org source blocks
 
     Returns
@@ -97,7 +72,4 @@ def extract_src_blocks(fname: str) -> list[Tuple[str, str]]:
     ``list[Tule[str,str]]``
         List of source block environments in the form (LANGUAGE, SRC_BLOCK_BODY)
     """
-    return [
-        (match[0], match[1].strip())
-        for match in SRC_BLOCK_RE.findall(get_file_body_text(fname))
-    ]
+    return [(match[0], match[1].strip()) for match in SRC_BLOCK_RE.findall(text)]

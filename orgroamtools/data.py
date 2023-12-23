@@ -8,10 +8,12 @@ from dataclasses import dataclass
 
 import networkx as nx
 
+import orgparse as op
+
 from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
-    get_file_body_text,
+    get_node_body,
     extract_math_snippets,
     extract_src_blocks,
 )
@@ -27,12 +29,12 @@ class RoamNode:
 
     Attributes
     ----------
-    fname : ``str``
-        Filename of org-roam node
-    title : ``str``
-        Title of org-roam node
     id : ``str``
         Unique org ID of org-roam node
+    title : ``str``
+        Title of org-roam node
+    fname : ``str``
+        Filename of org-roam node
     tags : ``set[str]``
         Collection of tags of org-roam node
     links : ``list[str]``
@@ -41,12 +43,23 @@ class RoamNode:
         List of miscellaneous links that are not links to other nodes
     """
 
-    fname: str
-    title: str
     id: str
+    title: str
+    fname: str
     tags: set[str]
     backlinks: list[str]
     misc_links: list[OrgLink]
+
+    @property
+    def body(self) -> str:
+        root = op.load(self.fname)
+        node_heading = None
+        for node in root:
+            if node.get_property("ID") == self.id:
+                node_heading = node
+                break
+
+        return "\n".join(subtree.get_body() for subtree in node_heading)
 
 
 class RoamGraph:
@@ -77,8 +90,6 @@ class RoamGraph:
         List of duplicated titles in network, used for warning user
     _contains_dup_titles : ``bool``
         Whether the collection has duplicated titles
-    _one_node_per_file : ``bool``
-        Indicates if collection uses one note per file
     """
 
     @classmethod
@@ -101,7 +112,6 @@ class RoamGraph:
         self._misc_link_index = dict()
         self._orphans = []
         self._is_connected = None
-        self._one_node_per_file = None
         return self
 
     def __init__(self, db: str):
@@ -138,7 +148,7 @@ class RoamGraph:
 
         self._node_index = {
             j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
-            for j in zip(_fnames, _titles, _ids, _tags, _links_to, _misc_links)
+            for j in zip(_ids, _titles, _fnames, _tags, _links_to, _misc_links)
         }
         seen = set()
         self._duplicate_titles = [x for x in self.titles if x in seen or seen.add(x)]
@@ -168,7 +178,6 @@ class RoamGraph:
             )
         ]
         self._is_connected = self._orphans == []
-        self._one_node_per_file = len(set(self.fnames)) == len(self.node_index)
 
     def __filter_tags(self, tags: list[str], exclude: bool) -> list[RoamNode]:
         """Filter network by tags
@@ -830,7 +839,6 @@ class RoamGraph:
             )
         ]
         self._is_connected = self._orphans == []
-        self._one_node_per_file = len(set(self.fnames)) == len(self._node_index)
 
     @property
     def size(self) -> Tuple[int, int]:
@@ -1144,22 +1152,8 @@ class RoamGraph:
         ``dict[str, str]``
             Index with value the body text of nodes
 
-        Raises
-        ------
-        ``NotImplementedError``
-            Raised when collection has multiple nodes per file
         """
-        if not self._one_node_per_file:
-            raise NotImplementedError(
-                "This collection has multiple nodes in a file. This feature is not yet implemented."
-            )
-        else:
-            return {
-                ID: get_file_body_text(node.fname)
-                for (ID, node) in zip(
-                    self._node_index.keys(), self._node_index.values()
-                )
-            }
+        return {node.id: node.body for node in self.nodes}
 
     def get_body(self, identifier: str) -> str:
         """Return body of node
@@ -1176,20 +1170,16 @@ class RoamGraph:
 
         Raises
         ------
-        ``NotImplementedError``
-            If multiple nodes per file exist in collection
+        ``AttributeError``
+            If no node matches identifier
         """
-        if not self._one_node_per_file:
-            raise NotImplementedError(
-                "This collection has multiple nodes in a file. This feature is not yet implemented."
-            )
         id_type = self._identifier_type(identifier)
         match id_type:
             case IdentifierType.TITLE:
                 idx = self.titles.index(identifier)
-                return get_file_body_text(self.nodes[idx].fname)
+                return self.nodes[idx].body
             case IdentifierType.ID:
-                return get_file_body_text(self._node_index[identifier].fname)
+                return self._node_index[identifier].body
             case IdentifierType.NOTHING:
                 raise AttributeError(f"No node with provided identifier: {identifier}")
 
@@ -1202,17 +1192,8 @@ class RoamGraph:
         -------
         ``dict[str, list[str]]``
             Index of LaTeX snippets
-
-        Raises
-        ------
-        ``NotImplementedError``
-            If multiple nodes per file exist in collection
         """
-        if not self._one_node_per_file:
-            raise NotImplementedError(
-                "This collection has multiple nodes in a file. This feature is not yet implemented."
-            )
-        return {node.id: extract_math_snippets(node.fname) for node in self.nodes}
+        return {node.id: extract_math_snippets(node.body) for node in self.nodes}
 
     def get_latex_snippets(self, identifier: str) -> list[str]:
         """Return latex snippets of node
@@ -1229,20 +1210,16 @@ class RoamGraph:
 
         Raises
         ------
-        ``NotImplementedError``
-            If multiple nodes per file exist in collection
+        ``AttributeError``
+            If no node matches the identifer
         """
-        if not self._one_node_per_file:
-            raise NotImplementedError(
-                "This collection has multiple nodes in a file. This feature is not yet implemented."
-            )
         id_type = self._identifier_type(identifier)
         match id_type:
             case IdentifierType.ID:
-                return extract_math_snippets(self._node_index[identifier].fname)
+                return extract_math_snippets(self._node_index[identifier].body)
             case IdentifierType.TITLE:
                 idx = self.titles.index(identifier)
-                return extract_math_snippets(self.nodes[idx].fname)
+                return extract_math_snippets(self.nodes[idx].body)
             case IdentifierType.NOTHING:
                 raise AttributeError(f"No node with identifier: {identifier}")
 
@@ -1255,17 +1232,8 @@ class RoamGraph:
         ``dict[str, list[Tuple[str,str]]]``
             Index of source blocks. Source blocks are identified by ``Tuple[LANGUAGE, BLOCK_BODY]``
 
-
-        Raises
-        ------
-        ``NotImplementedError``
-            If multiple nodes per file exist in collection
         """
-        if not self._one_node_per_file:
-            raise NotImplementedError(
-                "This collection has multiple nodes in a file. This feature is not yet implemented."
-            )
-        return {node.id: extract_src_blocks(node.fname) for node in self.nodes}
+        return {node.id: extract_src_blocks(node.body) for node in self.nodes}
 
     def get_src_blocks(self, identifier: str) -> list[Tuple[str, str]]:
         """Return source blocks of node
@@ -1282,20 +1250,16 @@ class RoamGraph:
 
         Raises
         ------
-        ``NotImplementedError``
-            If multiple nodes per file exist in collection
+        ``AttributeError``
+            If no node matches identifier
         """
-        if not self._one_node_per_file:
-            raise NotImplementedError(
-                "This collection has multiple nodes in a file. This feature is not yet implemented."
-            )
         id_type = self._identifier_type(identifier)
         match id_type:
             case IdentifierType.ID:
-                return extract_src_blocks(self._node_index[identifier].fname)
+                return extract_src_blocks(self._node_index[identifier].body)
             case IdentifierType.TITLE:
                 idx = self.titles.index(identifier)
-                return extract_src_blocks(self.nodes[idx].fname)
+                return extract_src_blocks(self.nodes[idx].body)
             case IdentifierType.NOTHING:
                 raise AttributeError(f"No node with identifier: {identifier}")
 
