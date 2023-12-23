@@ -23,9 +23,10 @@ The data contained in the ``RoamNode`` includes its ``ID`` given by ``org-mode``
 -------
 Indices
 -------
-An *index* refers to an object of type ``dict[str, T]`` where the keys are IDs of nodes and ``T`` is some information about node with the associated ID.
+An *index* refers to an object of type ``dict[str, T]`` where the keys are IDs of nodes and ``T`` is some information about the node with the associated ID.
 The library provides several indices:
-- ``node_index``: ``T`` is of type ``RoamNode``
+
+- ``node_index``: ``T`` is the ``RoamNode`` of the node with corresponding ID
 
 - ``title_index``: ``T`` is the title of the node
 
@@ -37,7 +38,7 @@ The library provides several indices:
 
 - ``misc_link_index``: ``T`` is a list of other org-links that are not backlinks. e.g. links to files, websites, etc
 
-- Indices extracting from the body text of the node. **At present, these are only supported for one-node-per-file collections.**
+- Indices extracting from the body text of the node:
 
   - ``body_index`` : ``T`` is the body of the node
   - ``math_snippet_index`` : ``T`` is a list of LaTeX snippets inside the node
