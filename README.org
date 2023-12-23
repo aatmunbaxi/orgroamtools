@@ -3,27 +3,15 @@
 [[file:viz/COVER.svg]]
 
 =orgroamtools= is an in-progress reproduction of [[https://github.com/mfarragher/obsidiantools][obsidiantools]]--a tool used to aid in analysis of Obsidian vaults--but for =org-roam= collections.
-Since the zettelkasten method creates a natural graph structure out of your personal knowledgebase, we can use graph analysis tools to learn about your digital "slipbox".
-This library is meant to aid in doing so, all you need is a healthy =org-roam= v2 database!
-You can locate this database by checking the value of =(org-roam-db-location)= in Emacs.
+
+This library is meant to aid in data analysis of =org-roam= collections, all you need is a healthy =org-roam= v2 database.
+Locate this database by checking the value of =(org-roam-db-location)= in Emacs.
 
 
 *Note:* Though =org-roam= allows different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
 For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
-* Features
-- =networkx= graph representation of =org-roam= database
-- Graph properties:
-  - Index of backlinks for all nodes or a single node
-  - Succinct representations of node properties, such as title, filename, and miscellaneous org links
-- Collection manipulations:
-  - Filter by node tags
-  - Removal of orphan nodes
-- Node parsing (only supported for one-node-per-file collections):
-  - Extraction of body text
-  - Extraction of LaTeX snipets
-  - Extraction of org src blocks
 * Dependencies
 - Python 3.9+
 - =networkx=: a graph analysis library for Python
@@ -34,6 +22,6 @@ from orgroamtools.data import RoamGraph
 collection = RoamGraph(PATH_TO_ORG_ROAM_DB)
 #+end_src
 
-The documentation for the library can be read [[https://aatmunbaxi.github.io/orgroamtools][here]].
+Documentation and features for the library can be read [[https://aatmunbaxi.github.io/orgroamtools][here]].
 * Related
 - =obsidiantools=
