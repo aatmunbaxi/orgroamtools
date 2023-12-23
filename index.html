@@ -74,8 +74,7 @@
              
   <section id="orgroamtools-documentation">
 <h1>orgroamtools documentation<a class="headerlink" href="#orgroamtools-documentation" title="Link to this heading"></a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">orgroamtools</span></code> is a work-in-progress clone of <code class="docutils literal notranslate"><span class="pre">obsidiantools</span></code>–a Python library to assist in analysis of Obsidian collection–but for <code class="docutils literal notranslate"><span class="pre">org-roam</span></code>.
-It provides an object <code class="docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph</span></code> which stores enough information to determine the natural directed multigraph structure of the <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> zettelkasten.</p>
+<p><code class="docutils literal notranslate"><span class="pre">orgroamtools</span></code> is a work-in-progress replication of <code class="docutils literal notranslate"><span class="pre">obsidiantools</span></code>–a Python library to assist in data analysis of Obsidian collections–but for <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> collections.</p>
 <section id="getting-started">
 <h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
 <p>Ensure your <code class="docutils literal notranslate"><span class="pre">org-roam</span> <span class="pre">v2</span></code> database is up-to-date by running <code class="docutils literal notranslate"><span class="pre">(org-roam-db-sync)</span></code> inside Emacs. Locate your database by checking the value of <code class="docutils literal notranslate"><span class="pre">(org-roam-db-location)</span></code>.
@@ -85,18 +84,53 @@ Once you’ve imported the <code class="docutils literal notranslate"><span clas
 <span class="n">collection</span> <span class="o">=</span> <span class="n">RoamGraph</span><span class="p">(</span><span class="n">PATH_TO_DB</span><span class="p">)</span>
 </pre></div>
 </div>
-<section id="querying-the-collection">
-<h3>Querying the Collection<a class="headerlink" href="#querying-the-collection" title="Link to this heading"></a></h3>
-<p>An <em>index</em> refers to an object of type <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">T]</span></code> where the keys are the IDs the nodes in the collection and <code class="docutils literal notranslate"><span class="pre">T</span></code> is a type containing information pertaining to the node with the associated ID key.
-The <code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code> object provides several indices, including indices for the <code class="docutils literal notranslate"><span class="pre">RoamNode</span></code> objects themselves, titles of nodes, filenames associated to each node, the backlinks in the nodes, and the other non-backlink <code class="docutils literal notranslate"><span class="pre">OrgLinks</span></code>.</p>
+<section id="data-provided">
+<h3>Data Provided<a class="headerlink" href="#data-provided" title="Link to this heading"></a></h3>
+<p>The central object is the <code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code> object, which stores a collection of <code class="docutils literal notranslate"><span class="pre">RoamNode</span></code> objects and the graph structure they create via backlinks.
+The data contained in the <code class="docutils literal notranslate"><span class="pre">RoamNode</span></code> includes its <code class="docutils literal notranslate"><span class="pre">ID</span></code> given by <code class="docutils literal notranslate"><span class="pre">org-mode</span></code>, its title, the file it resides in, the org-tags it has, its list of backlinks to other nodes, and the list of other org-links that are not backlinks.</p>
 </section>
+<section id="indices">
+<h3>Indices<a class="headerlink" href="#indices" title="Link to this heading"></a></h3>
+<p>An <em>index</em> refers to an object of type <code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">T]</span></code> where the keys are IDs of nodes and <code class="docutils literal notranslate"><span class="pre">T</span></code> is some information about node with the associated ID.
+The library provides several indices:
+- <code class="docutils literal notranslate"><span class="pre">node_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is of type <code class="docutils literal notranslate"><span class="pre">RoamNode</span></code></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">title_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is the title of the node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tag_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is the set of tags a node has</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">backlink_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is the list of backlinks to other nodes in the node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">file_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is the filename where the node is located</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">misc_link_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of other org-links that are not backlinks. e.g. links to files, websites, etc</p></li>
+<li><p>Indices extracting from the body text of the node. <strong>At present, these are only supported for one-node-per-file collections.</strong></p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">body_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is the body of the node</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math_snippet_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of LaTeX snippets inside the node</p>
+<ul>
+<li><p>Supported delimiters include <code class="docutils literal notranslate"><span class="pre">\(\)</span></code>, <code class="docutils literal notranslate"><span class="pre">\[\]</span></code>, and <code class="docutils literal notranslate"><span class="pre">equation,</span> <span class="pre">align,</span> <span class="pre">multiline</span></code> environments. In addition, <code class="docutils literal notranslate"><span class="pre">#+begin_equation</span></code> and <code class="docutils literal notranslate"><span class="pre">#+begin_latex</span></code> blocks are supported</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src_block_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of tuples <code class="docutils literal notranslate"><span class="pre">(S,W)</span></code> where <code class="docutils literal notranslate"><span class="pre">S</span></code> is the language of the source block and <code class="docutils literal notranslate"><span class="pre">W</span></code> is the content of the source block</p></li>
+</ul>
+</li>
+</ul>
+<p>As an example of how to use these indices, let’s make our own <code class="docutils literal notranslate"><span class="pre">backlink_index</span></code> but instead of using lists of org IDs for the backlink lists, we’ll make them the title of the nodes.
+The <code class="docutils literal notranslate"><span class="pre">title_index</span></code> property provides a mapping from <code class="docutils literal notranslate"><span class="pre">ID</span> <span class="pre">-&gt;</span> <span class="pre">title</span></code>, so we could make it a simple one-liner:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">RoamGraph</span><span class="p">(</span><span class="n">PATH_TO_DB</span><span class="p">)</span>
+<span class="n">backlink_index_titles</span> <span class="o">=</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span> <span class="p">:</span> <span class="p">[</span><span class="n">net</span><span class="o">.</span><span class="n">title_index</span><span class="p">[</span><span class="n">ID</span><span class="p">]</span>
+                          <span class="k">for</span> <span class="n">ID</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">net</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="networkx-graph">
+<h3>NetworkX Graph<a class="headerlink" href="#networkx-graph" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code> object also provides a <code class="docutils literal notranslate"><span class="pre">networkx.MultiDiGraph</span></code> representation of the network. The <code class="docutils literal notranslate"><span class="pre">networkx</span></code> library is very feature-rich for graph manipulations, and can be used to create nice visualization such as this:</p>
+<img alt="_images/COVER.svg" src="_images/COVER.svg" /></section>
 <section id="manipulation-of-the-collection">
 <h3>Manipulation of the Collection<a class="headerlink" href="#manipulation-of-the-collection" title="Link to this heading"></a></h3>
 <p>In addition to this information, primitive manipulations of the collection are provided, such as filtering the collection by tag, and removal of orphans from the collection.</p>
-<p>For more complex manipulations, it is recommended to use the setter <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node_index" title="orgroamtools.data.RoamGraph.node_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index()</span></code></a> to manually set the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> attribute after any manipulation on the nodes has been completed, then call <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.refresh" title="orgroamtools.data.RoamGraph.refresh"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.refresh()</span></code></a> on the network to update the remaining attributes.</p>
-<p>For example, let’s say you want to remove a single node with ID <code class="docutils literal notranslate"><span class="pre">foo</span></code> from a collection <code class="docutils literal notranslate"><span class="pre">bar</span></code>.
-To do this, you’d have to remove the key <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the <code class="docutils literal notranslate"><span class="pre">node_index</span></code> of <code class="docutils literal notranslate"><span class="pre">foo</span></code>, then delete all backlinks to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> from all nodes in the index.
-You could accomplish that like this:</p>
+<p>For more complex manipulations, we can use the setter <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node_index" title="orgroamtools.data.RoamGraph.node_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index()</span></code></a> to manually set the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> attribute after any manipulation on the nodes, then use <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.refresh" title="orgroamtools.data.RoamGraph.refresh"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.refresh()</span></code></a> to update remaining attributes.</p>
+<p>For example, let’s say we want to remove a single node with ID <code class="docutils literal notranslate"><span class="pre">foo</span></code> from a collection <code class="docutils literal notranslate"><span class="pre">bar</span></code>.
+To do this, we’d have to remove the key <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> of <code class="docutils literal notranslate"><span class="pre">bar</span></code>, then delete all backlinks to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> from all nodes in the index.
+We could accomplish that like this:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">bar</span><span class="o">.</span><span class="n">node_index</span><span class="p">()</span>
 <span class="k">del</span> <span class="n">index</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span>
 

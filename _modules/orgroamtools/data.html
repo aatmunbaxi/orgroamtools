@@ -1227,6 +1227,19 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_title_map</span>
 
     <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tag_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary of IDs and the nodes&#39; tag sets</span>
+
+<span class="sd">        Synonym for ``id_title_map``.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``dic[str, set[str]]``</span>
+<span class="sd">            dict with keys node IDs and values the set of tags of the node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">tags</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
+
+    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">body_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of body text for each node. Note: only implemented</span>
 <span class="sd">        for collections with one node per file.</span>

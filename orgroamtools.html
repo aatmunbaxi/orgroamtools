@@ -93,6 +93,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.remove_orphans"><code class="docutils literal notranslate"><span class="pre">RoamGraph.remove_orphans()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.size"><code class="docutils literal notranslate"><span class="pre">RoamGraph.size</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.src_block_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.src_block_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.tag_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.tag_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.title_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.title_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.titles"><code class="docutils literal notranslate"><span class="pre">RoamGraph.titles</span></code></a></li>
 </ul>
@@ -778,6 +779,21 @@ manual change to <code class="docutils literal notranslate"><span class="pre">se
 </dd>
 <dt class="field-odd">Raises<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>NotImplementedError</strong> – If multiple nodes per file exist in collection</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.tag_index">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.tag_index" title="Link to this definition"></a></dt>
+<dd><p>Return dictionary of IDs and the nodes’ tag sets</p>
+<p>Synonym for <code class="docutils literal notranslate"><span class="pre">id_title_map</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict with keys node IDs and values the set of tags of the node</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dic[str,</span> <span class="pre">set[str]]</span></code></p>
 </dd>
 </dl>
 </dd></dl>
