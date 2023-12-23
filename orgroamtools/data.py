@@ -1122,6 +1122,19 @@ class RoamGraph:
         return self._id_title_map
 
     @property
+    def tag_index(self) -> dict[str, set[str]]:
+        """Return dictionary of IDs and the nodes' tag sets
+
+        Synonym for ``id_title_map``.
+
+        Returns
+        -------
+        ``dic[str, set[str]]``
+            dict with keys node IDs and values the set of tags of the node
+        """
+        return {node.id: node.tags for node in self.nodes}
+
+    @property
     def body_index(self) -> dict[str, str]:
         """Return index of body text for each node. Note: only implemented
         for collections with one node per file.
