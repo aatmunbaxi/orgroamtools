@@ -13,7 +13,6 @@ import orgparse as op
 from orgroamtools._utils import (
     IdentifierType,
     DuplicateTitlesWarning,
-    get_node_body,
     extract_math_snippets,
     extract_src_blocks,
 )
@@ -37,7 +36,7 @@ class RoamNode:
         Filename of org-roam node
     tags : ``set[str]``
         Collection of tags of org-roam node
-    links : ``list[str]``
+    backlinks : ``list[str]``
         List of backlinks in org-roam node
     misc_links : ``list[OrgLink]``
         List of miscellaneous links that are not links to other nodes
