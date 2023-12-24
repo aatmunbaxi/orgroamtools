@@ -79,7 +79,6 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.graph"><code class="docutils literal notranslate"><span class="pre">RoamGraph.graph</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.id_title_map"><code class="docutils literal notranslate"><span class="pre">RoamGraph.id_title_map</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.init_empty"><code class="docutils literal notranslate"><span class="pre">RoamGraph.init_empty()</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.links"><code class="docutils literal notranslate"><span class="pre">RoamGraph.links</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.math_snippet_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.math_snippet_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.misc_link_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.misc_link_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node()</span></code></a></li>
@@ -365,17 +364,13 @@ in the node</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.body_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">body_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.body_index" title="Link to this definition"></a></dt>
-<dd><p>only implemented
-for collections with one node per file.</p>
+<dd><p>Return index of body text for each node.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Index with value the body text of nodes</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">str]</span></code></p>
-</dd>
-<dt class="field-odd">Type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>Return index of body text for each node. Note</p>
 </dd>
 </dl>
 </dd></dl>
@@ -546,23 +541,6 @@ node</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.links">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.links" title="Link to this definition"></a></dt>
-<dd><p>Return dict of node IDs and their backlinks</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict with keys IDs of nodes and values the list of backlinks in that
-node</p>
-</dd>
-<dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">list[str]]</span></code></p>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
-</dd></dl>
-
-<dl class="py property">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.math_snippet_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">math_snippet_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.math_snippet_index" title="Link to this definition"></a></dt>
 <dd><p>Return latex snippet index</p>
@@ -597,7 +575,7 @@ corresponding node</p>
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node">
 <span class="sig-name descname"><span class="pre">node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a></span></span><a class="reference internal" href="_modules/orgroamtools/data.html#RoamGraph.node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#orgroamtools.data.RoamGraph.node" title="Link to this definition"></a></dt>
 <dd><p>Return node object</p>
-<p>Internally a node is of class orgroamtools.data.RoamNode, which stores
+<p>Internally a node is of class <code class="docutils literal notranslate"><span class="pre">orgroamtools.data.RoamNode</span></code>, which stores
 basic information about a node like ID, title, filename, and its backlinks</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -641,7 +619,7 @@ in the collection.</p>
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.node_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">node_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#orgroamtools.data.RoamNode" title="orgroamtools.data.RoamNode"><span class="pre">RoamNode</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.node_index" title="Link to this definition"></a></dt>
 <dd><p>Return index of nodes</p>
-<p>The node_index is hashed by node ID, since this is the only
+<p>The <code class="docutils literal notranslate"><span class="pre">node_index</span></code> is hashed by node ID, since this is the only
 value guaranteed to be unique to each org-roam node across
 various configurations.</p>
 <dl class="field-list simple">
@@ -757,7 +735,7 @@ manual change to <code class="docutils literal notranslate"><span class="pre">se
 <dl class="py property">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.src_block_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">src_block_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.src_block_index" title="Link to this definition"></a></dt>
-<dd><p>Return source blocks of node</p>
+<dd><p>Return index of source blocks of nodes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Index of source blocks. Source blocks are identified by <code class="docutils literal notranslate"><span class="pre">Tuple[LANGUAGE,</span> <span class="pre">BLOCK_BODY]</span></code></p>
@@ -772,7 +750,6 @@ manual change to <code class="docutils literal notranslate"><span class="pre">se
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.tag_index">
 <em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.tag_index" title="Link to this definition"></a></dt>
 <dd><p>Return dictionary of IDs and the nodes’ tag sets</p>
-<p>Synonym for <code class="docutils literal notranslate"><span class="pre">id_title_map</span></code>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict with keys node IDs and values the set of tags of the node</p>

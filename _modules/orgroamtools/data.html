@@ -559,7 +559,7 @@
         <span class="n">points_to</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span> <span class="o">!=</span> <span class="p">[]</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="n">points_to</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">pointed_to</span>
 
-    <span class="k">def</span> <span class="nf">_identifier_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IdentifierType</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__identifier_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IdentifierType</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine type of identifier for node</span>
 
 <span class="sd">        Parameters</span>
@@ -613,7 +613,7 @@
 <span class="sd">            Raised if identifier cannot be found in the collection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
 
         <span class="k">match</span> <span class="n">identifier_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
@@ -632,7 +632,7 @@
     <span class="k">def</span> <span class="nf">node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RoamNode</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return node object</span>
 
-<span class="sd">        Internally a node is of class orgroamtools.data.RoamNode, which stores</span>
+<span class="sd">        Internally a node is of class ``orgroamtools.data.RoamNode``, which stores</span>
 <span class="sd">        basic information about a node like ID, title, filename, and its backlinks</span>
 
 <span class="sd">        Parameters</span>
@@ -650,7 +650,7 @@
 <span class="sd">        ``AttributeError``</span>
 <span class="sd">            Raised if node cannot be found</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
 
         <span class="k">match</span> <span class="n">identifier_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
@@ -691,7 +691,7 @@
 <span class="sd">        ``AttributeError``</span>
 <span class="sd">            Raised if ID not be found in collection</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
 
         <span class="k">match</span> <span class="n">identifier_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
@@ -724,7 +724,7 @@
 <span class="sd">            Raised if no node matches the provided title</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">identifier_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
 
         <span class="k">match</span> <span class="n">identifier_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
@@ -1079,7 +1079,7 @@
     <span class="k">def</span> <span class="nf">node_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">RoamNode</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of nodes</span>
 
-<span class="sd">        The node_index is hashed by node ID, since this is the only</span>
+<span class="sd">        The ``node_index`` is hashed by node ID, since this is the only</span>
 <span class="sd">        value guaranteed to be unique to each org-roam node across</span>
 <span class="sd">        various configurations.</span>
 
@@ -1176,23 +1176,6 @@
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">links</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dict of node IDs and their backlinks</span>
-
-<span class="sd">        Returns</span>
-<span class="sd">        -------</span>
-<span class="sd">        ``dict[str, list[str]]``</span>
-<span class="sd">            dict with keys IDs of nodes and values the list of backlinks in that</span>
-<span class="sd">            node</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{</span><span class="n">ID</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span> <span class="k">for</span> <span class="n">ID</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-    <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">misc_link_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">OrgLink</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of miscellaneous links</span>
 
@@ -1249,8 +1232,6 @@
     <span class="k">def</span> <span class="nf">tag_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">set</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return dictionary of IDs and the nodes&#39; tag sets</span>
 
-<span class="sd">        Synonym for ``id_title_map``.</span>
-
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">        ``dic[str, set[str]]``</span>
@@ -1260,8 +1241,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">body_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of body text for each node. Note: only implemented</span>
-<span class="sd">        for collections with one node per file.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of body text for each node.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1291,7 +1271,7 @@
 <span class="sd">        ``AttributeError``</span>
 <span class="sd">            If no node matches identifier</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">match</span> <span class="n">id_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">TITLE</span><span class="p">:</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
@@ -1334,7 +1314,7 @@
 <span class="sd">        ``AttributeError``</span>
 <span class="sd">            If no node matches the identifer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">match</span> <span class="n">id_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">extract_math_snippets</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
@@ -1347,7 +1327,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">src_block_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return source blocks of node</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of source blocks of nodes</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
@@ -1377,7 +1357,7 @@
 <span class="sd">        ``AttributeError``</span>
 <span class="sd">            If no node matches identifier</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
+        <span class="n">id_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__identifier_type</span><span class="p">(</span><span class="n">identifier</span><span class="p">)</span>
         <span class="k">match</span> <span class="n">id_type</span><span class="p">:</span>
             <span class="k">case</span> <span class="n">IdentifierType</span><span class="o">.</span><span class="n">ID</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">extract_src_blocks</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
