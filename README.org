@@ -6,7 +6,7 @@
 To use it, all you need is a healthy =org-roam v2= database!
 Before getting started, take a minute to locate the database by checking the value of =(org-roam-db-location)= (Do this with =C-h v org-roam-db-location=), then make sure it is up to date by running =(org-roam-db-sync)=.
 
-*Note:* Though =org-roam= allows different nodes with the same title, it HIGHLY recommended that the notes in your collection have unique titles.
+*Note:* Though =org-roam= allows different nodes with the same title, it is HIGHLY recommended that the notes in your collection have unique titles.
 For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
 This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
 
