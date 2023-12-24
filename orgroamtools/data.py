@@ -475,7 +475,7 @@ class RoamGraph:
         points_to = node.backlinks != []
         return not points_to and not pointed_to
 
-    def _identifier_type(self, identifier: str) -> IdentifierType:
+    def __identifier_type(self, identifier: str) -> IdentifierType:
         """Determine type of identifier for node
 
         Parameters
@@ -527,7 +527,7 @@ class RoamGraph:
             Raised if identifier cannot be found in the collection
         """
 
-        identifier_type = self._identifier_type(identifier)
+        identifier_type = self.__identifier_type(identifier)
 
         match identifier_type:
             case IdentifierType.ID:
@@ -543,7 +543,7 @@ class RoamGraph:
     def node(self, identifier: str) -> RoamNode:
         """Return node object
 
-        Internally a node is of class orgroamtools.data.RoamNode, which stores
+        Internally a node is of class ``orgroamtools.data.RoamNode``, which stores
         basic information about a node like ID, title, filename, and its backlinks
 
         Parameters
@@ -561,7 +561,7 @@ class RoamGraph:
         ``AttributeError``
             Raised if node cannot be found
         """
-        identifier_type = self._identifier_type(identifier)
+        identifier_type = self.__identifier_type(identifier)
 
         match identifier_type:
             case IdentifierType.TITLE:
@@ -599,7 +599,7 @@ class RoamGraph:
         ``AttributeError``
             Raised if ID not be found in collection
         """
-        identifier_type = self._identifier_type(identifier)
+        identifier_type = self.__identifier_type(identifier)
 
         match identifier_type:
             case IdentifierType.ID:
@@ -629,7 +629,7 @@ class RoamGraph:
             Raised if no node matches the provided title
         """
 
-        identifier_type = self._identifier_type(identifier)
+        identifier_type = self.__identifier_type(identifier)
 
         match identifier_type:
             case IdentifierType.TITLE:
@@ -974,7 +974,7 @@ class RoamGraph:
     def node_index(self) -> dict[str, RoamNode]:
         """Return index of nodes
 
-        The node_index is hashed by node ID, since this is the only
+        The ``node_index`` is hashed by node ID, since this is the only
         value guaranteed to be unique to each org-roam node across
         various configurations.
 
@@ -1071,23 +1071,6 @@ class RoamGraph:
         return [node.title for node in self._node_index.values()]
 
     @property
-    def links(self) -> dict[str, list[str]]:
-        """Return dict of node IDs and their backlinks
-
-        Returns
-        -------
-        ``dict[str, list[str]]``
-            dict with keys IDs of nodes and values the list of backlinks in that
-            node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
-        """
-        return {ID: node.backlinks for ID, node in self._node_index.items()}
-
-    @property
     def misc_link_index(self) -> dict[str, list[OrgLink]]:
         """Return index of miscellaneous links
 
@@ -1144,8 +1127,6 @@ class RoamGraph:
     def tag_index(self) -> dict[str, set[str]]:
         """Return dictionary of IDs and the nodes' tag sets
 
-        Synonym for ``id_title_map``.
-
         Returns
         -------
         ``dic[str, set[str]]``
@@ -1155,8 +1136,7 @@ class RoamGraph:
 
     @property
     def body_index(self) -> dict[str, str]:
-        """Return index of body text for each node. Note: only implemented
-        for collections with one node per file.
+        """Return index of body text for each node.
 
         Returns
         -------
@@ -1184,7 +1164,7 @@ class RoamGraph:
         ``AttributeError``
             If no node matches identifier
         """
-        id_type = self._identifier_type(identifier)
+        id_type = self.__identifier_type(identifier)
         match id_type:
             case IdentifierType.TITLE:
                 idx = self.titles.index(identifier)
@@ -1224,7 +1204,7 @@ class RoamGraph:
         ``AttributeError``
             If no node matches the identifer
         """
-        id_type = self._identifier_type(identifier)
+        id_type = self.__identifier_type(identifier)
         match id_type:
             case IdentifierType.ID:
                 return extract_math_snippets(self._node_index[identifier].body)
@@ -1236,7 +1216,7 @@ class RoamGraph:
 
     @property
     def src_block_index(self) -> dict[str, list[str]]:
-        """Return source blocks of node
+        """Return index of source blocks of nodes
 
         Returns
         -------
@@ -1264,7 +1244,7 @@ class RoamGraph:
         ``AttributeError``
             If no node matches identifier
         """
-        id_type = self._identifier_type(identifier)
+        id_type = self.__identifier_type(identifier)
         match id_type:
             case IdentifierType.ID:
                 return extract_src_blocks(self._node_index[identifier].body)
