@@ -423,9 +423,9 @@ class RoamGraph:
             data
             for idx, data in enumerate(
                 zip(
-                    self.fnames,
-                    self.titles,
                     self.IDs,
+                    self.titles,
+                    self.fnames,
                     self._tags,
                     self._links_to,
                     self.misc_link_index.values(),
@@ -436,21 +436,8 @@ class RoamGraph:
         new_node_index = {
             j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5]) for j in new_node_data
         }
-        # _fnames = [j[0] for j in new_node_data]
-        # _titles = [j[1] for j in new_node_data]
-        # _ids = [j[2] for j in new_node_data]
-        # _tags = [j[3] for j in new_node_data]
-        # _links_to = [j[4] for j in new_node_data]
         self._node_index = new_node_index
-        # Should be true by definition...
-        self._orphans = []
-        self._is_connected = True
-
-        self.db_path = self.db_path
-        self._graph = nx.MultiDiGraph(
-            {self.IDs[i]: self._links_to[i] for i in range(len(self.IDs))}
-        )
-        self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
+        self.refresh()
         return self
 
     def __is_orphan(self, node: RoamNode) -> bool:
@@ -835,9 +822,7 @@ class RoamGraph:
 
         self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
 
-        self._graph = nx.MultiDiGraph(
-            {self.IDs[i]: self.backlink_index[i] for i in range(len(self.IDs))}
-        )
+        self._graph = nx.MultiDiGraph({node.id: node.backlinks for node in self.nodes})
 
         self._orphans = [
             node
@@ -850,6 +835,11 @@ class RoamGraph:
                 ]
             )
         ]
+
+        # Refresh backlinks to exclude those that were removed
+        for node in self._node_index.values():
+            node.backlinks = [ID for ID in node.backlinks if ID in self.IDs]
+
         self._is_connected = self._orphans == []
 
     @property
