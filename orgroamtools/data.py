@@ -428,7 +428,7 @@ class RoamGraph:
                     self.IDs,
                     self._tags,
                     self._links_to,
-                    self.misc_links.values(),
+                    self.misc_link_index.values(),
                 )
             )
             if idx not in indices_of_orphans
