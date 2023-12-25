@@ -691,9 +691,9 @@ class RoamGraph:
         subgraph._node_index = {
             j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
             for j in zip(
-                _fnames,
-                _titles,
                 _ids,
+                _titles,
+                _fnames,
                 list(map(remove_tags, self._tags)),
                 _links_to,
                 self.misc_link_index.values(),
@@ -705,8 +705,9 @@ class RoamGraph:
             for node in subgraph._node_index.values()
             if not any(
                 [
-                    self._nodes_linked(node, other)
+                    self._nodes_linked(node, other, directed=False)
                     for other in subgraph._node_index.values()
+                    if other != node
                 ]
             )
         ]
