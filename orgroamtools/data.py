@@ -696,7 +696,7 @@ class RoamGraph:
                 _ids,
                 list(map(remove_tags, self._tags)),
                 _links_to,
-                self.misc_links.values(),
+                self.misc_link_index.values(),
             )
         }
 
