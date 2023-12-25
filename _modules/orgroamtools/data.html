@@ -789,9 +789,9 @@
         <span class="n">subgraph</span><span class="o">.</span><span class="n">_node_index</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
-                <span class="n">_fnames</span><span class="p">,</span>
-                <span class="n">_titles</span><span class="p">,</span>
                 <span class="n">_ids</span><span class="p">,</span>
+                <span class="n">_titles</span><span class="p">,</span>
+                <span class="n">_fnames</span><span class="p">,</span>
                 <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">remove_tags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">)),</span>
                 <span class="n">_links_to</span><span class="p">,</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">misc_link_index</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
@@ -803,8 +803,9 @@
             <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
                 <span class="p">[</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_linked</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_nodes_linked</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">directed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                     <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">subgraph</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">other</span> <span class="o">!=</span> <span class="n">node</span>
                 <span class="p">]</span>
             <span class="p">)</span>
         <span class="p">]</span>
