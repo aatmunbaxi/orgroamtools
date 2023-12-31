@@ -1177,6 +1177,26 @@ class RoamGraph:
         """
         return {node.id: extract_math_snippets(node.body) for node in self.nodes}
 
+    @property
+    def adjacency_list(self) -> list[list[str]]:
+        """Return adjacency list of collection
+
+        An adjacency list is a (sometimes) more memory-efficient
+        way to store the information of a graph. It stores edges of the
+        graph instead of correspondences of nodes in a matrix for example.
+        If a node ``a`` has an edge pointing to node ``b``, the pair ``[a,b]``
+        will appear in the adjacency list. Keeping with the theme of this
+        library, the node identifiers will be used to identify the nodes.
+        All nodes will appear in the list, since by convention, an org-roam
+        node always links to itself.
+
+        Returns
+        -------
+        ``list[list[str]]``
+            Adjacency list of collection with node IDs to identify nodes
+        """
+        return [[node.id, other] for node in self.nodes for other in node.backlinks]
+
     def get_latex_snippets(self, identifier: str) -> list[str]:
         """Return latex snippets of node
 
