@@ -67,6 +67,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._duplicate_titles"><code class="docutils literal notranslate"><span class="pre">RoamGraph._duplicate_titles</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph._contains_dup_titles"><code class="docutils literal notranslate"><span class="pre">RoamGraph._contains_dup_titles</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.IDs"><code class="docutils literal notranslate"><span class="pre">RoamGraph.IDs</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.adjacency_list"><code class="docutils literal notranslate"><span class="pre">RoamGraph.adjacency_list</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.all_tags"><code class="docutils literal notranslate"><span class="pre">RoamGraph.all_tags()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.backlink_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.backlink_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.body_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.body_index</span></code></a></li>
@@ -322,6 +323,28 @@ other node</p>
 </dl>
 <p class="rubric">Examples</p>
 <p>FIXME: Add docs.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.adjacency_list">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">adjacency_list</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.adjacency_list" title="Link to this definition"></a></dt>
+<dd><p>Return adjacency list of collection</p>
+<p>An adjacency list is a (sometimes) more memory-efficient
+way to store the information of a graph. It stores edges of the
+graph instead of correspondences of nodes in a matrix for example.
+If a node <code class="docutils literal notranslate"><span class="pre">a</span></code> has an edge pointing to node <code class="docutils literal notranslate"><span class="pre">b</span></code>, the pair <code class="docutils literal notranslate"><span class="pre">[a,b]</span></code>
+will appear in the adjacency list. Keeping with the theme of this
+library, the node identifiers will be used to identify the nodes.
+All nodes will appear in the list, since by convention, an org-roam
+node always links to itself.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Adjacency list of collection with node IDs to identify nodes</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[list[str]]</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

@@ -1285,6 +1285,26 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">extract_math_snippets</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">body</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">}</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">adjacency_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return adjacency list of collection</span>
+
+<span class="sd">        An adjacency list is a (sometimes) more memory-efficient</span>
+<span class="sd">        way to store the information of a graph. It stores edges of the</span>
+<span class="sd">        graph instead of correspondences of nodes in a matrix for example.</span>
+<span class="sd">        If a node ``a`` has an edge pointing to node ``b``, the pair ``[a,b]``</span>
+<span class="sd">        will appear in the adjacency list. Keeping with the theme of this</span>
+<span class="sd">        library, the node identifiers will be used to identify the nodes.</span>
+<span class="sd">        All nodes will appear in the list, since by convention, an org-roam</span>
+<span class="sd">        node always links to itself.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        ``list[list[str]]``</span>
+<span class="sd">            Adjacency list of collection with node IDs to identify nodes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[[</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">other</span><span class="p">]</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span> <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="p">]</span>
+
 <div class="viewcode-block" id="RoamGraph.get_latex_snippets">
 <a class="viewcode-back" href="../../orgroamtools.html#orgroamtools.data.RoamGraph.get_latex_snippets">[docs]</a>
     <span class="k">def</span> <span class="nf">get_latex_snippets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
