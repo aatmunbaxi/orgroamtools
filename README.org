@@ -2,16 +2,15 @@
 
 [[file:viz/COVER.svg]]
 
-=orgroamtools= is a Python library to assist in data analysis of =org-roam= collection.
-To use it, all you need is a healthy =org-roam v2= database!
-Before getting started, take a minute to locate the database by checking the value of =(org-roam-db-location)= (Do this with =C-h v org-roam-db-location=), then make sure it is up to date by running =(org-roam-db-sync)=.
+=orgroamtools= is a Python library to assist in data analysis of =org-roam= collection, written in as close to pure Python as possible.
+It can pull various bits of information out of your =org-roam=, including some body-text based information like source blocks and LaTeX snippets.
+The information you extract about the natural graph structure of your collection can be used for many types of exploratory data analysis involving graph neural networks, natural language processing, and topological data analysis.
 
-*Note:* Though =org-roam= allows different nodes with the same title, it is HIGHLY recommended that the notes in your collection have unique titles.
-For better ergonomics, it is possible to retrieve nodes out of your =RoamGraph= by title.
-This library will not stop you from persisting with duplicated titles, but you will be warned whenever the ambiguity might prevent desired behavior.
+To use it, all you need is a healthy =org-roam v2= database!
+Take a minute to locate the database by inspecting the value of =(org-roam-db-location)= in Emacs, then make sure it is up to date by running =(org-roam-db-sync)=.
 
 * Getting Started
-Install the library in a virtual environment if desired:
+Install the library, putting it in a virtual environment if desired:
 #+begin_src sh
 python -m pip install orgroamtools
 #+end_src
@@ -21,7 +20,16 @@ from orgroamtools.data import RoamGraph
 collection = RoamGraph(PATH_TO_ORG_ROAM_DB)
 #+end_src
 
-Documentation and features for the library can be read [[https://aatmunbaxi.github.io/orgroamtools][here]].
+You can extract the graph structure via adjacency lists for use in graph data analysis methods like GNNs and TDA:
+#+begin_src python
+graph = collection.adjacency_list
+#+end_src
+Or you can extract the body texts of the nodes for text preprocessing for NLP:
+#+begin_src python
+node_bodies = collection.body_index
+#+end_src
+
+Full documentation of functions and features for the library can be read [[https://aatmunbaxi.github.io/orgroamtools][here]].
 * Dependencies
 - Python 3.10+
 - =networkx=: a graph analysis library for Python
