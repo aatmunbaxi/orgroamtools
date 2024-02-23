@@ -349,10 +349,6 @@ class RoamGraph:
             List of OrgRoam links that are not other nodes (files, images,
             internet links, etc)
 
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         q =  '''SELECT n.id, GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.dest END),
                 GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.type END)
@@ -391,10 +387,14 @@ class RoamGraph:
         -------
         RoamGraph
             Connected subcollection of self
+
         Examples
         --------
-        FIXME: Add docs.
-
+        >>> orphanless = collection.remove_orphans()
+        >>> orphanless.refresh()
+        >>> print(orphanless._is_connected)
+        True
+        
         """
         indices_of_orphans = [
             i for i in range(len(self.IDs)) if self.nodes[i] in self._orphans
@@ -443,10 +443,6 @@ class RoamGraph:
         bool
             True if node is an orphan
 
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         pointed_to = True if any(node.id in n.backlinks for n in self.nodes) else False
         points_to = node.backlinks != []
@@ -464,10 +460,6 @@ class RoamGraph:
         -------
         IdentifierType
             Type of identifier
-
-        Examples
-        --------
-        FIXME: Add docs.
 
         """
         if identifier in self.IDs:
@@ -642,7 +634,12 @@ class RoamGraph:
 
         Examples
         --------
-        FIXME: Add docs.
+        >>> tags = {"tag1", "tag2"}
+        >>> filtered = collection.filter_tags(tags, exclude = True)
+        >>> filtered.refresh()
+        >>> print(tags.issubset(filtered.all_tags()))
+        False
+
 
         """
 
@@ -723,9 +720,6 @@ class RoamGraph:
         Returns
         -------
             True if nodes are connected
-        Examples
-        --------
-        FIXME: Add docs.
 
         """
         if directed:
@@ -740,11 +734,6 @@ class RoamGraph:
         -------
         set[str]
             Set of tags present in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return set(tag for node in self._node_index.values() for tag in node.tags)
 
@@ -765,10 +754,6 @@ class RoamGraph:
         -------
         list[RoamNode]
             List of filtered nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
 
         """
         tfilter = [
@@ -814,11 +799,6 @@ class RoamGraph:
         -------
         list[set[str]]
             List of sets containing tags of nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.tags for node in self._node_index.values()]
 
@@ -830,11 +810,6 @@ class RoamGraph:
         -------
         list[set[str]]
             List of backlinks for nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.backlinks for node in self._node_index.values()]
 
@@ -851,10 +826,6 @@ class RoamGraph:
         -------
         nx.MultiDiGraph
             Multi directed graph representation of the collection
-
-        Examples
-        --------
-        FIXME: Add docs.
         """
 
         return self._graph
@@ -867,11 +838,6 @@ class RoamGraph:
         ----------
         value : nx.MultiDiGraph
             new graph to set self._graph to
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
 
         self._graph = value
@@ -890,10 +856,6 @@ class RoamGraph:
         dict[str, list[str]]
             dict with keys the IDs of nodes and values the list of backlinks
             in the node
-
-        Examples
-        --------
-        FIXME: Add docs.
         """
 
         return {node.id: node.backlinks for node in self._node_index.values()}
@@ -907,11 +869,6 @@ class RoamGraph:
         dict[str, str]
             dict with keys the IDs of nodes and values the filename of the file
             containing that node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return {ID: node.fname for ID, node in self._node_index.items()}
 
@@ -955,11 +912,6 @@ class RoamGraph:
         -------
         list[str]
             list of filenames in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         if base:
             return [os.path.basename(node.fname) for node in self.node_index.values()]
@@ -974,11 +926,6 @@ class RoamGraph:
         -------
         list[RoamNode]
             list of nodes in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return list(self.node_index.values())
 
@@ -990,11 +937,6 @@ class RoamGraph:
         -------
         list[str]
             list of IDs in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.id for node in self.node_index.values()]
 
@@ -1007,11 +949,6 @@ class RoamGraph:
         -------
         list[str]
             list of titles of nodes in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.title for node in self._node_index.values()]
 
@@ -1025,10 +962,6 @@ class RoamGraph:
             dict with keys IDs of nodes and values the list of backlinks in that
             node
 
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return {ID: node.backlinks for ID, node in self._node_index.items()}
 
@@ -1041,11 +974,6 @@ class RoamGraph:
         dict[str, list[str]]
             dict with keys node IDs and values the list of miscellaneous IDs for
             corresponding node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return {key: node.misc_links for key, node in self._node_index.items()}
 
@@ -1061,7 +989,8 @@ class RoamGraph:
 
         Examples
         --------
-        FIXME: Add docs.
-
+        >>> ids = list(collection.id_title_map.keys())
+        >>> ids == collection.IDs
+        True
         """
         return self._id_title_map
