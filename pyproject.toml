@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "orgroamtools"
-version = "0.1.2"
+version = "0.1.5"
 description = "Library to aid in analysis of org-roam collections"
 authors = ["Aatmun Baxi <abaxi@tamu.edu>"]
 readme = "README.md"
