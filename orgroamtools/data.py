@@ -158,7 +158,7 @@ class RoamGraph:
         _misc_links = self.__init_misc_links(self.db_path)
 
         self._node_index = {
-            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
+            j[0]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
             for j in zip(_ids, _titles, _fnames, _tags, _links_to, _misc_links)
         }
         seen = set()
@@ -360,10 +360,6 @@ class RoamGraph:
             List of OrgRoam links that are not other nodes (files, images,
             internet links, etc)
 
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         q = """SELECT n.id, GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.dest END),
                 GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.type END)
@@ -410,9 +406,13 @@ class RoamGraph:
         -------
         RoamGraph
             Connected subcollection of self
+
         Examples
         --------
-        FIXME: Add docs.
+        >>> orphanless = collection.remove_orphans()
+        >>> orphanless.refresh()
+        >>> print(orphanless._is_connected)
+        True
 
         """
         indices_of_orphans = [
@@ -434,10 +434,19 @@ class RoamGraph:
             if idx not in indices_of_orphans
         ]
         new_node_index = {
-            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5]) for j in new_node_data
+            j[0]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5]) for j in new_node_data
         }
         self._node_index = new_node_index
-        self.refresh()
+
+        # Should be true by definition...
+        self._orphans = []
+        self._is_connected = True
+
+        self.db_path = self.db_path
+        self._graph = nx.MultiDiGraph(
+            {self.IDs[i]: self._links_to[i] for i in range(len(self.IDs))}
+        )
+        self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
         return self
 
     def __is_orphan(self, node: RoamNode) -> bool:
@@ -452,10 +461,6 @@ class RoamGraph:
         -------
         ``bool``
             True if node is an orphan
-
-        Examples
-        --------
-        FIXME: Add docs.
 
         """
         pointed_to = True if any(node.id in n.backlinks for n in self.nodes) else False
@@ -474,10 +479,6 @@ class RoamGraph:
         -------
         ``IdentifierType``
             Type of identifier
-
-        Examples
-        --------
-        FIXME: Add docs.
 
         """
         if identifier in self.IDs:
@@ -642,7 +643,12 @@ class RoamGraph:
 
         Examples
         --------
-        FIXME: Add docs.
+        >>> tags = {"tag1", "tag2"}
+        >>> filtered = collection.filter_tags(tags, exclude = True)
+        >>> filtered.refresh()
+        >>> print(tags.issubset(filtered.all_tags()))
+        False
+
 
         """
 
@@ -653,6 +659,7 @@ class RoamGraph:
         _ids = [node.id for node in new_nodes]
         _titles = [node.title for node in new_nodes]
         _fnames = [node.fname for node in new_nodes]
+        _misc_links = [node.misc_links for node in new_nodes]
 
         # A node now cannot link to an excluded node, so excise them
         _links_to = [
@@ -676,14 +683,14 @@ class RoamGraph:
 
         remove_tags = lambda taglist: list(set(taglist) - set(tags))
         subgraph._node_index = {
-            j[2]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
+            j[0]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
             for j in zip(
                 _ids,
                 _titles,
                 _fnames,
                 list(map(remove_tags, self._tags)),
                 _links_to,
-                self.misc_link_index.values(),
+                _misc_links,
             )
         }
 
@@ -719,9 +726,6 @@ class RoamGraph:
         Returns
         -------
             True if nodes are connected
-        Examples
-        --------
-        FIXME: Add docs.
 
         """
         if directed:
@@ -736,11 +740,6 @@ class RoamGraph:
         -------
         ``set[str]``
             Set of tags present in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return set(tag for node in self._node_index.values() for tag in node.tags)
 
@@ -762,10 +761,6 @@ class RoamGraph:
             Tuple containing list of nodes that survive filtering and list of IDs
             that were purged
 
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         tfilter = [
             any([tag in node.tags for tag in tags])
@@ -780,7 +775,7 @@ class RoamGraph:
                 if any(tag in node.tags for tag in excluded_tags)
             ]
         elif not exclude:
-            excluded_tags = self._all_tags() - set(tags)
+            excluded_tags = self.all_tags() - set(tags)
             excluded_ids = [
                 node.id
                 for node in self._node_index.values()
@@ -861,11 +856,6 @@ class RoamGraph:
         -------
         ``list[set[str]]``
             List of sets containing tags of nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.tags for node in self._node_index.values()]
 
@@ -877,11 +867,6 @@ class RoamGraph:
         -------
         ``list[list[str]]``
             List of backlinks for nodes
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.backlinks for node in self._node_index.values()]
 
@@ -897,10 +882,6 @@ class RoamGraph:
         -------
         ``nx.MultiDiGraph``
             Multi directed graph representation of the collection
-
-        Examples
-        --------
-        FIXME: Add docs.
         """
 
         return self._graph
@@ -913,11 +894,6 @@ class RoamGraph:
         ----------
         value : ``nx.MultiDiGraph``
             new graph to set self._graph to
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
 
         self._graph = value
@@ -936,10 +912,6 @@ class RoamGraph:
         ``dict[str, list[str]]``
             dict with keys the IDs of nodes and values the list of backlinks
             in the node
-
-        Examples
-        --------
-        FIXME: Add docs.
         """
 
         return {node.id: node.backlinks for node in self._node_index.values()}
@@ -953,11 +925,6 @@ class RoamGraph:
         ``dict[str, str]``
             dict with keys the IDs of nodes and values the filename of the file
             containing that node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return {ID: node.fname for ID, node in self._node_index.items()}
 
@@ -1001,11 +968,6 @@ class RoamGraph:
         -------
         ``list[str]``
             list of filenames in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         if base:
             return [os.path.basename(node.fname) for node in self.node_index.values()]
@@ -1020,11 +982,6 @@ class RoamGraph:
         -------
         ``list[RoamNode]``
             list of nodes in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return list(self.node_index.values())
 
@@ -1036,11 +993,6 @@ class RoamGraph:
         -------
         ``list[str]``
             list of IDs in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.id for node in self.node_index.values()]
 
@@ -1053,28 +1005,31 @@ class RoamGraph:
         -------
         ``list[str]``
             list of titles of nodes in network
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return [node.title for node in self._node_index.values()]
 
     @property
-    def misc_link_index(self) -> dict[str, list[OrgLink]]:
+    def misc_link_index(self) -> dict[str, list[str]]:
         """Return index of miscellaneous links
 
         Returns
         -------
-        ``dict[str, list[str]]``
+
+        dict[str, list[str]]
+            dict with keys IDs of nodes and values the list of backlinks in that
+            node
+        """
+        return {ID: node.backlinks for ID, node in self._node_index.items()}
+
+    @property
+    def misc_links(self) -> dict[str, list[OrgLink]]:
+        """Return list of lists of miscellaneous links
+
+        Returns
+        -------
+        dict[str, list[str]]
             dict with keys node IDs and values the list of miscellaneous IDs for
             corresponding node
-
-        Examples
-        --------
-        FIXME: Add docs.
-
         """
         return {key: node.misc_links for key, node in self._node_index.items()}
 
@@ -1090,8 +1045,9 @@ class RoamGraph:
 
         Examples
         --------
-        FIXME: Add docs.
-
+        >>> ids = list(collection.id_title_map.keys())
+        >>> ids == collection.IDs
+        True
         """
         return self._id_title_map
 
@@ -1226,7 +1182,7 @@ class RoamGraph:
                 raise AttributeError(f"No node with identifier: {identifier}")
 
     @property
-    def src_block_index(self) -> dict[str, list[str]]:
+    def src_block_index(self) -> dict[str, list[tuple[str, list[str]]]]:
         """Return index of source blocks of nodes
 
         Returns
