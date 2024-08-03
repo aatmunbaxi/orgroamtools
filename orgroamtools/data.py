@@ -1182,7 +1182,7 @@ class RoamGraph:
                 raise AttributeError(f"No node with identifier: {identifier}")
 
     @property
-    def src_block_index(self) -> dict[str, list[tuple[str, list[str]]]]:
+    def src_block_index(self) -> dict[str, list[tuple[str, str]]]:
         """Return index of source blocks of nodes
 
         Returns
