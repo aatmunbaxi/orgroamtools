@@ -16,7 +16,7 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=d45e8c67"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -82,6 +82,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.init_empty"><code class="docutils literal notranslate"><span class="pre">RoamGraph.init_empty()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.math_snippet_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.math_snippet_index</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.misc_link_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.misc_link_index</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.misc_links"><code class="docutils literal notranslate"><span class="pre">RoamGraph.misc_links</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node_id"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node_id()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#orgroamtools.data.RoamGraph.node_index"><code class="docutils literal notranslate"><span class="pre">RoamGraph.node_index</span></code></a></li>
@@ -321,8 +322,6 @@ other node</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -359,8 +358,6 @@ node always links to itself.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">set[str]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -380,8 +377,6 @@ in the node</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">list[str]]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -411,8 +406,6 @@ containing that node</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">str]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -434,7 +427,13 @@ containing that node</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">tags</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;tag1&quot;</span><span class="p">,</span> <span class="s2">&quot;tag2&quot;</span><span class="p">}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">filter_tags</span><span class="p">(</span><span class="n">tags</span><span class="p">,</span> <span class="n">exclude</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">filtered</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">tags</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">filtered</span><span class="o">.</span><span class="n">all_tags</span><span class="p">()))</span>
+<span class="go">False</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -452,8 +451,6 @@ containing that node</p>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -531,8 +528,6 @@ allowing multiple edges between any two nodes.</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">nx.MultiDiGraph</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -549,7 +544,11 @@ node</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">collection</span><span class="o">.</span><span class="n">id_title_map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ids</span> <span class="o">==</span> <span class="n">collection</span><span class="o">.</span><span class="n">IDs</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py method">
@@ -579,19 +578,32 @@ node</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.misc_link_index">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">misc_link_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#orgroamtools.data.OrgLink" title="orgroamtools.data.OrgLink"><span class="pre">OrgLink</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.misc_link_index" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">misc_link_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.misc_link_index" title="Link to this definition"></a></dt>
 <dd><p>Return index of miscellaneous links</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict with keys IDs of nodes and values the list of backlinks in that
+node</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict[str, list[str]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.misc_links">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">misc_links</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#orgroamtools.data.OrgLink" title="orgroamtools.data.OrgLink"><span class="pre">OrgLink</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.misc_links" title="Link to this definition"></a></dt>
+<dd><p>Return list of lists of miscellaneous links</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>dict with keys node IDs and values the list of miscellaneous IDs for
 corresponding node</p>
 </dd>
 <dt class="field-even">Return type<span class="colon">:</span></dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">dict[str,</span> <span class="pre">list[str]]</span></code></p>
+<dd class="field-even"><p>dict[str, list[str]]</p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -713,8 +725,6 @@ If you org-roam node is a heading, this is the heading title</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[RoamNode]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -738,7 +748,12 @@ manual change to <code class="docutils literal notranslate"><span class="pre">se
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">orphanless</span> <span class="o">=</span> <span class="n">collection</span><span class="o">.</span><span class="n">remove_orphans</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">orphanless</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">orphanless</span><span class="o">.</span><span class="n">_is_connected</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="py property">
@@ -757,7 +772,7 @@ manual change to <code class="docutils literal notranslate"><span class="pre">se
 
 <dl class="py property">
 <dt class="sig sig-object py" id="orgroamtools.data.RoamGraph.src_block_index">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">src_block_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.src_block_index" title="Link to this definition"></a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">src_block_index</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#orgroamtools.data.RoamGraph.src_block_index" title="Link to this definition"></a></dt>
 <dd><p>Return index of source blocks of nodes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -813,8 +828,6 @@ node</p>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">list[str]</span></code></p>
 </dd>
 </dl>
-<p class="rubric">Examples</p>
-<p>FIXME: Add docs.</p>
 </dd></dl>
 
 </dd></dl>

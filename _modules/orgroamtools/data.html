@@ -15,7 +15,7 @@
         <script src="../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="../../_static/documentation_options.js?v=d45e8c67"></script>
-        <script src="../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -239,7 +239,7 @@
         <span class="n">_misc_links</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__init_misc_links</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_path</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">_ids</span><span class="p">,</span> <span class="n">_titles</span><span class="p">,</span> <span class="n">_fnames</span><span class="p">,</span> <span class="n">_tags</span><span class="p">,</span> <span class="n">_links_to</span><span class="p">,</span> <span class="n">_misc_links</span><span class="p">)</span>
         <span class="p">}</span>
         <span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -441,10 +441,6 @@
 <span class="sd">            List of OrgRoam links that are not other nodes (files, images,</span>
 <span class="sd">            internet links, etc)</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">q</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;SELECT n.id, GROUP_CONCAT(CASE WHEN l.type != &#39;&quot;id&quot;&#39; THEN l.dest END),</span>
 <span class="s2">                GROUP_CONCAT(CASE WHEN l.type != &#39;&quot;id&quot;&#39; THEN l.type END)</span>
@@ -493,9 +489,13 @@
 <span class="sd">        -------</span>
 <span class="sd">        RoamGraph</span>
 <span class="sd">            Connected subcollection of self</span>
+
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
+<span class="sd">        &gt;&gt;&gt; orphanless = collection.remove_orphans()</span>
+<span class="sd">        &gt;&gt;&gt; orphanless.refresh()</span>
+<span class="sd">        &gt;&gt;&gt; print(orphanless._is_connected)</span>
+<span class="sd">        True</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">indices_of_orphans</span> <span class="o">=</span> <span class="p">[</span>
@@ -517,10 +517,19 @@
             <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">indices_of_orphans</span>
         <span class="p">]</span>
         <span class="n">new_node_index</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">new_node_data</span>
+            <span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">new_node_data</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span> <span class="o">=</span> <span class="n">new_node_index</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+
+        <span class="c1"># Should be true by definition...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orphans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_connected</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">(</span>
+            <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_links_to</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">))}</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_id_title_map</span> <span class="o">=</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span> <span class="bp">self</span><span class="o">.</span><span class="n">titles</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">))}</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
 
@@ -536,10 +545,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``bool``</span>
 <span class="sd">            True if node is an orphan</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">pointed_to</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">id</span> <span class="ow">in</span> <span class="n">n</span><span class="o">.</span><span class="n">backlinks</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nodes</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
@@ -558,10 +563,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``IdentifierType``</span>
 <span class="sd">            Type of identifier</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">identifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">IDs</span><span class="p">:</span>
@@ -740,7 +741,12 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
+<span class="sd">        &gt;&gt;&gt; tags = {&quot;tag1&quot;, &quot;tag2&quot;}</span>
+<span class="sd">        &gt;&gt;&gt; filtered = collection.filter_tags(tags, exclude = True)</span>
+<span class="sd">        &gt;&gt;&gt; filtered.refresh()</span>
+<span class="sd">        &gt;&gt;&gt; print(tags.issubset(filtered.all_tags()))</span>
+<span class="sd">        False</span>
+
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -751,6 +757,7 @@
         <span class="n">_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">new_nodes</span><span class="p">]</span>
         <span class="n">_titles</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">new_nodes</span><span class="p">]</span>
         <span class="n">_fnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">fname</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">new_nodes</span><span class="p">]</span>
+        <span class="n">_misc_links</span> <span class="o">=</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">misc_links</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">new_nodes</span><span class="p">]</span>
 
         <span class="c1"># A node now cannot link to an excluded node, so excise them</span>
         <span class="n">_links_to</span> <span class="o">=</span> <span class="p">[</span>
@@ -774,14 +781,14 @@
 
         <span class="n">remove_tags</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">taglist</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">taglist</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">tags</span><span class="p">))</span>
         <span class="n">subgraph</span><span class="o">.</span><span class="n">_node_index</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
+            <span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">RoamNode</span><span class="p">(</span><span class="n">j</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">j</span><span class="p">[</span><span class="mi">5</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
                 <span class="n">_ids</span><span class="p">,</span>
                 <span class="n">_titles</span><span class="p">,</span>
                 <span class="n">_fnames</span><span class="p">,</span>
                 <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">remove_tags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tags</span><span class="p">)),</span>
                 <span class="n">_links_to</span><span class="p">,</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">misc_link_index</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+                <span class="n">_misc_links</span><span class="p">,</span>
             <span class="p">)</span>
         <span class="p">}</span>
 
@@ -818,9 +825,6 @@
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
 <span class="sd">            True if nodes are connected</span>
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">directed</span><span class="p">:</span>
@@ -837,11 +841,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``set[str]``</span>
 <span class="sd">            Set of tags present in network</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">tag</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">tags</span><span class="p">)</span></div>
 
@@ -864,10 +863,6 @@
 <span class="sd">            Tuple containing list of nodes that survive filtering and list of IDs</span>
 <span class="sd">            that were purged</span>
 
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">tfilter</span> <span class="o">=</span> <span class="p">[</span>
             <span class="nb">any</span><span class="p">([</span><span class="n">tag</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">tags</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">tags</span><span class="p">])</span>
@@ -882,7 +877,7 @@
                 <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">tag</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">tags</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">excluded_tags</span><span class="p">)</span>
             <span class="p">]</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">exclude</span><span class="p">:</span>
-            <span class="n">excluded_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_tags</span><span class="p">()</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
+            <span class="n">excluded_tags</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_tags</span><span class="p">()</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
             <span class="n">excluded_ids</span> <span class="o">=</span> <span class="p">[</span>
                 <span class="n">node</span><span class="o">.</span><span class="n">id</span>
                 <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
@@ -966,11 +961,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``list[set[str]]``</span>
 <span class="sd">            List of sets containing tags of nodes</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">tags</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
@@ -982,11 +972,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``list[list[str]]``</span>
 <span class="sd">            List of backlinks for nodes</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">backlinks</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
@@ -1002,10 +987,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``nx.MultiDiGraph``</span>
 <span class="sd">            Multi directed graph representation of the collection</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span>
@@ -1018,11 +999,6 @@
 <span class="sd">        ----------</span>
 <span class="sd">        value : ``nx.MultiDiGraph``</span>
 <span class="sd">            new graph to set self._graph to</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_graph</span> <span class="o">=</span> <span class="n">value</span>
@@ -1041,10 +1017,6 @@
 <span class="sd">        ``dict[str, list[str]]``</span>
 <span class="sd">            dict with keys the IDs of nodes and values the list of backlinks</span>
 <span class="sd">            in the node</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()}</span>
@@ -1058,11 +1030,6 @@
 <span class="sd">        ``dict[str, str]``</span>
 <span class="sd">            dict with keys the IDs of nodes and values the filename of the file</span>
 <span class="sd">            containing that node</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">ID</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">fname</span> <span class="k">for</span> <span class="n">ID</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
@@ -1106,11 +1073,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``list[str]``</span>
 <span class="sd">            list of filenames in network</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">base</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
@@ -1125,11 +1087,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``list[RoamNode]``</span>
 <span class="sd">            list of nodes in network</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">node_index</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
@@ -1141,11 +1098,6 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``list[str]``</span>
 <span class="sd">            list of IDs in network</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">id</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
@@ -1158,28 +1110,31 @@
 <span class="sd">        -------</span>
 <span class="sd">        ``list[str]``</span>
 <span class="sd">            list of titles of nodes in network</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">title</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">misc_link_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">OrgLink</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">misc_link_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of miscellaneous links</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        ``dict[str, list[str]]``</span>
+
+<span class="sd">        dict[str, list[str]]</span>
+<span class="sd">            dict with keys IDs of nodes and values the list of backlinks in that</span>
+<span class="sd">            node</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">ID</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span> <span class="k">for</span> <span class="n">ID</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">misc_links</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">OrgLink</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of lists of miscellaneous links</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        dict[str, list[str]]</span>
 <span class="sd">            dict with keys node IDs and values the list of miscellaneous IDs for</span>
 <span class="sd">            corresponding node</span>
-
-<span class="sd">        Examples</span>
-<span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">misc_links</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_index</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
@@ -1195,8 +1150,9 @@
 
 <span class="sd">        Examples</span>
 <span class="sd">        --------</span>
-<span class="sd">        FIXME: Add docs.</span>
-
+<span class="sd">        &gt;&gt;&gt; ids = list(collection.id_title_map.keys())</span>
+<span class="sd">        &gt;&gt;&gt; ids == collection.IDs</span>
+<span class="sd">        True</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_id_title_map</span>
 
@@ -1337,7 +1293,7 @@
 
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">src_block_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">src_block_index</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return index of source blocks of nodes</span>
 
 <span class="sd">        Returns</span>
