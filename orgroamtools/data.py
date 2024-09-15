@@ -59,7 +59,7 @@ class RoamNode:
             Body text of node
         """
         root = op.load(self.fname)
-        node_heading = None
+        node_heading = [] 
         for node in root:
             if node.get_property("ID") == self.id:
                 node_heading = node
