@@ -134,7 +134,7 @@
 <span class="sd">            Body text of node</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">root</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fname</span><span class="p">)</span>
-        <span class="n">node_heading</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">node_heading</span> <span class="o">=</span> <span class="p">[]</span> 
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">root</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">get_property</span><span class="p">(</span><span class="s2">&quot;ID&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">id</span><span class="p">:</span>
                 <span class="n">node_heading</span> <span class="o">=</span> <span class="n">node</span>
