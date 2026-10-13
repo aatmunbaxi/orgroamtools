@@ -1,18 +1,22 @@
 from __future__ import annotations
 
 import os
+import re
 import sqlite3 as sql
 import warnings
 from collections import defaultdict
 from collections.abc import Iterable
 from contextlib import closing
 from dataclasses import dataclass, replace
+from functools import lru_cache
+from itertools import islice
 from pathlib import Path
 
 import networkx as nx
 import orgparse as op
 
 from orgroamtools._utils import (
+    BodyNotFoundWarning,
     DuplicateTitlesWarning,
     IdentifierType,  # noqa: F401  (kept importable from here; unused since phase 3)
     NodeNotFoundError,
@@ -57,19 +61,74 @@ class RoamNode:
     def body(self) -> str:
         """Return body of node
 
+        The node's text and that of its subheadings, including the subheadings'
+        heading lines. The node's own heading line, its property drawer, and a
+        file's leading ``#+keyword:`` lines are omitted. Links are rendered as
+        their descriptions. The file is parsed on first access and cached until it
+        changes on disk.
+
         Returns
         -------
         ``str``
-            Body text of node
-        """
-        root = op.load(self.fname)
-        node_heading = []
-        for node in root:
-            if node.get_property("ID") == self.id:
-                node_heading = node
-                break
+            Body text of node, or ``""`` if it could not be read
 
-        return "\n".join(subtree.get_body() for subtree in node_heading)
+        Warns
+        -----
+        BodyNotFoundWarning
+            If the node's file is missing or no longer contains the node's ID
+        """
+        return _lookup_body(self.id, self.fname, _file_bodies(self.fname))
+
+
+# Leading "#+title:", "#+filetags:" etc. of a file; duplicates node fields
+FILE_KEYWORDS_RE = re.compile(r"\A(?:[ \t]*(?:\#\+\w+:[^\n]*)?\n)*")
+
+
+def _subtree_text(node: op.node.OrgBaseNode) -> str:
+    """Text of ``node`` and its descendants, with descendant heading lines.
+
+    The node's own heading line and property drawer are not included, nor are
+    the leading keyword lines of a file.
+    """
+    own = node.get_body()
+    if node.is_root():
+        own = FILE_KEYWORDS_RE.sub("", own)
+    parts = [own]
+    for child in islice(node, 1, None):
+        parts.append(f"{'*' * child.level} {child.heading}")
+        parts.append(child.get_body())
+    return "\n".join(part.strip("\n") for part in parts if part.strip()).strip()
+
+
+@lru_cache(maxsize=256)
+def _parse_bodies(path: str, mtime_ns: int, size: int) -> dict[str, str]:
+    """Bodies of all nodes in a file, by ID. Cached per file version."""
+    bodies = {}
+    for node in op.load(path):
+        node_id = node.get_property("ID")
+        if node_id:
+            bodies[node_id] = _subtree_text(node)
+    return bodies
+
+
+def _file_bodies(path: str) -> dict[str, str] | None:
+    """Bodies of all nodes in a file by ID, or ``None`` if the file is missing."""
+    try:
+        stat = os.stat(path)
+    except FileNotFoundError:
+        return None
+    return _parse_bodies(path, stat.st_mtime_ns, stat.st_size)
+
+
+def _lookup_body(node_id: str, path: str, bodies: dict[str, str] | None) -> str:
+    if bodies is None:
+        message = f"File of node {node_id} not found: {path}"
+    elif node_id not in bodies:
+        message = f"No heading with ID {node_id} in {path}"
+    else:
+        return bodies[node_id]
+    warnings.warn(message, BodyNotFoundWarning, stacklevel=3)
+    return ""
 
 
 def _load_nodes(db_path: str) -> dict[str, RoamNode]:
@@ -452,9 +511,10 @@ class RoamGraph:
         """Refresh ``_node_index``-dependent data in collection after
         manual change to ``self._node_index``.
 
+        
         .. deprecated:: 0.2.0
-        Assign a new dict to ``node_index`` instead; the collection is
-        rebuilt automatically.
+            Assign a new dict to ``node_index`` instead; the collection is
+            rebuilt automatically.
         """
         warnings.warn(
             "refresh() is deprecated: assign to node_index instead, which keeps "
@@ -698,7 +758,17 @@ class RoamGraph:
             Index with value the body text of nodes
 
         """
-        return {node.id: node.body for node in self._node_index.values()}
+        # Group by file so each file is parsed at most once, even if the
+        # parse cache is smaller than the number of files
+        by_file: defaultdict[str, list[RoamNode]] = defaultdict(list)
+        for node in self._node_index.values():
+            by_file[node.fname].append(node)
+        bodies = {}
+        for fname, file_nodes in by_file.items():
+            file_bodies = _file_bodies(fname)
+            for node in file_nodes:
+                bodies[node.id] = _lookup_body(node.id, fname, file_bodies)
+        return {node_id: bodies[node_id] for node_id in self._node_index}
 
     def get_body(self, identifier: str) -> str:
         """Return body of node
@@ -728,11 +798,12 @@ class RoamGraph:
         Returns
         -------
         ``dict[str, list[str]]``
-            Index of LaTeX snippets
+             Index of LaTeX math snippets (delimiters removed, whitespace
+             stripped, in document order)
         """
         return {
-            node.id: extract_math_snippets(node.body)
-            for node in self._node_index.values()
+            node_id: extract_math_snippets(body)
+            for node_id, body in self.body_index.items()
         }
 
     @property
@@ -780,21 +851,22 @@ class RoamGraph:
         return extract_math_snippets(self._resolve(identifier).body)
 
     @property
-    def src_block_index(self) -> dict[str, list[tuple[str, str]]]:
+    def src_block_index(self) -> dict[str, list[tuple[str | None, str]]]:
         """Return index of source blocks of nodes
 
         Returns
         -------
-        ``dict[str, list[Tuple[str,str]]]``
-            Index of source blocks. Source blocks are identified by ``Tuple[LANGUAGE, BLOCK_BODY]``
+        ``dict[str, list[tuple[str | None, str]]]``
+            Index of source blocks. Source blocks are identified by ``Tuple[LANGUAGE, BLOCK_BODY]``.
+            ``LANGUAGE`` is ``None`` for blocks without one
 
         """
         return {
-            node.id: extract_src_blocks(node.body)
-            for node in self._node_index.values()
+            node_id: extract_src_blocks(body)
+            for node_id, body in self.body_index.items()
         }
 
-    def get_src_blocks(self, identifier: str) -> list[tuple[str, str]]:
+    def get_src_blocks(self, identifier: str) -> list[tuple[str | None, str]]:
         """Return source blocks of node
 
         Parameters
@@ -804,8 +876,9 @@ class RoamGraph:
 
         Returns
         -------
-        ``list[Tuple[str,str]]``
-            List of source blocks in format (LANGUAGE, BLOCK_BODY)
+        ``list[tuple[str | None ,str]]``
+            List of source blocks in format (LANGUAGE, BLOCK_BODY); ``LANGUAGE`` is ``None``
+            for blocks without one
 
         Raises
         ------

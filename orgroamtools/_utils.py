@@ -1,16 +1,39 @@
 import re
 from enum import Enum
 
-ORG_LATEX_RX = (
-    r"\\\((.*?)\\\)|"  #  \(\)
-    r"\\\[\n(.*?)\n\\\]|"  # \[...\]
-    r"\\begin{\b(?:equation|align|equation\*|align\*|muliline\*|muliline)\b}\n(.*?)\\end{\b(?:equation|align|equation\*|align|muliline\*|muliline\*)\b}|"  # equation environment
-    r"#\+begin_equation\n(.*?)#\+end_equation|"  # Org-mode equation block
-    r"#\+begin_latex\n(.*?)#\+end_latex"  # Org-mode latex block
+MATH_ENVIRONMENTS = (
+    "equation",
+    "align",
+    "gather",
+    "multline",
+    "flalign",
+    "eqnarray",
+    "math",
+    "displaymath",
+)
+
+# Alternatives are tried in order; the first matching named group is the snippet.
+ORG_LATEX_RE = re.compile(
+    r"""
+      (?i:\#\+begin_equation)[^\n]*\n (?P<equation_block>.*?) (?i:\#\+end_equation)
+    | (?i:\#\+begin_latex)[^\n]*\n (?P<latex_block>.*?) (?i:\#\+end_latex)
+    | \\begin\{(?P<env>(?:"""
+    + "|".join(MATH_ENVIRONMENTS)
+    + r""")\*?)\} (?P<environment>.*?) \\end\{(?P=env)\}
+    | (?<!\\)\$\$ (?P<display_dollars>.+?) \$\$
+    | (?<!\\)\\\[ (?P<display>.+?) \\\]
+    | (?<!\\)\\\( (?P<inline>.+?) \\\)
+    # Org's rule for single $: no space just inside either $, at most two
+    # line breaks, and the closing $ followed by space, punctuation or the end
+    | (?<![\\$])\$
+      (?P<dollars>[^\s,;.$](?:[^$\n]*?(?:\n[^$\n]*?){0,2}[^\s,.$])?)
+      \$(?=[\s\-.,?;:'")]|\Z)
+    """,
+    re.VERBOSE | re.DOTALL,
 )
 
 SRC_BLOCK_RE = re.compile(
-    r"^\s*#\+BEGIN_SRC\s+(\S+)(?:.*?)\n(.*?)#\+END_SRC\s*",
+    r"^[ \t]*\#\+BEGIN_SRC(?:[ \t]+(\S+))?[^\n]*\n(.*?)^[ \t]*\#\+END_SRC",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
@@ -47,6 +70,17 @@ class DuplicateTitlesWarning(Warning):
 
     def __str__(self):
         return repr(self.message)
+
+
+class BodyNotFoundWarning(Warning):
+    """
+    Warns that a node's body could not be read.
+
+    The node's file no longer exists, or no longer contains a heading (or file
+    property drawer) with the node's ID. This usually means the org-roam
+    database is out of date; run ``(org-roam-db-sync)`` in Emacs. The body is
+    returned as an empty string.
+    """
 
 
 class NodeNotFoundError(KeyError, AttributeError):
@@ -94,15 +128,17 @@ def extract_math_snippets(text: str) -> list[str]:
     ``list[str]``
         List of math snippets
     """
-    return [
-        group
-        for match in re.findall(ORG_LATEX_RX, text, re.DOTALL)
-        for group in match
-        if group
-    ]
+    # Code isn't math, even when it contains $ or \( ... \)
+    text = SRC_BLOCK_RE.sub("", text)
+    snippets = []
+    for match in ORG_LATEX_RE.finditer(text):
+        groups = match.groupdict()
+        del groups["env"]
+        snippets.append(next(g for g in groups.values() if g is not None).strip())
+    return snippets
 
 
-def extract_src_blocks(text: str) -> list[tuple[str, str]]:
+def extract_src_blocks(text: str) -> list[tuple[str | None, str]]:
     """Return org source blocks
 
     Parameters
@@ -115,4 +151,7 @@ def extract_src_blocks(text: str) -> list[tuple[str, str]]:
     ``list[Tule[str,str]]``
         List of source block environments in the form (LANGUAGE, SRC_BLOCK_BODY)
     """
-    return [(match[0], match[1].strip()) for match in SRC_BLOCK_RE.findall(text)]
+    return [
+        (match.group(1), match.group(2).strip())
+        for match in SRC_BLOCK_RE.finditer(text)
+    ]
