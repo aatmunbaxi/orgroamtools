@@ -1,6 +1,5 @@
-from enum import Enum
-from typing import Tuple
 import re
+from enum import Enum
 
 ORG_LATEX_RX = (
     r"\\\((.*?)\\\)|"  #  \(\)
@@ -15,22 +14,13 @@ SRC_BLOCK_RE = re.compile(
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
+LISP_ESCAPE_RE = re.compile(r"\\(.)", re.DOTALL)
+
 
 class IdentifierType(Enum):
     """
-    Nodes in an org-roam graph can identified uniquely by their ID, and non-uniquely
-    by their title. This enum disambiguates the the type of an identifier
-    for functions that take a generic identifier in as an input.
-    e.g. ``RoamGraph.node(identifier)``
-
-    Attributes
-    ----------
-    TITLE : 1
-        Indicates identifier is a title
-    ID : 2
-        Indicates identifier is an ID
-    NOTHING : 0
-        Indicates identifier is neither a title nor an ID
+    .. deprecated:: 0.2.0
+      No longer used by orgroamtools. Kept for compatibility.
     """
 
     TITLE = 1
@@ -59,6 +49,38 @@ class DuplicateTitlesWarning(Warning):
         return repr(self.message)
 
 
+class NodeNotFoundError(KeyError, AttributeError):
+    """
+    Raised when no node in the collection matches an identifier.
+
+    Subclasses ``KeyError``. It also subclasses ``AttributeError``, which was
+    raised in this situation before, so existing ``except AttributeError``
+    handlers keep working.
+    """
+
+
+def decode_lisp_string(value):
+    """Decode a string value as stored by org-roam
+
+    org-roam stores strings in its database as printed Emacs Lisp strings:
+    wrapped in double quotes, with ``"`` and ``\\`` backslash-escaped.
+    Values that are not quoted strings are returned unchanged.
+
+    Parameters
+    ----------
+    value : ``str | None``
+        Raw value from the org-roam database
+
+    Returns
+    -------
+    ``str | None``
+        Decoded string
+    """
+    if isinstance(value, str) and len(value) >= 2 and value[0] == value[-1] == '"':
+        return LISP_ESCAPE_RE.sub(r"\1", value[1:-1])
+    return value
+
+
 def extract_math_snippets(text: str) -> list[str]:
     """Return math snippets in text
 
@@ -80,7 +102,7 @@ def extract_math_snippets(text: str) -> list[str]:
     ]
 
 
-def extract_src_blocks(text: str) -> list[Tuple[str, str]]:
+def extract_src_blocks(text: str) -> list[tuple[str, str]]:
     """Return org source blocks
 
     Parameters

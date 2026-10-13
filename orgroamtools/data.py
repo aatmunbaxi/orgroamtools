@@ -1,18 +1,22 @@
 from __future__ import annotations
+
 import os
-import warnings
 import sqlite3 as sql
-import copy
-from typing import Iterable, Tuple, Optional
-from dataclasses import dataclass
+import warnings
+from collections import defaultdict
+from collections.abc import Iterable
+from contextlib import closing
+from dataclasses import dataclass, replace
+from pathlib import Path
 
 import networkx as nx
-
 import orgparse as op
 
 from orgroamtools._utils import (
-    IdentifierType,
     DuplicateTitlesWarning,
+    IdentifierType,  # noqa: F401  (kept importable from here; unused since phase 3)
+    NodeNotFoundError,
+    decode_lisp_string,
     extract_math_snippets,
     extract_src_blocks,
 )
@@ -59,13 +63,62 @@ class RoamNode:
             Body text of node
         """
         root = op.load(self.fname)
-        node_heading = [] 
+        node_heading = []
         for node in root:
             if node.get_property("ID") == self.id:
                 node_heading = node
                 break
 
         return "\n".join(subtree.get_body() for subtree in node_heading)
+
+
+def _load_nodes(db_path: str) -> dict[str, RoamNode]:
+    """Read all nodes from an org-roam database, ordered by ID.
+
+    Links to IDs that are not in the database are dropped. By convention each
+    node links to itself first.
+    """
+    uri = f"{Path(db_path).resolve().as_uri()}?mode=ro"
+    with closing(sql.connect(uri, uri=True)) as con:
+        node_rows = con.execute(
+            "SELECT id, file, title FROM nodes ORDER BY id ASC"
+        ).fetchall()
+        tag_rows = con.execute("SELECT node_id, tag FROM tags").fetchall()
+        link_rows = con.execute(
+            "SELECT source, dest, type FROM links ORDER BY rowid"
+        ).fetchall()
+
+    ids = {decode_lisp_string(row[0]) for row in node_rows}
+
+    tags: defaultdict[str, set[str]] = defaultdict(set)
+    for node_id, tag in tag_rows:
+        if tag is not None:
+            tags[decode_lisp_string(node_id)].add(decode_lisp_string(tag))
+
+    links: defaultdict[str, list[str]] = defaultdict(list)
+    misc_links: defaultdict[str, list[OrgLink]] = defaultdict(list)
+    for source, dest, link_type in link_rows:
+        source = decode_lisp_string(source)
+        dest = decode_lisp_string(dest)
+        link_type = decode_lisp_string(link_type)
+        if link_type == "id":
+            if dest in ids:
+                links[source].append(dest)
+        else:
+            misc_links[source].append(OrgLink(link_type, dest, None))
+
+    nodes = {}
+    for raw_id, raw_file, raw_title in node_rows:
+        node_id = decode_lisp_string(raw_id)
+        nodes[node_id] = RoamNode(
+            node_id,
+            decode_lisp_string(raw_title),
+            decode_lisp_string(raw_file),
+            tags[node_id],
+            [node_id, *links[node_id]],
+            misc_links[node_id],
+        )
+    return nodes
 
 
 class RoamGraph:
@@ -131,208 +184,105 @@ class RoamGraph:
         if not os.path.isfile(self.db_path):
             raise FileNotFoundError(f"No such file or directory: {self.db_path}")
 
-        _fnames = self.__init_fnames(self.db_path)
+        self._node_index = _load_nodes(self.db_path)
+        self._rebuild(stacklevel=3)
 
-        _titles = self.__init_titles(self.db_path)
-        _ids = self.__init_ids(self.db_path)
-        links = self.__init_links_to(self.db_path)
-        _links_to = [[ID for ID in link_list if ID in _ids] for link_list in links]
-        _tags = self.__init_tags(self.db_path)
-        _misc_links = self.__init_misc_links(self.db_path)
+    @classmethod
+    def _from_nodes(cls, nodes: Iterable[RoamNode], db_path: str) -> RoamGraph:
+        """Build a collection from nodes, as filters do.
 
-        self._node_index = {
-            j[0]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
-            for j in zip(_ids, _titles, _fnames, _tags, _links_to, _misc_links)
+        Nodes are copied, and links to nodes not in ``nodes`` are dropped.
+        A subset of a collection can't gain duplicate titles, so this doesn't
+        repeat the duplicate-title warning.
+        """
+        graph = cls.__new__(cls)
+        graph.db_path = db_path
+        graph._node_index = cls._consistent_copy(nodes)
+        graph._rebuild(stacklevel=None)
+        return graph
+
+    @staticmethod
+    def _consistent_copy(nodes: Iterable[RoamNode]) -> dict[str, RoamNode]:
+        """Copy nodes, dropping links to IDs that are not among them."""
+        nodes = list(nodes)
+        ids = {node.id for node in nodes}
+        return {
+            node.id: replace(
+                node,
+                tags=set(node.tags),
+                backlinks=[link for link in node.backlinks if link in ids],
+                misc_links=list(node.misc_links),
+            )
+            for node in nodes
         }
-        seen = set()
-        self._duplicate_titles = [x for x in self.titles if x in seen or seen.add(x)]
-        self._contains_dup_titles = len(self._duplicate_titles) > 0
-        if self._contains_dup_titles:
+
+    def _rebuild(self, stacklevel: int | None = 2) -> None:
+        """Derive the graph and indexes from ``_node_index``.
+
+        This is the only place where derived state is computed. ``stacklevel``
+        is passed to the duplicate-title warning; ``None`` skips the warning.
+        """
+        nodes = self._node_index
+
+        self._id_title_map = {node_id: node.title for node_id, node in nodes.items()}
+
+        title_to_ids: defaultdict[str, list[str]] = defaultdict(list)
+        for node_id, node in nodes.items():
+            title_to_ids[node.title].append(node_id)
+        self._title_to_ids = dict(title_to_ids)
+        self._duplicate_titles = [
+            title for title, ids in self._title_to_ids.items() if len(ids) > 1
+        ]
+        self._contains_dup_titles = bool(self._duplicate_titles)
+        if self._contains_dup_titles and stacklevel is not None:
             warnings.warn(
                 "Collection contains duplicate titles. Matching nodes by title will be non-exhaustive.",
                 DuplicateTitlesWarning,
+                stacklevel=stacklevel,
             )
 
-        # In rare cases we'll pick up links to nonexistent nodes
-        self._misc_link_index = {_ids[i]: _misc_links[i] for i in range(len(_ids))}
-
-        self._id_title_map = {_ids[i]: self.titles[i] for i in range(len(_ids))}
-
-        self._graph = nx.MultiDiGraph({_ids[i]: _links_to[i] for i in range(len(_ids))})
+        graph = nx.MultiDiGraph()
+        graph.add_nodes_from(nodes)
+        graph.add_edges_from(
+            (node_id, link)
+            for node_id, node in nodes.items()
+            for link in node.backlinks
+            if link in nodes
+        )
+        self._graph = graph
 
         self._orphans = [
             node
-            for node in self._node_index.values()
-            if not any(
-                [
-                    self._nodes_linked(node, other, directed=False)
-                    for other in self._node_index.values()
-                    if other != node
-                ]
-            )
+            for node_id, node in nodes.items()
+            if not (set(graph.successors(node_id)) | set(graph.predecessors(node_id)))
+            - {node_id}
         ]
-        self._is_connected = self._orphans == []
+        self._is_connected = not self._orphans
 
-    def __init_ids(self, dbpath: str) -> list[str]:
-        """Initialize list of IDs for each node
+    def _resolve_title(self, title: str, stacklevel: int = 3) -> RoamNode:
+        """Return the first node with ``title``, warning if the title is duplicated."""
+        ids = self._title_to_ids.get(title)
+        if ids is None:
+            raise NodeNotFoundError(f"No node with provided title: {title}")
+        if len(ids) > 1:
+            warnings.warn(
+                "This title is duplicated. This may not be the result you want",
+                DuplicateTitlesWarning,
+                stacklevel=stacklevel,
+            )
+        return self._node_index[ids[0]]
 
-        Parameters
-        ----------
-        dbpath : ``str``
-            Path of org-roam database
-
-        Returns
-        -------
-        List of node IDs
-        """
-        id_query = "SELECT id FROM nodes ORDER BY id ASC;"
-        with sql.connect(dbpath, uri=True) as con:
-            csr = con.cursor()
-            query = csr.execute(id_query)
-            return [i[0].replace('"', "") for i in query.fetchall()]
-
-    def __init_fnames(self, dbpath: str) -> list[str]:
-        """
-        Initializes list of filenames for each node
-
-        Parameters
-        ----------
-        dbpath : ``str``
-            Path to org-roam database
-
-        Returns
-        -------
-        List of node filepaths
-        """
-        fname_query = "SELECT file FROM nodes ORDER BY id ASC;"
-        with sql.connect(dbpath, uri=True) as con:
-            csr = con.cursor()
-            query = csr.execute(fname_query)
-            return [i[0].replace('"', "") for i in query.fetchall()]
-
-    def __init_titles(self, dbpath: str) -> list[str]:
-        """
-        Initialize list of titles for each node
-
-        Parameters
-        ----------
-        dbpath : ``str``
-               Path to org-roam database
-
-
-        Returns
-        -------
-        List of node titles
-        """
-        title_query = "SELECT title FROM nodes ORDER BY id ASC;"
-        with sql.connect(dbpath, uri=True) as con:
-            csr = con.cursor()
-            query = csr.execute(title_query)
-            return [i[0].replace('"', "") for i in query.fetchall()]
-
-    def __init_tags(self, dbpath: str) -> list[set[str]]:
-        """
-        Initialize list of tags for each node
-
-        Parameters
-        ----------
-        dbpath : ``str``
-                Path to org-roam database
-
-        Returns
-        -------
-        List of node tags (as sets)
-        """
-        tags_query = "SELECT nodes.id, GROUP_CONCAT(tags.tag) AS tags FROM nodes LEFT JOIN tags ON nodes.id = tags.node_id GROUP BY nodes.id ORDER BY nodes.id ASC;"
-        with sql.connect(dbpath, uri=True) as con:
-            csr = con.cursor()
-            query = csr.execute(tags_query)
-            clean = lambda s: s.replace('"', "")
-            match_null = lambda s: set() if not s else s.split(",")
-            return [set(map(clean, match_null(i[1]))) for i in query.fetchall()]
-
-    def __init_links_to(self, dbpath: str) -> list[list[str]]:
-        """Initialize list of links
-
-        Parameters
-        ----------
-        dbpath : ``str``
-               Path to org-roam database
-
-
-        Returns
-        -------
-        List of backlinks in node (as a list)
-        """
-        links_to_query = """
-        SELECT n.id,
-        GROUP_CONCAT(CASE WHEN l.type = '"id"' THEN l.dest END)
-        FROM nodes n
-        LEFT JOIN links l ON n.id = l.source
-        GROUP BY n.id
-        ORDER BY n.id ;
-        """
-        with sql.connect(dbpath, uri=True) as con:
-            csr = con.cursor()
-            query = csr.execute(links_to_query)
-            clean = lambda s: s.replace('"', "")
-            links = query.fetchall()
-
-            # Separated links by comma might still have links we dont want (e.g. files, etc)
-            self_and_links = [
-                [clean(i[0])] + list(map(clean, i[1].split(",")))
-                if i[1]
-                else [clean(i[0])]
-                for i in links
-            ]
-
-            return self_and_links
-
-    def __init_misc_links(self, dbpath: str) -> list[list[OrgLink]]:
-        """Initialize list of miscellaneous org-mode links
-
-        Parameters
-        ----------
-        dbpath : ``str``
-            path to org-roam database
-
-        Returns
-        -------
-        ``list[OrgLink]``
-            List of OrgRoam links that are not other nodes (files, images,
-            internet links, etc)
-
-        """
-        q = """SELECT n.id, GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.dest END),
-                GROUP_CONCAT(CASE WHEN l.type != '"id"' THEN l.type END)
-                FROM
-                    nodes n
-                LEFT JOIN
-                    links l ON n.id = l.source
-                GROUP BY
-                    n.id
-                ORDER BY
-                    n.id;"""
-        with sql.connect(dbpath, uri=True) as con:
-            csr = con.cursor()
-            clean = lambda s: s.replace('"', "")
-            quer = csr.execute(q)
-            output = quer.fetchall()
-            links_and_types = [
-                list(
-                    zip(
-                        tuple(clean(row[1]).split(",")),
-                        tuple(clean(row[2]).split(",")),
-                    )
-                )
-                if row[1]
-                else []
-                for row in output
-            ]
-            return [
-                [OrgLink(prop[1], prop[0], None) if prop else [] for prop in lst]
-                for lst in links_and_types
-            ]
+    def _resolve(self, identifier: str) -> RoamNode:
+        """Return the node with ID ``identifier``, or else the first with that title."""
+        node = self._node_index.get(identifier)
+        if node is not None:
+            return node
+        try:
+            return self._resolve_title(identifier, stacklevel=4)
+        except NodeNotFoundError:
+            raise NodeNotFoundError(
+                f"No node with provided identifier: {identifier}"
+            ) from None
 
     def remove_orphans(self) -> RoamGraph:
         """Remove orphans from network
@@ -347,69 +297,15 @@ class RoamGraph:
         Examples
         --------
         >>> orphanless = collection.remove_orphans()
-        >>> orphanless.refresh()
         >>> print(orphanless._is_connected)
         True
 
         """
-        indices_of_orphans = [
-            i for i in range(len(self.IDs)) if self.nodes[i] in self._orphans
-        ]
-
-        new_node_data = [
-            data
-            for idx, data in enumerate(
-                zip(
-                    self.IDs,
-                    self.titles,
-                    self.fnames,
-                    self._tags,
-                    self._links_to,
-                    self.misc_link_index.values(),
-                )
-            )
-            if idx not in indices_of_orphans
-        ]
-        new_node_index = {
-            j[0]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5]) for j in new_node_data
-        }
-        self._node_index = new_node_index
-
-        # Should be true by definition...
-        self._orphans = []
-        self._is_connected = True
-
-        self._graph = nx.MultiDiGraph(
-            {self.IDs[i]: self._links_to[i] for i in range(len(self.IDs))}
+        orphan_ids = {node.id for node in self._orphans}
+        return RoamGraph._from_nodes(
+            (node for node in self._node_index.values() if node.id not in orphan_ids),
+            self.db_path,
         )
-        self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
-        return self
-
-    def __identifier_type(self, identifier: str) -> IdentifierType:
-        """Determine type of identifier for node
-
-        Parameters
-        ----------
-        identifier : ``str``
-            identifier; node ID or title
-
-        Returns
-        -------
-        ``IdentifierType``
-            Type of identifier
-
-        """
-        if identifier in self.IDs:
-            return IdentifierType.ID
-        elif identifier in self.titles:
-            if identifier in self._duplicate_titles:
-                warnings.warn(
-                    "This title is duplicated. This may not be the result you want",
-                    DuplicateTitlesWarning,
-                )
-            return IdentifierType.TITLE
-        else:
-            return IdentifierType.NOTHING
 
     def node_links(self, identifier: str) -> list[str]:
         """Return links for a particular node
@@ -429,22 +325,10 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             Raised if identifier cannot be found in the collection
         """
-
-        identifier_type = self.__identifier_type(identifier)
-
-        match identifier_type:
-            case IdentifierType.ID:
-                return self._node_index[identifier].backlinks
-
-            case IdentifierType.TITLE:
-                idx = self.titles.index(identifier)
-                return self.nodes[idx].backlinks
-
-            case IdentifierType.NOTHING:
-                raise AttributeError(f"No node with identifier: {identifier}")
+        return self._resolve(identifier).backlinks
 
     def node(self, identifier: str) -> RoamNode:
         """Return node object
@@ -464,21 +348,10 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             Raised if node cannot be found
         """
-        identifier_type = self.__identifier_type(identifier)
-
-        match identifier_type:
-            case IdentifierType.TITLE:
-                idx = self.titles.index(identifier)
-                return self.nodes[idx]
-
-            case IdentifierType.ID:
-                return self._node_index[identifier]
-
-            case IdentifierType.NOTHING:
-                raise AttributeError(f"No node with provided identifier: {identifier}")
+        return self._resolve(identifier)
 
     def node_title(self, identifier: str) -> str:
         """Return title of node
@@ -499,16 +372,12 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             Raised if ID not be found in collection
         """
-        identifier_type = self.__identifier_type(identifier)
-
-        match identifier_type:
-            case IdentifierType.ID:
-                return self._id_title_map[identifier]
-
-        raise AttributeError(f"No node with provided ID: {identifier}")
+        if identifier not in self._id_title_map:
+            raise NodeNotFoundError(f"No node with provided ID: {identifier}")
+        return self._id_title_map[identifier]
 
     def node_id(self, identifier: str) -> str:
         """Return ID of node
@@ -528,18 +397,10 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             Raised if no node matches the provided title
         """
-
-        identifier_type = self.__identifier_type(identifier)
-
-        match identifier_type:
-            case IdentifierType.TITLE:
-                index_of_id = self.titles.index(identifier)
-                return self.IDs[index_of_id]
-
-        raise AttributeError(f"No node with provided title: {identifier}")
+        return self._resolve_title(identifier).id
 
     def filter_tags(self, tags: Iterable[str], exclude: bool = True) -> RoamGraph:
         """Filter network by collection of tags
@@ -549,7 +410,9 @@ class RoamGraph:
         tags : ``Iterable[str]``
             Tags to filter by
         exclude : ``bool``
-            To exclude or not
+            If ``True`` (default), drop nodes that have any of ``tags``. If ``False``,
+            keep only nodes that have at least one of ``tags``. Surviving nodes keep
+            all of their tags, and links to dropped nodes are removed.
 
         Returns
         -------
@@ -560,93 +423,20 @@ class RoamGraph:
         --------
         >>> tags = {"tag1", "tag2"}
         >>> filtered = collection.filter_tags(tags, exclude = True)
-        >>> filtered.refresh()
         >>> print(tags.issubset(filtered.all_tags()))
         False
 
 
         """
-
-        subgraph = copy.deepcopy(self)
-
-        new_nodes, excluded_ids = subgraph.__partitioned_nodes(tags, exclude)
-
-        _ids = [node.id for node in new_nodes]
-        _titles = [node.title for node in new_nodes]
-        _fnames = [node.fname for node in new_nodes]
-        _misc_links = [node.misc_links for node in new_nodes]
-
-        # A node now cannot link to an excluded node, so excise them
-        _links_to = [
-            [link for link in node.backlinks if link not in excluded_ids]
-            for node in new_nodes
-        ]
-        subgraph._graph = nx.MultiDiGraph(
-            {_ids[i]: _links_to[i] for i in range(len(_titles))}
+        tags = set(tags)
+        return RoamGraph._from_nodes(
+            (
+                node
+                for node in self._node_index.values()
+                if bool(node.tags & tags) != exclude
+            ),
+            self.db_path,
         )
-
-        seen = set()
-        subgraph._duplicate_titles = [x for x in _titles if x in seen or seen.add(x)]
-        subgraph._contains_dup_titles = len(subgraph._duplicate_titles) > 0
-        if subgraph._contains_dup_titles:
-            warnings.warn(
-                "Collection contains duplicate titles. Matching nodes by title will be non-exhaustive.",
-                DuplicateTitlesWarning,
-            )
-
-        subgraph._id_title_map = {_ids[i]: _titles[i] for i in range(len(_ids))}
-
-        remove_tags = lambda taglist: list(set(taglist) - set(tags))
-        subgraph._node_index = {
-            j[0]: RoamNode(j[0], j[1], j[2], j[3], j[4], j[5])
-            for j in zip(
-                _ids,
-                _titles,
-                _fnames,
-                list(map(remove_tags, self._tags)),
-                _links_to,
-                _misc_links,
-            )
-        }
-
-        subgraph._orphans = [
-            node
-            for node in subgraph._node_index.values()
-            if not any(
-                [
-                    self._nodes_linked(node, other, directed=False)
-                    for other in subgraph._node_index.values()
-                    if other != node
-                ]
-            )
-        ]
-
-        subgraph._is_connected = subgraph._orphans == []
-        return subgraph
-
-    def _nodes_linked(
-        self, node1: RoamNode, node2: RoamNode, directed: bool = True
-    ) -> bool:
-        """Determine if two nodes are linked
-
-        Parameters
-        ----------
-        node1 : ``RoamNode``
-            Origin node
-        node2 : ``RoamNode``
-            Destination node
-        directed : ``bool``
-            Do comparison directed
-
-        Returns
-        -------
-            True if nodes are connected
-
-        """
-        if directed:
-            return node2.id in node1.backlinks
-        else:
-            return node2.id in node1.backlinks or node1.id in node2.backlinks
 
     def all_tags(self) -> set[str]:
         """Return collection of all tags present in network
@@ -656,86 +446,27 @@ class RoamGraph:
         ``set[str]``
             Set of tags present in network
         """
-        return set(tag for node in self._node_index.values() for tag in node.tags)
-
-    def __partitioned_nodes(
-        self, tags: Iterable[str], exclude: bool = True
-    ) -> Tuple[list[RoamNode], list[str]]:
-        """Filter network by exact matches on tags
-
-        Parameters
-        ----------
-        tags : ``Iterable[str]``
-            Tags
-        exclude : ``bool``
-            Whether to exclude in new network or not
-
-        Returns
-        -------
-        ``Tuple[list[RoamNode], list[str]]``
-            Tuple containing list of nodes that survive filtering and list of IDs
-            that were purged
-
-        """
-        tfilter = [
-            any([tag in node.tags for tag in tags])
-            for node in self._node_index.values()
-        ]
-        if exclude:
-            tfilter = [not b for b in tfilter]
-            excluded_tags = tags
-            excluded_ids = [
-                node.id
-                for node in self._node_index.values()
-                if any(tag in node.tags for tag in excluded_tags)
-            ]
-        elif not exclude:
-            excluded_tags = self.all_tags() - set(tags)
-            excluded_ids = [
-                node.id
-                for node in self._node_index.values()
-                if not any(tag in node.tags for tag in excluded_tags)
-            ]
-
-        return ([node for (node, b) in zip(self.nodes, tfilter) if b], excluded_ids)
+        return {tag for node in self._node_index.values() for tag in node.tags}
 
     def refresh(self) -> None:
         """Refresh ``_node_index``-dependent data in collection after
         manual change to ``self._node_index``.
+
+        .. deprecated:: 0.2.0
+        Assign a new dict to ``node_index`` instead; the collection is
+        rebuilt automatically.
         """
-        seen = set()
-        self._duplicate_titles = [x for x in self.titles if x in seen or seen.add(x)]
-        self._contains_dup_titles = len(self._duplicate_titles) > 0
-        if self._contains_dup_titles:
-            warnings.warn(
-                "Collection contains duplicate titles. Matching nodes by title will be non-exhaustive.",
-                DuplicateTitlesWarning,
-            )
-
-        self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
-
-        self._graph = nx.MultiDiGraph({node.id: node.backlinks for node in self.nodes})
-
-        self._orphans = [
-            node
-            for node in self._node_index.values()
-            if not any(
-                [
-                    self._nodes_linked(node, other, directed=False)
-                    for other in self._node_index.values()
-                    if other != node
-                ]
-            )
-        ]
-
-        # Refresh backlinks to exclude those that were removed
-        for node in self._node_index.values():
-            node.backlinks = [ID for ID in node.backlinks if ID in self.IDs]
-
-        self._is_connected = self._orphans == []
+        warnings.warn(
+            "refresh() is deprecated: assign to node_index instead, which keeps "
+            "the collection consistent automatically",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        self._node_index = self._consistent_copy(self._node_index.values())
+        self._rebuild(stacklevel=3)
 
     @property
-    def size(self) -> Tuple[int, int]:
+    def size(self) -> tuple[int, int]:
         """Return size of collection
 
         Returns
@@ -744,28 +475,6 @@ class RoamGraph:
             Tuple (num nodes , num links)
         """
         return (len(self._node_index), nx.number_of_edges(self._graph))
-
-    @property
-    def _tags(self) -> list[set[str]]:
-        """Return list of tag collections of nodes
-
-        Returns
-        -------
-        ``list[set[str]]``
-            List of sets containing tags of nodes
-        """
-        return [node.tags for node in self._node_index.values()]
-
-    @property
-    def _links_to(self) -> list[list[str]]:
-        """Return list lists of node backlinks
-
-        Returns
-        -------
-        ``list[list[str]]``
-            List of backlinks for nodes
-        """
-        return [node.backlinks for node in self._node_index.values()]
 
     @property
     def graph(self) -> nx.MultiDiGraph:
@@ -782,18 +491,6 @@ class RoamGraph:
         """
 
         return self._graph
-
-    @graph.setter
-    def graph(self, value: nx.MultiDiGraph) -> None:
-        """Setter for graph attribute
-
-        Parameters
-        ----------
-        value : ``nx.MultiDiGraph``
-            new graph to set self._graph to
-        """
-
-        self._graph = value
 
     @property
     def backlink_index(self) -> dict[str, list[str]]:
@@ -843,14 +540,18 @@ class RoamGraph:
 
     @node_index.setter
     def node_index(self, value: dict[str, RoamNode]) -> None:
-        """Set for node index
+        """Set node index
+
+        The graph and all indices are rebuilt. Nodes are copied, and links to IDs
+        that are not keys of ``value`` are dropped.
 
         Parameters
         ----------
-        value : ``dict[str,RoamNode]``
-            New node index
+            value : ``dict[str,RoamNode]``
+                New node index
         """
-        self._node_index = value
+        self._node_index = self._consistent_copy(value.values())
+        self._rebuild(stacklevel=3)
 
     @property
     def fnames(self) -> list[str]:
@@ -889,7 +590,7 @@ class RoamGraph:
         ``list[RoamNode]``
             list of nodes in network
         """
-        return list(self.node_index.values())
+        return list(self._node_index.values())
 
     @property
     def IDs(self) -> list[str]:
@@ -900,7 +601,7 @@ class RoamGraph:
         ``list[str]``
             list of IDs in network
         """
-        return [node.id for node in self.node_index.values()]
+        return list(self._node_index)
 
     @property
     def titles(self) -> list[str]:
@@ -985,7 +686,7 @@ class RoamGraph:
         ``dic[str, set[str]]``
             dict with keys node IDs and values the set of tags of the node
         """
-        return {node.id: node.tags for node in self.nodes}
+        return {node.id: node.tags for node in self._node_index.values()}
 
     @property
     def body_index(self) -> dict[str, str]:
@@ -997,7 +698,7 @@ class RoamGraph:
             Index with value the body text of nodes
 
         """
-        return {node.id: node.body for node in self.nodes}
+        return {node.id: node.body for node in self._node_index.values()}
 
     def get_body(self, identifier: str) -> str:
         """Return body of node
@@ -1014,18 +715,10 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             If no node matches identifier
         """
-        id_type = self.__identifier_type(identifier)
-        match id_type:
-            case IdentifierType.TITLE:
-                idx = self.titles.index(identifier)
-                return self.nodes[idx].body
-            case IdentifierType.ID:
-                return self._node_index[identifier].body
-            case IdentifierType.NOTHING:
-                raise AttributeError(f"No node with provided identifier: {identifier}")
+        return self._resolve(identifier).body
 
     @property
     def math_snippet_index(self) -> dict[str, list[str]]:
@@ -1037,7 +730,10 @@ class RoamGraph:
         ``dict[str, list[str]]``
             Index of LaTeX snippets
         """
-        return {node.id: extract_math_snippets(node.body) for node in self.nodes}
+        return {
+            node.id: extract_math_snippets(node.body)
+            for node in self._node_index.values()
+        }
 
     @property
     def adjacency_list(self) -> list[list[str]]:
@@ -1057,7 +753,11 @@ class RoamGraph:
         ``list[list[str]]``
             Adjacency list of collection with node IDs to identify nodes
         """
-        return [[node.id, other] for node in self.nodes for other in node.backlinks]
+        return [
+            [node.id, other]
+            for node in self._node_index.values()
+            for other in node.backlinks
+        ]
 
     def get_latex_snippets(self, identifier: str) -> list[str]:
         """Return latex snippets of node
@@ -1074,18 +774,10 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             If no node matches the identifer
         """
-        id_type = self.__identifier_type(identifier)
-        match id_type:
-            case IdentifierType.ID:
-                return extract_math_snippets(self._node_index[identifier].body)
-            case IdentifierType.TITLE:
-                idx = self.titles.index(identifier)
-                return extract_math_snippets(self.nodes[idx].body)
-            case IdentifierType.NOTHING:
-                raise AttributeError(f"No node with identifier: {identifier}")
+        return extract_math_snippets(self._resolve(identifier).body)
 
     @property
     def src_block_index(self) -> dict[str, list[tuple[str, str]]]:
@@ -1097,9 +789,12 @@ class RoamGraph:
             Index of source blocks. Source blocks are identified by ``Tuple[LANGUAGE, BLOCK_BODY]``
 
         """
-        return {node.id: extract_src_blocks(node.body) for node in self.nodes}
+        return {
+            node.id: extract_src_blocks(node.body)
+            for node in self._node_index.values()
+        }
 
-    def get_src_blocks(self, identifier: str) -> list[Tuple[str, str]]:
+    def get_src_blocks(self, identifier: str) -> list[tuple[str, str]]:
         """Return source blocks of node
 
         Parameters
@@ -1114,18 +809,10 @@ class RoamGraph:
 
         Raises
         ------
-        ``AttributeError``
+        ``NodeNotFoundError``
             If no node matches identifier
         """
-        id_type = self.__identifier_type(identifier)
-        match id_type:
-            case IdentifierType.ID:
-                return extract_src_blocks(self._node_index[identifier].body)
-            case IdentifierType.TITLE:
-                idx = self.titles.index(identifier)
-                return extract_src_blocks(self.nodes[idx].body)
-            case IdentifierType.NOTHING:
-                raise AttributeError(f"No node with identifier: {identifier}")
+        return extract_src_blocks(self._resolve(identifier).body)
 
 
 @dataclass
@@ -1145,4 +832,4 @@ class OrgLink:
 
     type: str
     content: str
-    desc: Optional[str]
+    desc: str | None
