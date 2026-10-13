@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
@@ -5,19 +7,15 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>orgroamtools documentation &mdash; orgroamtools 0.0.1 documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
 
   
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  
-        <script src="_static/jquery.js?v=5d32c60e"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=d45e8c67"></script>
-        <script src="_static/doctools.js?v=9a2dae69"></script>
-        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=d45e8c67"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -80,7 +78,7 @@
 <p>Install with <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">orgroamtools</span></code>.</p>
 <p>Ensure your <code class="docutils literal notranslate"><span class="pre">org-roam</span> <span class="pre">v2</span></code> database is up-to-date by running <code class="docutils literal notranslate"><span class="pre">(org-roam-db-sync)</span></code> inside Emacs. Locate your database by checking the value of <code class="docutils literal notranslate"><span class="pre">(org-roam-db-location)</span></code>.
 Once you’ve imported the <code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code> object, you can load your collection:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">orgroamtools.data</span> <span class="kn">import</span> <span class="n">RoamGraph</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">orgroamtools.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">RoamGraph</span>
 
 <span class="n">collection</span> <span class="o">=</span> <span class="n">RoamGraph</span><span class="p">(</span><span class="n">PATH_TO_DB</span><span class="p">)</span>
 </pre></div>
@@ -103,16 +101,35 @@ The library provides several indices:</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">misc_link_index</span></code>: <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of other org-links that are not backlinks. e.g. links to files, websites, etc</p></li>
 <li><p>Indices extracting from the body text of the node:</p>
 <ul>
-<li><p><code class="docutils literal notranslate"><span class="pre">body_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is the body of the node</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">math_snippet_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of LaTeX snippets inside the node</p>
+<li><p><code class="docutils literal notranslate"><span class="pre">body_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is the body of the node: its text and that of its
+subheadings (with their heading lines), without its own heading line,
+property drawer, or a file’s <code class="docutils literal notranslate"><span class="pre">#+title:</span></code>/<code class="docutils literal notranslate"><span class="pre">#+filetags:</span></code> lines. Links are
+shown as their descriptions. Files are read when the index is requested and
+cached until they change on disk.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">math_snippet_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of LaTeX math snippets inside the
+node, in document order and with surrounding whitespace removed</p>
 <ul>
-<li><p>Supported delimiters include <code class="docutils literal notranslate"><span class="pre">\(\)</span></code>, <code class="docutils literal notranslate"><span class="pre">\[\]</span></code>, and <code class="docutils literal notranslate"><span class="pre">equation,</span> <span class="pre">align,</span> <span class="pre">multiline</span></code> environments. In addition, <code class="docutils literal notranslate"><span class="pre">#+begin_equation</span></code> and <code class="docutils literal notranslate"><span class="pre">#+begin_latex</span></code> blocks are supported</p></li>
+<li><p>Supported delimiters: <code class="docutils literal notranslate"><span class="pre">\(...\)</span></code>, <code class="docutils literal notranslate"><span class="pre">\[...\]</span></code>, <code class="docutils literal notranslate"><span class="pre">$...$</span></code>, <code class="docutils literal notranslate"><span class="pre">$$...$$</span></code>;
+the environments <code class="docutils literal notranslate"><span class="pre">equation</span></code>, <code class="docutils literal notranslate"><span class="pre">align</span></code>, <code class="docutils literal notranslate"><span class="pre">gather</span></code>, <code class="docutils literal notranslate"><span class="pre">multline</span></code>,
+<code class="docutils literal notranslate"><span class="pre">flalign</span></code>, <code class="docutils literal notranslate"><span class="pre">eqnarray</span></code>, <code class="docutils literal notranslate"><span class="pre">math</span></code> and <code class="docutils literal notranslate"><span class="pre">displaymath</span></code> (each optionally
+starred); and <code class="docutils literal notranslate"><span class="pre">#+begin_equation</span></code> / <code class="docutils literal notranslate"><span class="pre">#+begin_latex</span></code> blocks. Text
+inside source blocks is ignored.</p></li>
 </ul>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">src_block_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of tuples <code class="docutils literal notranslate"><span class="pre">(S,W)</span></code> where <code class="docutils literal notranslate"><span class="pre">S</span></code> is the language of the source block and <code class="docutils literal notranslate"><span class="pre">W</span></code> is the content of the source block</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">src_block_index</span></code> : <code class="docutils literal notranslate"><span class="pre">T</span></code> is a list of tuples <code class="docutils literal notranslate"><span class="pre">(S,W)</span></code> where <code class="docutils literal notranslate"><span class="pre">S</span></code> is the
+language of the source block (<code class="docutils literal notranslate"><span class="pre">None</span></code> if not given) and <code class="docutils literal notranslate"><span class="pre">W</span></code> is its content</p></li>
 </ul>
 </li>
 </ul>
+<p>For example, a node whose body is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Since $e^{i\pi} = -1$, we have
+\begin{equation*}
+e^{2i\pi} = 1
+\end{equation*}
+It costs $5 and $6.
+</pre></div>
+</div>
+<p>has <code class="docutils literal notranslate"><span class="pre">math_snippet_index</span></code> entry <code class="docutils literal notranslate"><span class="pre">[&quot;e^{i\pi}</span> <span class="pre">=</span> <span class="pre">-1&quot;,</span> <span class="pre">&quot;e^{2i\pi}</span> <span class="pre">=</span> <span class="pre">1&quot;]</span></code>.</p>
 <p>As an example of how to use these indices, let’s make our own <code class="docutils literal notranslate"><span class="pre">backlink_index</span></code> but instead of using lists of org IDs for the backlink lists, we’ll make them the title of the nodes.
 The <code class="docutils literal notranslate"><span class="pre">title_index</span></code> property provides a mapping from <code class="docutils literal notranslate"><span class="pre">ID</span> <span class="pre">-&gt;</span> <span class="pre">title</span></code>, so we could make it a simple one-liner:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">net</span> <span class="o">=</span> <span class="n">RoamGraph</span><span class="p">(</span><span class="n">PATH_TO_DB</span><span class="p">)</span>
@@ -128,30 +145,34 @@ The <code class="docutils literal notranslate"><span class="pre">title_index</sp
 </section>
 <section id="manipulation-of-the-collection">
 <h3>Manipulation of the Collection<a class="headerlink" href="#manipulation-of-the-collection" title="Link to this heading"></a></h3>
-<p>In addition to this information, primitive manipulations of the collection are provided, such as filtering the collection by tag, and removal of orphans from the collection.</p>
-<p>For more complex manipulations, we can use the setter <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node_index" title="orgroamtools.data.RoamGraph.node_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index()</span></code></a> to manually set the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> attribute after any manipulation on the nodes, then use <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.refresh" title="orgroamtools.data.RoamGraph.refresh"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.refresh()</span></code></a> to update remaining attributes.</p>
-<p>For example, let’s say we want to remove a single node with ID <code class="docutils literal notranslate"><span class="pre">foo</span></code> from a collection <code class="docutils literal notranslate"><span class="pre">bar</span></code>.
-To do this, we’d have to remove the key <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the <code class="docutils literal notranslate"><span class="pre">_node_index</span></code> of <code class="docutils literal notranslate"><span class="pre">bar</span></code>, then delete all backlinks to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> from all nodes in the index.
-We could accomplish that like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">index</span> <span class="o">=</span> <span class="n">bar</span><span class="o">.</span><span class="n">node_index</span><span class="p">()</span>
-<span class="k">del</span> <span class="n">index</span><span class="p">[</span><span class="s2">&quot;foo&quot;</span><span class="p">]</span>
-
-<span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">index</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-    <span class="k">if</span> <span class="s2">&quot;foo&quot;</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="p">:</span>
-        <span class="n">node</span><span class="o">.</span><span class="n">backlinks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;foo&quot;</span><span class="p">)</span>
-
-<span class="n">bar</span><span class="o">.</span><span class="n">nodex_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
-<span class="n">bar</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+<p>In addition to this information, primitive manipulations of the collection are
+provided, such as filtering the collection by tag
+(<a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.filter_tags" title="orgroamtools.data.RoamGraph.filter_tags"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.filter_tags()</span></code></a>) and removal of orphans
+(<a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.remove_orphans" title="orgroamtools.data.RoamGraph.remove_orphans"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.remove_orphans()</span></code></a>). Both return a new
+<code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code> and leave the original unchanged.</p>
+<p>For other manipulations, build a new node index and assign it to
+<a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node_index" title="orgroamtools.data.RoamGraph.node_index"><code class="xref py py-attr docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node_index</span></code></a>. The graph, the indices, and the
+list of orphans are recomputed automatically, and links to nodes that are no
+longer present are dropped.</p>
+<p>For example, to remove the node with ID <code class="docutils literal notranslate"><span class="pre">foo</span></code> from a collection <code class="docutils literal notranslate"><span class="pre">bar</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bar</span><span class="o">.</span><span class="n">node_index</span> <span class="o">=</span> <span class="p">{</span><span class="n">ID</span><span class="p">:</span> <span class="n">node</span> <span class="k">for</span> <span class="n">ID</span><span class="p">,</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">bar</span><span class="o">.</span><span class="n">node_index</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">ID</span> <span class="o">!=</span> <span class="s2">"foo"</span><span class="p">}</span>
 </pre></div>
 </div>
-<p>The collection <code class="docutils literal notranslate"><span class="pre">bar</span></code> will now have the node <code class="docutils literal notranslate"><span class="pre">foo</span></code> deleted, along with any backlinks to the node <code class="docutils literal notranslate"><span class="pre">foo</span></code>.</p>
+<p>Links to <code class="docutils literal notranslate"><span class="pre">foo</span></code> from the remaining nodes are removed by the assignment.
+Calling <code class="docutils literal notranslate"><span class="pre">refresh()</span></code> is no longer necessary and is deprecated.</p>
 </section>
 <section id="general-notes">
 <h3>General Notes<a class="headerlink" href="#general-notes" title="Link to this heading"></a></h3>
 <p>Because <code class="docutils literal notranslate"><span class="pre">org-roam</span></code> allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
 For user ergonomics, you are permitted to identify nodes by their title.
 For example, in the <a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph.node" title="orgroamtools.data.RoamGraph.node"><code class="xref py py-func docutils literal notranslate"><span class="pre">orgroamtools.data.RoamGraph.node()</span></code></a> function, the <code class="docutils literal notranslate"><span class="pre">identifier</span></code> argument can be either a node title or node ID.
+If no node matches an identifier, <a class="reference internal" href="orgroamtools.html#orgroamtools._utils.NodeNotFoundError" title="orgroamtools._utils.NodeNotFoundError"><code class="xref py py-exc docutils literal notranslate"><span class="pre">orgroamtools._utils.NodeNotFoundError</span></code></a>
+(a <code class="docutils literal notranslate"><span class="pre">KeyError</span></code>) is raised.
 If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.</p>
+<p>If a node’s file has been deleted or edited since the database was last
+synced, its body is returned as <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code> with a
+<a class="reference internal" href="orgroamtools.html#orgroamtools._utils.BodyNotFoundWarning" title="orgroamtools._utils.BodyNotFoundWarning"><code class="xref py py-exc docutils literal notranslate"><span class="pre">orgroamtools._utils.BodyNotFoundWarning</span></code></a>. Run
+<code class="docutils literal notranslate"><span class="pre">(org-roam-db-sync)</span></code> to refresh the database.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
@@ -161,6 +182,17 @@ If the network detects multiple nodes with the same title and you attempt to ide
 <li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.OrgLink"><code class="docutils literal notranslate"><span class="pre">OrgLink</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamGraph"><code class="docutils literal notranslate"><span class="pre">RoamGraph</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.RoamNode"><code class="docutils literal notranslate"><span class="pre">RoamNode</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools.data.NodeNotFoundError"><code class="docutils literal notranslate"><span class="pre">NodeNotFoundError</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#module-orgroamtools._utils">orgroamtools._utils module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.BodyNotFoundWarning"><code class="docutils literal notranslate"><span class="pre">BodyNotFoundWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.DuplicateTitlesWarning"><code class="docutils literal notranslate"><span class="pre">DuplicateTitlesWarning</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.IdentifierType"><code class="docutils literal notranslate"><span class="pre">IdentifierType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.NodeNotFoundError"><code class="docutils literal notranslate"><span class="pre">NodeNotFoundError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.decode_lisp_string"><code class="docutils literal notranslate"><span class="pre">decode_lisp_string()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.extract_math_snippets"><code class="docutils literal notranslate"><span class="pre">extract_math_snippets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="orgroamtools.html#orgroamtools._utils.extract_src_blocks"><code class="docutils literal notranslate"><span class="pre">extract_src_blocks()</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="orgroamtools.html#module-orgroamtools">Module contents</a></li>
