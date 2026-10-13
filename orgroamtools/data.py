@@ -103,28 +103,6 @@ class RoamGraph:
         Whether the collection has duplicated titles
     """
 
-    @classmethod
-    def init_empty(self):
-        """Initialize empty RoamNode object
-
-        Returns
-        -------
-        RoamNode object with default fields initialized
-        """
-        self.db_path = None
-
-        self._duplicate_titles = []
-        self._contains_dup_titles = None
-
-        self._id_title_map = dict()
-        self._graph = None
-        self._node_index = dict()
-
-        self._misc_link_index = dict()
-        self._orphans = []
-        self._is_connected = None
-        return self
-
     def __init__(self, db: str):
         """Initializes RoamGraph object
 
@@ -137,22 +115,27 @@ class RoamGraph:
         db : ``str``
             Path to org-roam database
 
+        Raises
+        ------
+        FileNotFoundError
+            If ``db`` (after ``~`` expansion) is not an existing file.
+        sqlite3.DatabaseError
+            If the file is not a readable SQLite database.
+
         Examples
         --------
         >>> collection = RoamGraph(PATH_TO_ORGROAM_DB)
         """
 
-        super(RoamGraph, self).__init__()
-
         self.db_path = os.path.expanduser(db)
         if not os.path.isfile(self.db_path):
-            raise AttributeError(f"No such file or directory: {self.db_path}")
+            raise FileNotFoundError(f"No such file or directory: {self.db_path}")
 
         _fnames = self.__init_fnames(self.db_path)
 
         _titles = self.__init_titles(self.db_path)
         _ids = self.__init_ids(self.db_path)
-        links = self.__init_links_to(db)
+        links = self.__init_links_to(self.db_path)
         _links_to = [[ID for ID in link_list if ID in _ids] for link_list in links]
         _tags = self.__init_tags(self.db_path)
         _misc_links = self.__init_misc_links(self.db_path)
@@ -190,22 +173,6 @@ class RoamGraph:
         ]
         self._is_connected = self._orphans == []
 
-    def __filter_tags(self, tags: list[str], exclude: bool) -> list[RoamNode]:
-        """Filter network by tags
-
-
-        Parameters
-        ----------
-        tags : ``list[str]``
-            List of tags to filter by
-        exclude : ``bool``
-            Whether to exclude the tags in the new network or not
-        """
-        tfilter = [self._node_has_tag(node, tag) for node in self.nodes for tag in tags]
-        if exclude:
-            tfilter = [not b for b in tfilter]
-        return [node for (node, b) in zip(self.nodes, tfilter) if b]
-
     def __init_ids(self, dbpath: str) -> list[str]:
         """Initialize list of IDs for each node
 
@@ -219,15 +186,10 @@ class RoamGraph:
         List of node IDs
         """
         id_query = "SELECT id FROM nodes ORDER BY id ASC;"
-        try:
-            with sql.connect(dbpath, uri=True) as con:
-                csr = con.cursor()
-                query = csr.execute(id_query)
-                return [i[0].replace('"', "") for i in query.fetchall()]
-
-        except sql.Error as e:
-            print("Connection failed: ", e)
-        return []
+        with sql.connect(dbpath, uri=True) as con:
+            csr = con.cursor()
+            query = csr.execute(id_query)
+            return [i[0].replace('"', "") for i in query.fetchall()]
 
     def __init_fnames(self, dbpath: str) -> list[str]:
         """
@@ -243,15 +205,10 @@ class RoamGraph:
         List of node filepaths
         """
         fname_query = "SELECT file FROM nodes ORDER BY id ASC;"
-        try:
-            with sql.connect(dbpath, uri=True) as con:
-                csr = con.cursor()
-                query = csr.execute(fname_query)
-                return [i[0].replace('"', "") for i in query.fetchall()]
-
-        except sql.Error as e:
-            print("Connection failed: ", e)
-        return []
+        with sql.connect(dbpath, uri=True) as con:
+            csr = con.cursor()
+            query = csr.execute(fname_query)
+            return [i[0].replace('"', "") for i in query.fetchall()]
 
     def __init_titles(self, dbpath: str) -> list[str]:
         """
@@ -268,15 +225,10 @@ class RoamGraph:
         List of node titles
         """
         title_query = "SELECT title FROM nodes ORDER BY id ASC;"
-        try:
-            with sql.connect(dbpath, uri=True) as con:
-                csr = con.cursor()
-                query = csr.execute(title_query)
-                return [i[0].replace('"', "") for i in query.fetchall()]
-
-        except sql.Error as e:
-            print("Connection failed: ", e)
-        return []
+        with sql.connect(dbpath, uri=True) as con:
+            csr = con.cursor()
+            query = csr.execute(title_query)
+            return [i[0].replace('"', "") for i in query.fetchall()]
 
     def __init_tags(self, dbpath: str) -> list[set[str]]:
         """
@@ -292,17 +244,12 @@ class RoamGraph:
         List of node tags (as sets)
         """
         tags_query = "SELECT nodes.id, GROUP_CONCAT(tags.tag) AS tags FROM nodes LEFT JOIN tags ON nodes.id = tags.node_id GROUP BY nodes.id ORDER BY nodes.id ASC;"
-        try:
-            with sql.connect(dbpath, uri=True) as con:
-                csr = con.cursor()
-                query = csr.execute(tags_query)
-                clean = lambda s: s.replace('"', "")
-                match_null = lambda s: set() if not s else s.split(",")
-                return [set(map(clean, match_null(i[1]))) for i in query.fetchall()]
-
-        except sql.Error as e:
-            print("Connection failed: ", e)
-        return []
+        with sql.connect(dbpath, uri=True) as con:
+            csr = con.cursor()
+            query = csr.execute(tags_query)
+            clean = lambda s: s.replace('"', "")
+            match_null = lambda s: set() if not s else s.split(",")
+            return [set(map(clean, match_null(i[1]))) for i in query.fetchall()]
 
     def __init_links_to(self, dbpath: str) -> list[list[str]]:
         """Initialize list of links
@@ -325,26 +272,21 @@ class RoamGraph:
         GROUP BY n.id
         ORDER BY n.id ;
         """
-        try:
-            with sql.connect(dbpath, uri=True) as con:
-                csr = con.cursor()
-                query = csr.execute(links_to_query)
-                clean = lambda s: s.replace('"', "")
-                links = query.fetchall()
+        with sql.connect(dbpath, uri=True) as con:
+            csr = con.cursor()
+            query = csr.execute(links_to_query)
+            clean = lambda s: s.replace('"', "")
+            links = query.fetchall()
 
-                # Separated links by comma might still have links we dont want (e.g. files, etc)
-                self_and_links = [
-                    [clean(i[0])] + list(map(clean, i[1].split(",")))
-                    if i[1]
-                    else [clean(i[0])]
-                    for i in links
-                ]
+            # Separated links by comma might still have links we dont want (e.g. files, etc)
+            self_and_links = [
+                [clean(i[0])] + list(map(clean, i[1].split(",")))
+                if i[1]
+                else [clean(i[0])]
+                for i in links
+            ]
 
-                return self_and_links
-
-        except sql.Error as e:
-            print("Connection failed: ", e)
-        return []
+            return self_and_links
 
     def __init_misc_links(self, dbpath: str) -> list[list[OrgLink]]:
         """Initialize list of miscellaneous org-mode links
@@ -371,31 +313,26 @@ class RoamGraph:
                     n.id
                 ORDER BY
                     n.id;"""
-        try:
-            with sql.connect(dbpath, uri=True) as con:
-                csr = con.cursor()
-                clean = lambda s: s.replace('"', "")
-                quer = csr.execute(q)
-                output = quer.fetchall()
-                links_and_types = [
-                    list(
-                        zip(
-                            tuple(clean(row[1]).split(",")),
-                            tuple(clean(row[2]).split(",")),
-                        )
+        with sql.connect(dbpath, uri=True) as con:
+            csr = con.cursor()
+            clean = lambda s: s.replace('"', "")
+            quer = csr.execute(q)
+            output = quer.fetchall()
+            links_and_types = [
+                list(
+                    zip(
+                        tuple(clean(row[1]).split(",")),
+                        tuple(clean(row[2]).split(",")),
                     )
-                    if row[1]
-                    else []
-                    for row in output
-                ]
-                return [
-                    [OrgLink(prop[1], prop[0], None) if prop else [] for prop in lst]
-                    for lst in links_and_types
-                ]
-
-        except sql.Error as e:
-            print("Connection failed: ", e)
-        return []
+                )
+                if row[1]
+                else []
+                for row in output
+            ]
+            return [
+                [OrgLink(prop[1], prop[0], None) if prop else [] for prop in lst]
+                for lst in links_and_types
+            ]
 
     def remove_orphans(self) -> RoamGraph:
         """Remove orphans from network
@@ -442,30 +379,11 @@ class RoamGraph:
         self._orphans = []
         self._is_connected = True
 
-        self.db_path = self.db_path
         self._graph = nx.MultiDiGraph(
             {self.IDs[i]: self._links_to[i] for i in range(len(self.IDs))}
         )
         self._id_title_map = {self.IDs[i]: self.titles[i] for i in range(len(self.IDs))}
         return self
-
-    def __is_orphan(self, node: RoamNode) -> bool:
-        """Check if node is an orphan
-
-        Parameters
-        ----------
-        node : ``RoamNode``
-            Node to check
-
-        Returns
-        -------
-        ``bool``
-            True if node is an orphan
-
-        """
-        pointed_to = True if any(node.id in n.backlinks for n in self.nodes) else False
-        points_to = node.backlinks != []
-        return not points_to and not pointed_to
 
     def __identifier_type(self, identifier: str) -> IdentifierType:
         """Determine type of identifier for node
@@ -557,13 +475,10 @@ class RoamGraph:
                 return self.nodes[idx]
 
             case IdentifierType.ID:
-                idx = self.titles.index(identifier)
-                return self.nodes[idx]
+                return self._node_index[identifier]
 
             case IdentifierType.NOTHING:
                 raise AttributeError(f"No node with provided identifier: {identifier}")
-
-        raise AttributeError("Uh oh spaghetti-o")
 
     def node_title(self, identifier: str) -> str:
         """Return title of node
@@ -784,24 +699,6 @@ class RoamGraph:
 
         return ([node for (node, b) in zip(self.nodes, tfilter) if b], excluded_ids)
 
-    def _node_has_tag(self, node: RoamNode, tag: str) -> bool:
-        """
-        Return if node has provided tag
-
-        Parameters
-        ----------
-        node : ``RoamNode``
-            Node to check
-        tag : ``str``
-            Tag to check
-
-        Returns
-        -------
-        bool
-            True if ``node`` has ``tag``
-        """
-        return tag in node.tags
-
     def refresh(self) -> None:
         """Refresh ``_node_index``-dependent data in collection after
         manual change to ``self._node_index``.
@@ -956,7 +853,7 @@ class RoamGraph:
         self._node_index = value
 
     @property
-    def fnames(self, base: bool = True) -> list[str]:
+    def fnames(self) -> list[str]:
         """Return list of filenames in network
 
         Parameters
@@ -967,12 +864,21 @@ class RoamGraph:
         Returns
         -------
         ``list[str]``
-            list of filenames in network
+            Path of the file containing each node, in node order.
+            Use ``basenames`` for file names only.
         """
-        if base:
-            return [os.path.basename(node.fname) for node in self.node_index.values()]
+        return [node.fname for node in self._node_index.values()]
 
-        return [node.fname for node in self.nodes]
+    @property
+    def basenames(self) -> list[str]:
+        """Return list of file basenames in network
+
+        Returns
+        -------
+        ``list[str]``
+            list of basenames of the files containing the nodes in network
+        """
+        return [os.path.basename(node.fname) for node in self._node_index.values()]
 
     @property
     def nodes(self) -> list[RoamNode]:
@@ -1009,17 +915,17 @@ class RoamGraph:
         return [node.title for node in self._node_index.values()]
 
     @property
-    def misc_link_index(self) -> dict[str, list[str]]:
+    def misc_link_index(self) -> dict[str, list[OrgLink]]:
         """Return index of miscellaneous links
 
         Returns
         -------
 
-        dict[str, list[str]]
+        dict[str, list[OrgLink]]
             dict with keys IDs of nodes and values the list of backlinks in that
-            node
+            node that are not links to other nodes (files, URLs, etc.)
         """
-        return {ID: node.backlinks for ID, node in self._node_index.items()}
+        return {ID: node.misc_links for ID, node in self._node_index.items()}
 
     @property
     def misc_links(self) -> dict[str, list[OrgLink]]:

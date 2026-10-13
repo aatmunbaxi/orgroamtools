@@ -1,7 +1,6 @@
 from enum import Enum
 from typing import Tuple
 import re
-import orgparse as op
 
 ORG_LATEX_RX = (
     r"\\\((.*?)\\\)|"  #  \(\)
@@ -12,7 +11,7 @@ ORG_LATEX_RX = (
 )
 
 SRC_BLOCK_RE = re.compile(
-    r"^\s*#\+BEGIN_SRC\s+([a-zA-Z0-9_-]+)(?:.*?)\n(.*?)#\+END_SRC\s*",
+    r"^\s*#\+BEGIN_SRC\s+(\S+)(?:.*?)\n(.*?)#\+END_SRC\s*",
     re.MULTILINE | re.DOTALL | re.IGNORECASE,
 )
 
