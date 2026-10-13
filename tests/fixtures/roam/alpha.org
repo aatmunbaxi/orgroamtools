@@ -1,0 +1,32 @@
+:PROPERTIES:
+:ID:       alpha
+:END:
+#+title: Alpha
+#+filetags: :math:definition:
+
+Alpha is a file-level node. It links to [[id:beta-h1][Beta heading one]], to a
+node that does not exist [[id:does-not-exist][ghost]], to a URL containing a
+comma [[https://example.com/a,b][example]], and to a file
+[[file:figures/alpha.png]].
+
+Inline math \(a+b\) and inline display \[c+d\] on one line.
+
+\[
+x^2
+\]
+
+\begin{equation}
+e = mc^2
+\end{equation}
+
+\begin{equation*}
+f(x) = 0
+\end{equation*}
+
+\begin{align*}
+g &= h
+\end{align*}
+
+\begin{multline*}
+i + j
+\end{multline*}

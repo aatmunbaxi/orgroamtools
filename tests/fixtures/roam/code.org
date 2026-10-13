@@ -1,0 +1,23 @@
+:PROPERTIES:
+:ID:       code
+:END:
+#+title: Code
+#+filetags: :code:
+
+Source blocks in several languages. Links to [[id:alpha][Alpha]].
+
+#+begin_src python
+print("hello")
+#+end_src
+
+#+begin_src c++ :includes <iostream>
+int x = 1;
+#+end_src
+
+#+BEGIN_SRC emacs-lisp
+(message "hi")
+#+END_SRC
+
+#+begin_src
+no language
+#+end_src

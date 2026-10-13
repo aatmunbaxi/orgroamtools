@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       dup-2
+:END:
+#+title: Duplicate
+
+Second of two nodes sharing a title. Links to [[id:dup-1][Duplicate]].

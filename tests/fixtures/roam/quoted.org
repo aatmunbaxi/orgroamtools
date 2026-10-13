@@ -1,0 +1,7 @@
+:PROPERTIES:
+:ID:       quoted
+:END:
+#+title: The "quoted" node
+#+filetags: :example:
+
+A title containing double quotes. Links to [[id:alpha][Alpha]].

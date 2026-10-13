@@ -12,6 +12,21 @@ orgroamtools.data module
    :undoc-members:
    :show-inheritance:
 
+.. py:exception:: NodeNotFoundError
+   :module: orgroamtools.data
+   :no-index-entry:
+
+   Alias of :exc:`orgroamtools._utils.NodeNotFoundError`, importable from
+   ``orgroamtools.data``.
+
+orgroamtools._utils module
+--------------------------
+
+.. automodule:: orgroamtools._utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

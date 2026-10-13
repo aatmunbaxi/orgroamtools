@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from orgroamtools.RoamGraph import RoamGraph
+from orgroamtools.data import RoamGraph
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import matplotlib.colors as colors
