@@ -511,7 +511,7 @@ class RoamGraph:
         """Refresh ``_node_index``-dependent data in collection after
         manual change to ``self._node_index``.
 
-        
+
         .. deprecated:: 0.2.0
             Assign a new dict to ``node_index`` instead; the collection is
             rebuilt automatically.
