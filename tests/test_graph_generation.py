@@ -72,7 +72,6 @@ def test_titles(graph):
     assert "foo bar baz" not in graph.titles
 
 
-@pytest.mark.xfail(strict=True, reason="phase 3: decode quoted strings properly")
 def test_title_with_quotes(graph):
     assert 'The "quoted" node' in graph.titles
 

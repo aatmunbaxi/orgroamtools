@@ -1,6 +1,28 @@
 import pytest
 
-from orgroamtools._utils import extract_math_snippets, extract_src_blocks
+from orgroamtools._utils import (
+    decode_lisp_string,
+    extract_math_snippets,
+    extract_src_blocks,
+)
+
+
+@pytest.mark.parametrize(
+    "raw, expected",
+    [
+        ('"plain"', "plain"),
+        ('"The \\"quoted\\" node"', 'The "quoted" node'),
+        ('"back\\\\slash"', "back\\slash"),
+        ('"a,b"', "a,b"),
+        ('""', ""),
+        ('"multi\nline"', "multi\nline"),
+        (None, None),
+        ("unquoted", "unquoted"),
+        ('"', '"'),
+    ],
+)
+def test_decode_lisp_string(raw, expected):
+    assert decode_lisp_string(raw) == expected
 
 
 @pytest.mark.parametrize(

@@ -1,7 +1,7 @@
 import networkx as nx
 import pytest
 
-from orgroamtools._utils import DuplicateTitlesWarning
+from orgroamtools._utils import DuplicateTitlesWarning, NodeNotFoundError
 from orgroamtools.data import OrgLink, RoamGraph, RoamNode
 
 # --- links -------------------------------------------------------------------
@@ -50,7 +50,6 @@ def test_misc_links(graph):
     assert all(isinstance(link, OrgLink) for link in graph.misc_links["alpha"])
 
 
-@pytest.mark.xfail(strict=True, reason="phase 3: comma in link destination splits it")
 def test_misc_links_with_comma(graph):
     assert graph.misc_links["alpha"] == [
         OrgLink("https", "//example.com/a,b", None),
@@ -87,21 +86,73 @@ def test_node_by_id(graph):
     assert graph.node("dup-2").title == "Duplicate"
 
 
-def test_node_not_found(graph):
+@pytest.mark.parametrize(
+    "lookup",
+    ["node", "node_links", "get_body", "get_latex_snippets", "get_src_blocks"],
+)
+def test_node_not_found(graph, lookup):
+    with pytest.raises(NodeNotFoundError):
+        getattr(graph, lookup)("nope")
+
+
+def test_node_not_found_is_key_and_attribute_error(graph):
+    # AttributeError kept for compatibility with code written before phase 3
+    with pytest.raises(KeyError):
+        graph.node("nope")
     with pytest.raises(AttributeError):
         graph.node("nope")
 
 
 def test_node_title(graph):
     assert graph.node_title("beta-h1") == "Beta heading one"
-    with pytest.raises(AttributeError):
+    with pytest.raises(NodeNotFoundError):
         graph.node_title("Beta heading one")
 
 
 def test_node_id(graph):
     assert graph.node_id("Siehler, J.: Near-Group Categories") == "comma"
-    with pytest.raises(AttributeError):
+    with pytest.raises(NodeNotFoundError):
         graph.node_id("comma")
+
+
+def test_node_id_duplicate_title_warns(graph):
+    with pytest.warns(DuplicateTitlesWarning):
+        assert graph.node_id("Duplicate") == "dup-1"
+
+
+# --- consistency -------------------------------------------------------------
+
+
+def test_graph_setter_removed(graph):
+    with pytest.raises(AttributeError):
+        graph.graph = nx.MultiDiGraph()
+
+
+def test_node_index_setter_rebuilds(graph):
+    graph.node_index = {k: v for k, v in graph.node_index.items() if k != "beta-h1"}
+    assert "beta-h1" not in graph.graph
+    assert "beta-h1" not in graph.backlink_index["alpha"]
+    assert "Beta heading one" not in graph.titles
+    assert set(graph.graph.nodes) == set(graph.IDs)
+    # alpha's only outgoing link was to beta-h1, but beta-h2 still links to it
+    assert "alpha" not in {node.id for node in graph._orphans}
+
+
+def test_refresh_deprecated_but_rebuilds(graph):
+    # The in-place workflow documented in docs/source/index.rst
+    index = graph.node_index
+    del index["beta-h1"]
+    with pytest.warns(DeprecationWarning):
+        graph.refresh()
+    assert "beta-h1" not in graph.graph
+    assert "beta-h1" not in graph.node("alpha").backlinks
+    assert set(graph.graph.nodes) == set(graph.IDs)
+
+
+def test_duplicate_titles_index(graph):
+    assert graph._duplicate_titles == ["Duplicate"]
+    assert graph._contains_dup_titles
+
 
 
 def test_id_title_map(graph):
@@ -125,11 +176,17 @@ def test_remove_orphans_removes(graph):
     assert result._is_connected
 
 
-@pytest.mark.xfail(strict=True, reason="phase 3: remove_orphans should return a copy")
 def test_remove_orphans_returns_copy(graph):
     result = graph.remove_orphans()
     assert result is not graph
     assert "orphan" in graph.IDs
+    assert graph._orphans
+
+
+def test_derived_collections_do_not_rewarn(graph, recwarn):
+    graph.remove_orphans()
+    graph.filter_tags(["math"])
+    assert not [w for w in recwarn if w.category is DuplicateTitlesWarning]
 
 
 def test_remove_orphans_keeps_misc_links(graph):
@@ -177,14 +234,46 @@ def test_filter_tags_include_nodes(graph):
     assert filtered.IDs == ["alpha", "beta-h2"]
 
 
-@pytest.mark.xfail(strict=True, reason="phase 3: filter_tags misaligns tags")
 def test_filter_tags_exclude_keeps_own_tags(graph):
     filtered = graph.filter_tags(["definition"], exclude=True)
     assert filtered.tag_index["code"] == {"code"}
     assert filtered.tag_index["comma"] == {"reference", "example"}
 
 
-@pytest.mark.xfail(strict=True, reason="phase 3: include mode leaves ghost graph nodes")
 def test_filter_tags_include_graph_matches_nodes(graph):
     filtered = graph.filter_tags(["definition"], exclude=False)
     assert set(filtered.graph.nodes) == set(filtered.IDs)
+
+
+def test_filter_tags_include_keeps_filter_tags(graph):
+    filtered = graph.filter_tags(["definition"], exclude=False)
+    assert filtered.tag_index == {
+        "alpha": {"math", "definition"},
+        "beta-h2": {"math", "definition"},
+    }
+    assert all(isinstance(tags, set) for tags in filtered.tag_index.values())
+
+
+def test_filter_tags_accepts_any_iterable(graph):
+    by_list = graph.filter_tags(["definition", "code"])
+    by_gen = graph.filter_tags(tag for tag in ("definition", "code"))
+    assert by_list.IDs == by_gen.IDs
+
+
+def test_filter_tags_orphans(graph):
+    # Without alpha and beta-h2, beta-h1 has nothing left to link to
+    filtered = graph.filter_tags(["definition"], exclude=True)
+    assert sorted(node.id for node in filtered._orphans) == [
+        "beta",
+        "beta-h1",
+        "code",
+        "orphan",
+    ]
+
+
+def test_filtered_nodes_are_independent(graph):
+    filtered = graph.filter_tags(["definition"], exclude=True)
+    filtered.node("code").tags.add("new")
+    filtered.node("comma").backlinks.append("code")
+    assert graph.node("code").tags == {"code"}
+    assert graph.node("comma").backlinks == ["comma", "quoted"]
