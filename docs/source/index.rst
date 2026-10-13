@@ -67,33 +67,34 @@ The ``RoamGraph`` object also provides a ``networkx.MultiDiGraph`` representatio
 ------------------------------
 Manipulation of the Collection
 ------------------------------
-In addition to this information, primitive manipulations of the collection are provided, such as filtering the collection by tag, and removal of orphans from the collection.
 
-For more complex manipulations, we can use the setter :func:`orgroamtools.data.RoamGraph.node_index` to manually set the ``_node_index`` attribute after any manipulation on the nodes, then use :func:`orgroamtools.data.RoamGraph.refresh` to update remaining attributes.
+In addition to this information, primitive manipulations of the collection are
+  provided, such as filtering the collection by tag
+  (:func:`orgroamtools.data.RoamGraph.filter_tags`) and removal of orphans
+  (:func:`orgroamtools.data.RoamGraph.remove_orphans`). Both return a new
+  ``RoamGraph`` and leave the original unchanged.
 
-For example, let's say we want to remove a single node with ID ``foo`` from a collection ``bar``.
-To do this, we'd have to remove the key ``foo`` from the ``_node_index`` of ``bar``, then delete all backlinks to the node ``foo`` from all nodes in the index.
-We could accomplish that like this::
+  For other manipulations, build a new node index and assign it to
+  :attr:`orgroamtools.data.RoamGraph.node_index`. The graph, the indices, and the
+  list of orphans are recomputed automatically, and links to nodes that are no
+  longer present are dropped.
 
-  index = bar.node_index()
-  del index["foo"]
+  For example, to remove the node with ID ``foo`` from a collection ``bar``::
 
-  for node in index.values():
-      if "foo" in node.backlinks:
-          node.backlinks.remove("foo")
+    bar.node_index = {ID: node for ID, node in bar.node_index.items() if ID != "foo"}
 
-  bar.nodex_index(index)
-  bar.refresh()
+  Links to ``foo`` from the remaining nodes are removed by the assignment.
+  Calling ``refresh()`` is no longer necessary and is deprecated.
 
-The collection ``bar`` will now have the node ``foo`` deleted, along with any backlinks to the node ``foo``.
-
--------------
+  -------------
 General Notes
 -------------
 Because ``org-roam`` allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
 For user ergonomics, you are permitted to identify nodes by their title.
 For example, in the :func:`orgroamtools.data.RoamGraph.node` function, the ``identifier`` argument can be either a node title or node ID.
-If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.
+If no node matches an identifier, :class:`orgroamtools._utils.NodeNotFoundError`
+  (a ``KeyError``) is raised.
+If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted. 
 
 .. automodule::orgroamtools.data
    :members:
