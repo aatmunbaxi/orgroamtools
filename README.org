@@ -6,8 +6,8 @@
 It can pull various bits of information out of your =org-roam=, including some body-text based information like source blocks and LaTeX snippets.
 The information you extract about the natural graph structure of your collection can be used for many types of exploratory data analysis involving graph neural networks, natural language processing, and topological data analysis.
 
-To use it, all you need is a healthy =org-roam v2= database!
-Take a minute to locate the database by inspecting the value of =(org-roam-db-location)= in Emacs, then make sure it is up to date by running =(org-roam-db-sync)=.
+To use it, all you need is a healthy =org-roam v2= database.
+Take a minute to locate the database by inspecting the value of =org-roam-db-location= in emacs, then make sure it is up to date by running =(org-roam-db-sync)=.
 
 * Getting Started
 Install the library, putting it in a virtual environment if desired:
