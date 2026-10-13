@@ -21,8 +21,9 @@
           poetry-core
           pip
 
-          # tests
+          # tests and type checking
           pytest
+          mypy
 
           # pretty_viz.py
           matplotlib
