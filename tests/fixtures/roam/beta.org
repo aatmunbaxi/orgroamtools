@@ -1,0 +1,19 @@
+:PROPERTIES:
+:ID:       beta
+:END:
+#+title: Beta
+#+filetags: :math:
+
+Beta is a file-level node containing two heading-level nodes.
+
+* Beta heading one
+:PROPERTIES:
+:ID:       beta-h1
+:END:
+Heading one links to [[id:beta-h2][Beta heading two]].
+
+* Beta heading two                                               :definition:
+:PROPERTIES:
+:ID:       beta-h2
+:END:
+Heading two links back to [[id:alpha][Alpha]].

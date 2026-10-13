@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       dup-1
+:END:
+#+title: Duplicate
+
+First of two nodes sharing a title. Links to [[id:alpha][Alpha]].

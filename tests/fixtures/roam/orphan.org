@@ -1,0 +1,6 @@
+:PROPERTIES:
+:ID:       orphan
+:END:
+#+title: Orphan
+
+This node links nowhere and nothing links to it.
