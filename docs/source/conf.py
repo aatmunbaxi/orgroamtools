@@ -19,8 +19,20 @@ release = "0.0.1"
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
-extensions = ["sphinx.ext.napoleon", "sphinx.ext.autodoc", "sphinx.ext.viewcode"]
+extensions = [
+    "sphinx.ext.napoleon",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+]
 napoleon_google_docstring = False
+# Render "Attributes" sections as fields, so dataclass fields aren't also
+# documented a second time by :undoc-members:
+napoleon_use_ivar = True
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "networkx": ("https://networkx.org/documentation/stable", None),
+}
 autodoc_mock_imports = [
     "networkx",
     "orgparse",
@@ -58,4 +70,3 @@ exclude_patterns = []
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "sphinx_rtd_theme"
-html_static_path = ["_static"]

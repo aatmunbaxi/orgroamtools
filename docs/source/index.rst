@@ -42,12 +42,12 @@ The library provides several indices:
 
 - Indices extracting from the body text of the node:
 
-    - ``body_index`` : ``T`` is the body of the node: its text and that of its
+  - ``body_index`` : ``T`` is the body of the node: its text and that of its
     subheadings (with their heading lines), without its own heading line,
     property drawer, or a file's ``#+title:``/``#+filetags:`` lines. Links are
     shown as their descriptions. Files are read when the index is requested and
     cached until they change on disk.
-    
+
   - ``math_snippet_index`` : ``T`` is a list of LaTeX math snippets inside the
     node, in document order and with surrounding whitespace removed
 
@@ -56,7 +56,7 @@ The library provides several indices:
       ``flalign``, ``eqnarray``, ``math`` and ``displaymath`` (each optionally
       starred); and ``#+begin_equation`` / ``#+begin_latex`` blocks. Text
       inside source blocks is ignored.
-      
+
   - ``src_block_index`` : ``T`` is a list of tuples ``(S,W)`` where ``S`` is the
     language of the source block (``None`` if not given) and ``W`` is its content
 
@@ -114,22 +114,14 @@ General Notes
 Because ``org-roam`` allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
 For user ergonomics, you are permitted to identify nodes by their title.
 For example, in the :func:`orgroamtools.data.RoamGraph.node` function, the ``identifier`` argument can be either a node title or node ID.
-If no node matches an identifier, :class:`orgroamtools._utils.NodeNotFoundError`
-  (a ``KeyError``) is raised.
-If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted. 
+If no node matches an identifier, :exc:`orgroamtools._utils.NodeNotFoundError`
+(a ``KeyError``) is raised.
+If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted.
 
 If a node's file has been deleted or edited since the database was last
-  synced, its body is returned as ``""`` with a
-  :class:`orgroamtools._utils.BodyNotFoundWarning`. Run
-  ``(org-roam-db-sync)`` to refresh the database.
-
-.. automodule::orgroamtools.data
-   :members:
-
-.. automodule::orgroamtools._utils
-   :members:
-   :private-members:
-   :special-members:
+synced, its body is returned as ``""`` with a
+:exc:`orgroamtools._utils.BodyNotFoundWarning`. Run
+``(org-roam-db-sync)`` to refresh the database.
 
 .. toctree::
    :maxdepth: 3
