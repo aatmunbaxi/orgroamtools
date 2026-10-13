@@ -42,11 +42,33 @@ The library provides several indices:
 
 - Indices extracting from the body text of the node:
 
-  - ``body_index`` : ``T`` is the body of the node
-  - ``math_snippet_index`` : ``T`` is a list of LaTeX snippets inside the node
+    - ``body_index`` : ``T`` is the body of the node: its text and that of its
+    subheadings (with their heading lines), without its own heading line,
+    property drawer, or a file's ``#+title:``/``#+filetags:`` lines. Links are
+    shown as their descriptions. Files are read when the index is requested and
+    cached until they change on disk.
+    
+  - ``math_snippet_index`` : ``T`` is a list of LaTeX math snippets inside the
+    node, in document order and with surrounding whitespace removed
 
-    - Supported delimiters include ``\(\)``, ``\[\]``, and ``equation, align, multiline`` environments. In addition, ``#+begin_equation`` and ``#+begin_latex`` blocks are supported
-  - ``src_block_index`` : ``T`` is a list of tuples ``(S,W)`` where ``S`` is the language of the source block and ``W`` is the content of the source block
+    - Supported delimiters: ``\(...\)``, ``\[...\]``, ``$...$``, ``$$...$$``;
+      the environments ``equation``, ``align``, ``gather``, ``multline``,
+      ``flalign``, ``eqnarray``, ``math`` and ``displaymath`` (each optionally
+      starred); and ``#+begin_equation`` / ``#+begin_latex`` blocks. Text
+      inside source blocks is ignored.
+      
+  - ``src_block_index`` : ``T`` is a list of tuples ``(S,W)`` where ``S`` is the
+    language of the source block (``None`` if not given) and ``W`` is its content
+
+For example, a node whose body is::
+
+    Since $e^{i\pi} = -1$, we have
+    \begin{equation*}
+    e^{2i\pi} = 1
+    \end{equation*}
+    It costs $5 and $6.
+
+has ``math_snippet_index`` entry ``["e^{i\pi} = -1", "e^{2i\pi} = 1"]``.
 
 As an example of how to use these indices, let's make our own ``backlink_index`` but instead of using lists of org IDs for the backlink lists, we'll make them the title of the nodes.
 The ``title_index`` property provides a mapping from ``ID -> title``, so we could make it a simple one-liner::
@@ -69,24 +91,24 @@ Manipulation of the Collection
 ------------------------------
 
 In addition to this information, primitive manipulations of the collection are
-  provided, such as filtering the collection by tag
-  (:func:`orgroamtools.data.RoamGraph.filter_tags`) and removal of orphans
-  (:func:`orgroamtools.data.RoamGraph.remove_orphans`). Both return a new
-  ``RoamGraph`` and leave the original unchanged.
+provided, such as filtering the collection by tag
+(:func:`orgroamtools.data.RoamGraph.filter_tags`) and removal of orphans
+(:func:`orgroamtools.data.RoamGraph.remove_orphans`). Both return a new
+``RoamGraph`` and leave the original unchanged.
 
-  For other manipulations, build a new node index and assign it to
-  :attr:`orgroamtools.data.RoamGraph.node_index`. The graph, the indices, and the
-  list of orphans are recomputed automatically, and links to nodes that are no
-  longer present are dropped.
+For other manipulations, build a new node index and assign it to
+:attr:`orgroamtools.data.RoamGraph.node_index`. The graph, the indices, and the
+list of orphans are recomputed automatically, and links to nodes that are no
+longer present are dropped.
 
-  For example, to remove the node with ID ``foo`` from a collection ``bar``::
+For example, to remove the node with ID ``foo`` from a collection ``bar``::
 
     bar.node_index = {ID: node for ID, node in bar.node_index.items() if ID != "foo"}
 
-  Links to ``foo`` from the remaining nodes are removed by the assignment.
-  Calling ``refresh()`` is no longer necessary and is deprecated.
+Links to ``foo`` from the remaining nodes are removed by the assignment.
+Calling ``refresh()`` is no longer necessary and is deprecated.
 
-  -------------
+-------------
 General Notes
 -------------
 Because ``org-roam`` allows you to have multiple nodes with the same title, the ID of a node is guaranteed to uniquely identify a node in your collection.
@@ -95,6 +117,11 @@ For example, in the :func:`orgroamtools.data.RoamGraph.node` function, the ``ide
 If no node matches an identifier, :class:`orgroamtools._utils.NodeNotFoundError`
   (a ``KeyError``) is raised.
 If the network detects multiple nodes with the same title and you attempt to identify a node by the duplicated title, you will be warned that it might not be the output you wanted. 
+
+If a node's file has been deleted or edited since the database was last
+  synced, its body is returned as ``""`` with a
+  :class:`orgroamtools._utils.BodyNotFoundWarning`. Run
+  ``(org-roam-db-sync)`` to refresh the database.
 
 .. automodule::orgroamtools.data
    :members:
